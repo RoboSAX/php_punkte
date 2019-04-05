@@ -1,0 +1,13 @@
+table.list {border: 0px solid black; text-align: center; border-spacing: 0px;}
+table.list td {border: 1px solid black; }
+table.list tr {}
+
+table.games {border : solid black; text-align: left; border-spacing: 0px;}
+table.games td {border : 0px solid black;}
+table.games tr {}
+
+table.display {border: 0px solid black; text-align: center; margin-top: 50px}
+table.display td {}
+table.display tr {}
+
+h2 {text-align: center;}
