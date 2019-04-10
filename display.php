@@ -49,10 +49,15 @@ array_multisort($games[0], $games[1], SORT_ASC, $games[2], $games[3], $games[4],
 			
 			while($s < 6 && $games[7][$i])
 			{
-				if(!$games[7][$i])
+				if($games[7][$i])
 				{
-					//Gamestime checken und ausgeben als nächstes Spiel
-					break;
+					echo "<table class='list'><tr>";
+					echo "<td style='width:70px'>".$games[2][$i]."</td>"; //Tabelle fortsetzen
+					echo "<td style='width:70px'>".$games[6][$i]."</td>";
+					echo "<td style='width:70px'>".$games[][$i]."</td></tr>";
+					echo "<td style='width:70px'>".$games[][$i]."</td>";
+					echo "<td style='width:70px'>".$games[][$i]."</td>";
+					echo "<tr><td style='width:70px'>".$games[][$i]."</td></tr>";
 				}
 				else
 				{
