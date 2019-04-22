@@ -12,7 +12,7 @@ $games = array(Select('games','gameid'),Select('games','block'),Select('games','
 array_multisort($teams[0], SORT_DESC, $teams[1], $teams[2], $teams[3], $teams[4]);
 //0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 
-array_multisort($games[0], $games[1], SORT_ASC, $games[2], $games[3], $games[4], $games[5], $games[6], $games[7], $games[8]);
+array_multisort($games[0], $games[4], SORT_ASC, $games[2], $games[3], $games[1], SORT_ASC, $games[5], $games[6], $games[7], $games[8]);
 //0 -> GameID; 1 -> Block; 2 -> Zeit; 3 -> Punkte; 4 -> TeamID; 5 -> Strafenanzahl; 6 -> Objectives; 7 -> Status; 8 -> Beendet
 ?>
 <head>
@@ -23,11 +23,13 @@ array_multisort($games[0], $games[1], SORT_ASC, $games[2], $games[3], $games[4],
 	<tr>
 		<td style='width:300px'>Teams</td><td>Spielblock I</td><td>Spielblock II</td><td>Spielblock III</td><td>Spielblock IV</td><td>Spielblock V</td>
 	</tr>
-	<?php
+	<tr>
+		<td>
+		<?php
 		
-		for($i = 0;$i < $anz; $i++)
+		
+		for($i = 0;$i < $anz; $i++) //Liste mit Teams
 		{
-			echo "<tr><td>";
 			echo "<table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
 			echo $i+1;			//Platz
 			echo "</td><td colspan='2'>";
@@ -39,36 +41,35 @@ array_multisort($games[0], $games[1], SORT_ASC, $games[2], $games[3], $games[4],
 			echo "</td><td style='width:125px'>";
 			echo $teams[3][$i]; //Roboter
 			echo "</td></tr></table><br>";
-			echo "</td>";
-			
-			$s = 0;
-			
-			
+				
 			//0 -> GameID; 1 -> Block; 2 -> Zeit; 3 -> Punkte; 4 -> TeamID; 5 -> Strafenanzahl; 6 -> Objectives; 7 -> Status; 8 -> Beendet
-			
-			
-			while($s < 6 && $games[7][$i])
+		} ?>
+		</td>
+		<td>
+		<?php
+			//zwei Schleifen inneinander, eine von oben nach unten, nach den Teams geordnet, die andere nach Block geordnet, von links nach rechts
+		for($i = 0; $i <
 			{
-				if($games[7][$i])
+				if($games[8][$i])
 				{
-					echo "<table class='list'><tr>";
-					echo "<td style='width:70px'>".$games[2][$i]."</td>"; //Tabelle fortsetzen
+					echo "<td><table class='list'><tr>";
+					echo "<td style='width:70px'>".$games[2][$i]."</td>";
 					echo "<td style='width:70px'>".$games[6][$i]."</td>";
-					echo "<td style='width:70px'>".$games[][$i]."</td></tr>";
-					echo "<td style='width:70px'>".$games[][$i]."</td>";
-					echo "<td style='width:70px'>".$games[][$i]."</td>";
-					echo "<tr><td style='width:70px'>".$games[][$i]."</td></tr>";
+					echo "<td style='width:70px'>".$games[5][$i]."</td></tr>";
+					echo "<tr><td style='width:70px'>".$games[3][$i]."</td>";
+					echo "<td style='width:70px'>".$games[3][$i]."</td>";
+					echo "<td style='width:70px'>".$games[1][$i]."</td></tr></table></td>";
+					$s++;
 				}
 				else
 				{
 					//Spiele anzeigen
 				}
 			}
-			
-		}
 		
-	?>
-
+		?>
+		</td>
+	</tr>
 </table>
 <?php 
 
