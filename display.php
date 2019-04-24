@@ -7,30 +7,76 @@ $conn = OpenCon();
 $f = Select('teams','teamid');
 $anz = sizeof($f);
 $teams = array(Select('teams','points'), Select('teams','name'), Select('teams','teamleiter'), Select('teams','roboter'), Select('teams','teamid'));
-$games = array(Select('games','gameid'),Select('games','block'),Select('games','time'),Select('games','points'),Select('games','team'),Select('games','penalty'),Select('games','objectives'),Select('games','active'),Select('games','finished'));
 
 array_multisort($teams[0], SORT_DESC, $teams[1], $teams[2], $teams[3], $teams[4]);
 //0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 
-array_multisort($games[0], $games[4], SORT_ASC, $games[2], $games[3], $games[1], SORT_ASC, $games[5], $games[6], $games[7], $games[8]);
-//0 -> GameID; 1 -> Block; 2 -> Zeit; 3 -> Punkte; 4 -> TeamID; 5 -> Strafenanzahl; 6 -> Objectives; 7 -> Status; 8 -> Beendet
 ?>
 <head>
-<link rel="stylesheet" type="text/css" href="style.css"/>
+<style>
+table.list {
+	border: 0px solid black; 
+	text-align: center; 
+	border-spacing: 0px;
+	margin-top: 10px;
+	}
+table.list td {
+	border: 1px solid black;
+	color: black;	
+	}
+	
+	
+table.games {
+	text-align: left; 
+	border-spacing: 0px;
+	margin-top: 10px;
+	margin-left: 20%;
+	margin-right: 20%;
+	width: 60%;
+	}
+	
+table.games td.0 {
+	border : 0px solid black;
+	color: black;
+	}
+	
+table.games td.1 {
+	border: 0px solid black; 
+	color: red;
+	}	
+
+table.games tr {
+	
+}
+
+table.display {
+	border: 0px solid black; 
+	text-align: center; 
+	margin-top: 10px;
+	}
+table.display td {
+	text-align: center;
+	}
+table.display tr {
+	
+}
+
+h2 {
+	text-align: center;
+	}
+</style>
 </head>
 <body>
 <table style='width:100%' class='display'>
 	<tr>
 		<td style='width:300px'>Teams</td><td>Spielblock I</td><td>Spielblock II</td><td>Spielblock III</td><td>Spielblock IV</td><td>Spielblock V</td>
 	</tr>
-	<tr>
-		<td>
 		<?php
 		
 		
 		for($i = 0;$i < $anz; $i++) //Liste mit Teams
 		{
-			echo "<table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
+			echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
 			echo $i+1;			//Platz
 			echo "</td><td colspan='2'>";
 			echo $teams[1][$i]; //Name
@@ -40,36 +86,71 @@ array_multisort($games[0], $games[4], SORT_ASC, $games[2], $games[3], $games[1],
 			echo $teams[2][$i]; //Teamleiter
 			echo "</td><td style='width:125px'>";
 			echo $teams[3][$i]; //Roboter
-			echo "</td></tr></table><br>";
+			echo "</td></tr></table></td>";
 				
-			//0 -> GameID; 1 -> Block; 2 -> Zeit; 3 -> Punkte; 4 -> TeamID; 5 -> Strafenanzahl; 6 -> Objectives; 7 -> Status; 8 -> Beendet
-		} ?>
-		</td>
-		<td>
-		<?php
-			//zwei Schleifen inneinander, eine von oben nach unten, nach den Teams geordnet, die andere nach Block geordnet, von links nach rechts
-		for($i = 0; $i <
+			$sql = "SELECT * FROM games WHERE team='".$teams[4][$i]."'";
+			$result = $conn->query($sql);
+	
+			$teamrow = array(array()); 
+	
+			if ($result->num_rows > 0)
 			{
-				if($games[8][$i])
+				$g = 0;
+				while($row = $result->fetch_assoc())
 				{
-					echo "<td><table class='list'><tr>";
-					echo "<td style='width:70px'>".$games[2][$i]."</td>";
-					echo "<td style='width:70px'>".$games[6][$i]."</td>";
-					echo "<td style='width:70px'>".$games[5][$i]."</td></tr>";
-					echo "<tr><td style='width:70px'>".$games[3][$i]."</td>";
-					echo "<td style='width:70px'>".$games[3][$i]."</td>";
-					echo "<td style='width:70px'>".$games[1][$i]."</td></tr></table></td>";
-					$s++;
+					$teamrow[$g] = array('block' => $row['block'],'time' => $row['time'],'points' => $row['points'],'team' => $row['team'],'penalties' => $row['penalties'],'objectives' =>  $row['objectives'],'active' =>  $row['active'],'finished' => $row['finished']);
+					$g++;
+				}
+			}
+			else
+			{
+				echo "0 results";
+			}
+				
+			
+			array_multisort($teamrow[0], SORT_ASC, $teamrow[1], $teamrow[2], $teamrow[3], $teamrow[4], $teamrow[5], $teamrow[6], $teamrow[7]);	
+			
+			var_dump($teamrow);
+			
+			for($s = 0; $s < 6; $s++)
+			{				
+				$time = explode(':',$teamrow[$s]['time']);
+				
+				if($teamrow[$s]['finished'])
+				{
+					echo "<td>";
+					echo "<table class='games'><tr><td>";
+					echo $time[1] . ":" . $time[2]; 
+					echo "</td><td>";
+					echo $teamrow[$s]['objectives'];			//Anzahl der Objectives
+					echo "</td><td>";
+					echo $teamrow[$s]['penalties'];				//Anzahl der Strafen
+					echo "</td></tr><tr><td>";
+					echo $teamrow[$s]['points'];				//Anzahl der Punkte
+					echo "</td><td>";
+					echo "Filler";								//Fill
+					echo "</td><td>";
+					echo "Filler";								//Fill
+					echo "</td></tr></table></td>";
+					
 				}
 				else
 				{
-					//Spiele anzeigen
+					if($s == 5 || !$teamrow[$s+1][7])
+					{
+						echo "<td></td>";
+					}
+					else
+					{
+						echo "Fail";
+					}
 				}
-			}
+			}				
+			//0 -> GameID; 1 -> Block; 2 -> Zeit; 3 -> Punkte; 4 -> TeamID; 5 -> Strafenanzahl; 6 -> Objectives; 7 -> Status; 8 -> Beendet
+		} 
+			//zwei Schleifen inneinander, eine von oben nach unten, nach den Teams geordnet, die andere nach Block geordnet, von links nach rechts		
 		
 		?>
-		</td>
-	</tr>
 </table>
 <?php 
 
