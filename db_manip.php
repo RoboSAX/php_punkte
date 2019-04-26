@@ -2,31 +2,52 @@
 
 function Select($table, $col)
 {
-	$list = array();
+	
 	$conn = OpenCon();
 	
-
+	
 		$sql = "SELECT $col FROM $table";
 		$result = $conn->query($sql);
-	
-		if ($result->num_rows > 0)
+		
+		if($col == '*')
 		{
-			while($row = $result->fetch_assoc())
+			
+			$list = array(array());
+			if ($result->num_rows > 0)
 			{
-				array_push($list, $row[$col]);
+				$i = 0;
+				while($row = $result->fetch_assoc())
+				{
+					$list[$i] = $row;
+					$i++;
+				}
+			}
+			else
+			{
+				echo "0 results";
 			}
 		}
 		else
 		{
-			echo "0 results";
+			$list = array();
+			if ($result->num_rows > 0)
+			{
+				while($row = $result->fetch_assoc())
+				{
+					array_push($list, $row[$col]);
+				}
+			}
+			else
+			{
+				echo "0 results";
+			}
 		}
-		
 		CloseCon($conn);
 
 	return $list;
 }
 
-function SelectWhere($table, $comp='')
+function SelectWhere($table, $comp='') //Geht irgendwie ne
 {
 	$conn = OpenCon();
 	
@@ -77,4 +98,38 @@ function ColCount($table)
 	return $colnum;
 }
 
+function UpdateDB()
+{
+	$conn = OpenCon();
+	
+	$settings = parse_ini_file("settings.ini", true);
+	$anz = $settings['Options']['AnzTeams'];
+	$points = 0;
+	
+	for($i = 1; $i < $anz+1; $i++)
+	{		
+
+		$points = 0;
+		$sql = "SELECT points FROM games WHERE team='".$i."' AND finished='1'";
+		$result = $conn->query($sql);
+		if ($result->num_rows > 0)
+		{
+			
+			while($row = $result->fetch_assoc())
+			{
+				$points += $row['points'];
+			}
+			
+			$sql = "UPDATE teams SET points='".$points."' WHERE teamid='".$i."'";
+			$conn->query($sql);
+		}
+		else
+		{
+			echo "0 results";
+		}
+		
+		
+		
+	}
+}
 ?>
