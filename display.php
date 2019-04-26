@@ -4,10 +4,13 @@ include 'db_manip.php';
 
 $conn = OpenCon();
 
+UpdateDB();
+
 $f = Select('teams','teamid');
 $anz = sizeof($f);
 $teams = array(Select('teams','points'), Select('teams','name'), Select('teams','teamleiter'), Select('teams','roboter'), Select('teams','teamid'));
-
+$t = Select('teams','*');
+var_dump($t);
 array_multisort($teams[0], SORT_DESC, $teams[1], $teams[2], $teams[3], $teams[4]);
 //0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 
@@ -88,7 +91,7 @@ h2 {
 			echo $teams[3][$i]; //Roboter
 			echo "</td></tr></table></td>";
 				
-			$sql = "SELECT * FROM games WHERE team='".$teams[4][$i]."'";
+			$sql = "SELECT * FROM games WHERE team='".$teams[4][$i]."'"; //Sorted by zuhause nachschauen
 			$result = $conn->query($sql);
 	
 			$teamrow = array(array()); 
@@ -96,7 +99,7 @@ h2 {
 			if ($result->num_rows > 0)
 			{
 				$g = 0;
-				while($row = $result->fetch_assoc())
+				while($row = mysql_fetch_assoc($result))
 				{
 					$teamrow[$g] = array('block' => $row['block'],'time' => $row['time'],'points' => $row['points'],'team' => $row['team'],'penalties' => $row['penalties'],'objectives' =>  $row['objectives'],'active' =>  $row['active'],'finished' => $row['finished']);
 					$g++;
@@ -108,11 +111,11 @@ h2 {
 			}
 				
 			
-			array_multisort($teamrow[0], SORT_ASC, $teamrow[1], $teamrow[2], $teamrow[3], $teamrow[4], $teamrow[5], $teamrow[6], $teamrow[7]);	
+			array_multisort($teamrow[0], SORT_ASC, $teamrow[1], $teamrow[2], $teamrow[3], $teamrow[4]);	
 			
-			var_dump($teamrow);
+			//var_dump($teamrow);
 			
-			for($s = 0; $s < 6; $s++)
+			for($s = 0; $s < 5; $s++)
 			{				
 				$time = explode(':',$teamrow[$s]['time']);
 				
@@ -136,7 +139,7 @@ h2 {
 				}
 				else
 				{
-					if($s == 5 || !$teamrow[$s+1][7])
+					if($s == 4 || !$teamrow[$s+1][7])
 					{
 						echo "<td></td>";
 					}
@@ -146,9 +149,8 @@ h2 {
 					}
 				}
 			}				
-			//0 -> GameID; 1 -> Block; 2 -> Zeit; 3 -> Punkte; 4 -> TeamID; 5 -> Strafenanzahl; 6 -> Objectives; 7 -> Status; 8 -> Beendet
-		} 
-			//zwei Schleifen inneinander, eine von oben nach unten, nach den Teams geordnet, die andere nach Block geordnet, von links nach rechts		
+			
+		} 	
 		
 		?>
 </table>
