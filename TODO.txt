@@ -1,0 +1,9 @@
+TODO:
+1: Log-Mechanismus basteln->alle "0 Results" durch Logeinträge ersetzen
+2: Zeiteinteilung basteln
+3: SORTED BY nachschauen
+4: Script zum anlegen der Datenbank programmieren / test.bat zuhause hinbekommen -> einlesen einer sql datei in die datenbank
+5: Optionen einbauen und die changed und points DB bauen
+6: Filler ersetzen
+7: Editierdatei basteln
+8: Select anpassen, mit mind. 3 Conditions nach denen gefiltert werden kann
