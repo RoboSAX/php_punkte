@@ -1,21 +1,10 @@
 <?php
-session_start();
-
 include 'db_connection.php';
 include 'db_manip.php';
 
+$settings = parse_ini_file('settings.ini',true);
 
-if(isset($_SESSION['case']))
-{
-	switch($_SESSION['case'])
-	{
-		case 0:
-			$team = SelectWhere("teams","name='".$_SESSION['name']."'");
-			var_dump($team);
-		
-	}
-}
-
-
-
+$teams = Select('teams','*');
+var_dump($teams);
 ?>
+<p>Ein Team auswählen:</p>
