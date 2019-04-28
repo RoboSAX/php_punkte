@@ -1,5 +1,10 @@
 <?php
-
+function write_log($statement)
+{
+	$log = fopen(date("Y-m-d")."-log.txt","a+");
+	fwrite($log, date("H:i:s")." : ".$statement."; \n");
+	fclose($log);
+}
 function Select($table, $col)
 {
 	
@@ -24,7 +29,7 @@ function Select($table, $col)
 			}
 			else
 			{
-				echo "0 results";
+				write_log("0 results in using Select() (db_manip.php) with the Parameters: ".$table."; ".$col);
 			}
 		}
 		else
@@ -39,43 +44,12 @@ function Select($table, $col)
 			}
 			else
 			{
-				echo "0 results";
+				write_log("0 results in using Select() (db_manip.php) with the Parameters: ".$table."; ".$col);
 			}
 		}
-		CloseCon($conn);
-
-	return $list;
-}
-
-function SelectWhere($table, $comp='') //Geht irgendwie ne
-{
-	$conn = OpenCon();
-	
-	$list = array(array());
-
-	$sql = "SELECT * FROM $table WHERE '$comp'";
-	$result = $conn->query($sql);
-	$i = 0;
-	
-	if ($result->num_rows > 0)
-	{
-		while($row = $result->fetch_assoc())
-		{
-			$list[$i][] = $row;
-			$i++;
-		}
-	}
-	else
-	{
-		echo "0 results";
-	}
-		
 	CloseCon($conn);
 
 	return $list;
-	
-	
-	
 }
 
 function ColCount($table)
@@ -92,7 +66,7 @@ function ColCount($table)
 	}
 	else
 	{
-		echo "0 Results";
+		
 	}
 	
 	return $colnum;
@@ -101,35 +75,59 @@ function ColCount($table)
 function UpdateDB()
 {
 	$conn = OpenCon();
-	
 	$settings = parse_ini_file("settings.ini", true);
 	$anz = $settings['Options']['AnzTeams'];
-	$points = 0;
 	
 	for($i = 1; $i < $anz+1; $i++)
 	{		
-
 		$points = 0;
-		$sql = "SELECT points FROM games WHERE team='".$i."' AND finished='1'";
+		$sql = "SELECT * FROM games WHERE team='".$i."' AND finished='1' ORDER BY points DESC";
 		$result = $conn->query($sql);
+		
 		if ($result->num_rows > 0)
 		{
-			
+			$g = 0;
 			while($row = $result->fetch_assoc())
 			{
-				$points += $row['points'];
+				$highlight[0][$g] = $row['gameid'];
+				$highlight[1][$g] = $row['points'];
+				$highlight[2][$g] = $row['highlight'];
+				$g++;
+			}
+			
+			var_dump($highlight);
+			for($e = 0; $e < 5; $e++)
+			{
+				if($e < 3 && $highlight[1][$e])
+				{
+					$points += $highlight[1][$e];
+					if(!$highlight[2][$e])
+					{
+						$sql = "UPDATE games SET highlight='1' WHERE gameid='".$highlight[0][$e]."'";
+						$conn->query($sql);
+						write_log("Changed highlight of Game: ".$highlight[0][$e]." to 1 in Update()");
+					}
+				}
+				if($e >= 3 && $highlight[2][$e])
+				{
+					$sql = "UPDATE games SET highlight='0' WHERE gameid='".$highlight[0][$e]."'";
+					$conn->query($sql);
+					write_log("Changed highlight of Game: ".$highlight[0][$e]." to 0 in Update()");
+				}
 			}
 			
 			$sql = "UPDATE teams SET points='".$points."' WHERE teamid='".$i."'";
 			$conn->query($sql);
+			write_log("Set new points of team ".$i." to ".$points." in Updated()");
 		}
 		else
 		{
-			echo "0 results";
+			write_log("0 results for the query: ".$sql." : in using Update() (db_manip.php)");
 		}
 		
 		
 		
 	}
+	CloseCon($conn);
 }
 ?>
