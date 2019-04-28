@@ -1,4 +1,5 @@
 *.sql
 test.*
 testing.*
+*.txt
 
