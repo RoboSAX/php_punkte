@@ -8,16 +8,32 @@ UpdateDB();
 
 $f = Select('teams','teamid');
 $anz = sizeof($f);
-$teams = array(Select('teams','points'), Select('teams','name'), Select('teams','teamleiter'), Select('teams','roboter'), Select('teams','teamid'));
-$t = Select('teams','*');
 
+$sql = "SELECT * FROM teams ORDER BY points DESC, teamid ASC";
+$result = $conn->query($sql);
+$teams = array();
+
+if($result->num_rows > 0)
+{
+	while($row = $result->fetch_assoc())
+	{
+		$teams[] = $row;
+	}
+
+}
+else
+{
+	write_log("0 Results for the query: ".$sql." in display.php");
+}
+
+CheckOrder($teams);
 //0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 
 ?>
 <head>
 <style>
 table.list {
-	border: 0px solid black; 
+	border: 1px solid black; 
 	text-align: center; 
 	border-spacing: 0px;
 	margin-top: 10px;
@@ -29,6 +45,7 @@ table.list td {
 	
 	
 table.games {
+	border: 1px solid black;
 	text-align: left; 
 	border-spacing: 0px;
 	margin-top: 10px;
@@ -37,24 +54,25 @@ table.games {
 	width: 60%;
 	}
 	
-table.games td.0 {
-	border : 0px solid black;
+table.games td.normal {
+	border : 1px solid black;
 	color: black;
 	background-color: transparent;
 	}
 	
-table.games td.1 {
-	border: 0px solid black; 
+table.games td.changed {
+	border: 1px solid black; 
 	color: red;
 	background-color: transparent;
 	}	
 	
 table.games td.h {
-	border: 0px solid black;
+	border: 1px solid black;
 	background-color: yellow;
 	}
 
 table.games tr {
+	border
 	
 }
 
@@ -88,26 +106,26 @@ h2 {
 			echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
 			echo $i+1;			//Platz
 			echo "</td><td colspan='2'>";
-			echo $teams[1][$i]; //Name
+			echo $teams[$i]['name']; //Name
 			echo"</td><td rowspan='2' style='width:25px'>";
-			echo $teams[0][$i]; //Punktzahl
+			echo $teams[$i]['points']; //Punktzahl
 			echo "</td></tr><tr><td style='width:125px'>";
-			echo $teams[2][$i]; //Teamleiter
+			echo $teams[$i]['teamleiter']; //Teamleiter
 			echo "</td><td style='width:125px'>";
-			echo $teams[3][$i]; //Roboter
+			echo $teams[$i]['roboter']; //Roboter
 			echo "</td></tr></table></td>";
 				
-			$sql = "SELECT * FROM games WHERE team='".$teams[4][$i]."' ORDER BY block ASC";
+			$sql = "SELECT * FROM games WHERE team='".$teams[$i]['teamid']."' ORDER BY block ASC";
 			$result = $conn->query($sql);
 	
-			$teamrow = array(array()); 
+			$teamrow = array(); 
 	
 			if ($result->num_rows > 0)
 			{
 				$g = 0;
 				while($row = $result->fetch_assoc())
 				{
-					$teamrow[$g] = array('gameid' => $row['gameid'], 'block' => $row['block'],'time' => $row['time'],'points' => $row['points'],'team' => $row['team'],'penalties' => $row['penalties'],'objectives' =>  $row['objectives'],'active' =>  $row['active'],'finished' => $row['finished'], 'highlight' => $row['highlight']);
+					$teamrow[$g] = $row;
 					$g++;
 				}
 			}
@@ -129,7 +147,7 @@ h2 {
 				{
 					while($row = $result->fetch_assoc())
 					{
-						$changed[] = array('time' => $row['time'], 'points';
+						$changed[] = $row;
 					}
 				}
 				*/
@@ -144,7 +162,7 @@ h2 {
 					echo $teamrow[$s]['penalties'];				//Anzahl der Strafen
 					echo "</td></tr><tr>";
 					if($teamrow[$s]['highlight']) echo "<td class='h'>";
-					else echo "<td>";
+					else echo "<td class='normal'>";
 					echo $teamrow[$s]['points'];				//Anzahl der Punkte
 					echo "</td><td>";
 					echo "Filler";								//Fill

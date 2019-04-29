@@ -95,7 +95,6 @@ function UpdateDB()
 				$g++;
 			}
 			
-			var_dump($highlight);
 			for($e = 0; $e < 5; $e++)
 			{
 				if($e < 3 && $highlight[1][$e])
@@ -130,4 +129,30 @@ function UpdateDB()
 	}
 	CloseCon($conn);
 }
+
+function CheckOrder($comparr)
+{
+	$conn = OpenCon();
+	
+	$sql = "SELECT * FROM teams ORDER BY points DESC, teamid DESC";
+	$result = $conn->query($sql);
+	$team = array();
+
+	if($result->num_rows > 0)
+	{
+		while($row = $result->fetch_assoc())
+		{
+			$team[] = $row;
+		}	
+
+	}
+	else
+	{
+		write_log("0 Results for the query: ".$sql." in .php");
+	}	
+	//for($i = 0)
+	
+	CloseCon($conn);
+}
+
 ?>
