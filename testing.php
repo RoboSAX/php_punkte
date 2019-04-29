@@ -1,8 +1,11 @@
 <?php
 
-$settings = parse_ini_file("settings.ini",true);
+$test = array(array(1,2,3),array(234,34,2));
 
-var_dump($settings);
+
+
+array_multisort($test[1], SORT_DESC, $test[0], $test);
+var_dump($test);
 
 
 ?>
