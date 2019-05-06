@@ -26,7 +26,6 @@ else
 	write_log("0 Results for the query: ".$sql." in display.php");
 }
 
-CheckOrder($teams);
 //0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 
 ?>
@@ -70,11 +69,16 @@ table.games td.h {
 	border: 1px solid black;
 	background-color: yellow;
 	}
+	
+table.games td.hc {
+	border: 1px solid black; 
+	color: red;
+	background-color: yellow;
+	}
 
 table.games tr {
-	border
 	
-}
+	}
 
 table.display {
 	border: 0px solid black; 
@@ -100,14 +104,43 @@ h2 {
 	</tr>
 		<?php
 		
+		$oc = 1;
+		$octmp = 1;
 		
 		for($i = 0;$i < $anz; $i++) //Liste mit Teams
 		{
-			echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
-			echo $i+1;			//Platz
-			echo "</td><td colspan='2'>";
+			echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>"; 
+			if(!$teams[$i]['active']) echo "-";
+			if($teams[$i]['active'] && $teams[$i]['games'] == 0) echo $i+1;			//Platz
+			else 
+			{
+				if($teams[$i]['active'])
+				{
+					if($i == 0)
+					{
+						echo $oc;
+						$oc++;
+					}
+					else
+					{
+						if($i > 0 && $teams[$i]['points'] == $teams[$i-1]['points'])
+						{
+							echo $octmp;
+							$oc++;
+						}
+						else
+						{
+							echo $oc;
+							$octmp = $oc;
+							$oc++;
+						}
+					}
+					
+				}
+			}
+			echo "</td><td colspan='2'><b>";
 			echo $teams[$i]['name']; //Name
-			echo"</td><td rowspan='2' style='width:25px'>";
+			echo"</b></td><td rowspan='2' style='width:25px'>";
 			echo $teams[$i]['points']; //Punktzahl
 			echo "</td></tr><tr><td style='width:125px'>";
 			echo $teams[$i]['teamleiter']; //Teamleiter
@@ -122,11 +155,9 @@ h2 {
 	
 			if ($result->num_rows > 0)
 			{
-				$g = 0;
 				while($row = $result->fetch_assoc())
 				{
-					$teamrow[$g] = $row;
-					$g++;
+					$teamrow[] = $row;
 				}
 			}
 			else
@@ -135,10 +166,10 @@ h2 {
 			}
 				
 			
-			for($s = 0; $s < 5; $s++)
+			for($s = 0; $s < 5 && $teams[$i]['active']; $s++)
 			{				
-				$time = explode(':',$teamrow[$s]['time']);
-				/*$sql = "SELECT * FROM changed WHERE game='".$teamrow[$s+1]['gameid']."'";
+				$time = int_to_time($teamrow[$s]['time']);
+				$sql = "SELECT * FROM changed WHERE game='".$teamrow[$s]['gameid']."'";
 				$result = $conn->query($sql);
 			
 				$changed = array();
@@ -147,39 +178,71 @@ h2 {
 				{
 					while($row = $result->fetch_assoc())
 					{
-						$changed[] = $row;
+						$changed = $row;
 					}
 				}
-				*/
+				else
+				{
+					write_log("No Changes found for game: ".$teamrow[$s]['gameid']." in display.php");
+				}
+				
+				$sql = "SELECT * FROM pointmanagement WHERE game='".$teamrow[$s]['gameid']."'";
+				$result = $conn->query($sql);
+				
+				$points = array();
+				
+				if($result->num_rows > 0)
+				{
+					while($row = $result->fetch_assoc())
+					{
+						$points = $row;
+					}
+				}
+				else
+				{
+					write_log("No Points found for game: ".$teams[$s]['gameid']." in display");
+				}
+				
+				
 				if($teamrow[$s]['finished'])
 				{
+					$pospoints = $points['+1'] * 1 + $points['+3'] * 3 + $points['+5'] * 5;
+					$negpoints = $points['-1'] * -1 + $points['-3'] * -3 + $points['-5'] * -5;
+					
 					echo "<td>";
-					echo "<table class='games'><tr><td>";
-					echo $time[1] . ":" . $time[2]; 
-					echo "</td><td>";
+					echo "<table class='games'>";
+					if($changed['time']) echo "<tr><td class='changed'>";
+					else echo "</td><td class='normal'>";
+					echo $time;
+					if($changed['objectives']) echo "</td><td class='changed'>Li: ";
+					else echo "</td><td class='normal'>Li: ";
 					echo $teamrow[$s]['objectives'];			//Anzahl der Objectives
-					echo "</td><td>";
+					if($changed['penalties']) echo "</td><td class='changed'>St: ";
+					else echo "</td><td class='normal'>St: ";
 					echo $teamrow[$s]['penalties'];				//Anzahl der Strafen
 					echo "</td></tr><tr>";
 					if($teamrow[$s]['highlight']) echo "<td class='h'>";
-					else echo "<td class='normal'>";
-					echo $teamrow[$s]['points'];				//Anzahl der Punkte
-					echo "</td><td>";
-					echo "Filler";								//Fill
-					echo "</td><td>";
-					echo "Filler";								//Fill
+					else echo "</td><td class='normal'>";
+					if($pospoints + $negpoints < 0) echo "0";
+					else echo $pospoints + $negpoints; 			//Anzahl der Punkte
+					echo "</td><td class='normal'>";
+					echo $pospoints;		//Pluspunkte
+					echo "</td><td class='normal'>";
+					echo $negpoints;		//Minuspunkte
 					echo "</td></tr></table></td>";
 					
 				}
 				else
 				{
-					if($s == 4 || !$teamrow[$s+1][7])
+					if($s == 0 && isset($teamrow[$s]['time']))
 					{
-						echo "<td></td>";
+						echo "<td><i>";
+						echo int_to_time($teamrow[$s]['time']);
+						echo "</i></td>";
 					}
 					else
 					{
-						echo "Fail";
+						if($teamrow[$s-1]['finished']) echo "<td><i>".int_to_time($teamrow[$s]['time'])."</i></td>";
 					}
 				}
 			}				
