@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include 'db_connection.php';
 include 'db_manip.php';
 
