@@ -1,8 +1,0 @@
-TODO:
-1: ------------------------
-2: Zeiteinteilung basteln - Wichtig!!
-3: ------------------------
-4: Script zum anlegen der Datenbank programmieren / test.bat zuhause hinbekommen -> einlesen einer sql datei in die datenbank // entfällt wegen bat != bash
-5: ------------------------
-6: Filler ersetzen
-7: Editierdatei basteln - Muss morgen fertig sein!!
