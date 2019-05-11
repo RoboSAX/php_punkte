@@ -1,5 +1,12 @@
+# ignore data base
 *.sql
+
+# ignore testing
 test.*
 testing.*
+
+# ignore logfiles
 *.txt
 
+# ignore local settings
+settings.ini
