@@ -1,7 +1,7 @@
 <?php
 function write_log($statement)
 {
-	$log = fopen(date("Y-m-d")."-log.txt","a+");
+	$log = fopen(date("Y_m_d")."_log.txt","a+");
 	fwrite($log, date("H:i:s")." : ".$statement."; \n");
 	fclose($log);
 }

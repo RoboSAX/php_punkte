@@ -44,19 +44,21 @@ else
 </table>
 <br>
 <table>
+<form action='editall.php' method='post'>
 <?php
 for($i = 0; $i < $settings['Options']['AnzTeams']; $i++)
 {
 	if(isset($teams[$i]))
 	{
-		echo "<table style='width:300px' class='list'><tr><form action='editall.php' method='post'><td>";
+		echo "<tr><td>";
 		echo $teams[$i]['name'];
 		echo "</td><td>";
 		echo "<button type='submit' value='".$teams[$i]['teamid']."' name='team'>Daten zum Team anpassen</button>";
-		echo "</td></tr></table></form><br>";
+		echo "</td></tr>";
 	}
 }
 ?>
+</form>
 </table>
 <br>
 <?php 

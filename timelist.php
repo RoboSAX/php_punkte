@@ -6,7 +6,7 @@ $settings = parse_ini_file("settings.ini",true);
 
 $conn = OpenCon();
 
-$sql = "SELECT * FROM games WHERE time>'0' ORDER BY time ASC";
+$sql = "SELECT * FROM games WHERE time>'0' AND finished='0' AND active='0' ORDER BY time ASC";
 $result = $conn->query($sql);
 
 $games = array();
