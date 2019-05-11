@@ -1,7 +1,7 @@
 <?php
 function write_log($statement)
 {
-	$log = fopen(date("Y_m_d")."_log.txt","a+");
+	$log = fopen($_SERVER['DOCUMENT_ROOT']."/robosax/logs/".date("Y_m_d")."_log.txt","a+");
 	fwrite($log, date("H:i:s")." : ".$statement."; \n");
 	fclose($log);
 }

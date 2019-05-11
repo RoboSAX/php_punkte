@@ -2,7 +2,7 @@
  
 function OpenCon()
 {
-	$settings = parse_ini_file("settings.ini",true);
+	$settings = parse_ini_file($_SERVER['DOCUMENT_ROOT']."/robosax/php/settings.ini",true);
 	
 	$dbhost = $settings['DB']['host'];
 	$dbuser = $settings['DB']['username'];

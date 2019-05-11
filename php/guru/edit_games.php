@@ -1,14 +1,14 @@
 <?php
-include 'db_connection.php';
-include 'db_manip.php';
+include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_connection.php';
+include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_manip.php';
 
-$settings = parse_ini_file('settings.ini',true);
+$settings = parse_ini_file($_SERVER['DOCUMENT_ROOT'].'/robosax/php/settings.ini',true);
 
 $teams = Select('teams','*');
 
 ?>
 <p>Ein Team ausw√§hlen:</p>
-<form action='edit.php' method='post'>
+<form action='edit_games.php' method='post'>
 <select id='team' name='team'>
 	<option value='0'>---Auswahl---</option>
 	<?php
@@ -41,7 +41,7 @@ if(isset($_POST['team']))
 	}
 	else
 	{
-		write_log("0 Results for the query: ".$sql." in edit.php");
+		write_log("0 Results for the query: ".$sql." in edit_games.php");
 	}
 	
 	for($i = 0; isset($games[$i]) && $i < 7; $i++)
@@ -60,7 +60,7 @@ if(isset($_POST['team']))
 		}
 		else
 		{
-			write_log("No Points found for game: ".$games[$i]['gameid']." in edit.php");
+			write_log("No Points found for game: ".$games[$i]['gameid']." in edit_games.php");
 		}
 		
 		echo "Block : ".$games[$i]['block'];
@@ -77,7 +77,7 @@ if(isset($_POST['team']))
 		echo "</td><td>-Punkte: ";
 		echo $points['-1'] * -1 + $points['-3'] * -3 + $points['-5'] * -5;
 		echo "</td></tr><tr><td colspan='3'>";
-		echo "<form action='edit.php' method='post'><button type='submit' name='game' value='".$games[$i]['gameid']."'>Bearbeiten</button></form>";
+		echo "<form action='edit_games.php' method='post'><button type='submit' name='game' value='".$games[$i]['gameid']."'>Bearbeiten</button></form>";
 		echo "</td></tr></table>";
 	}
 	CloseCon($conn);
@@ -100,7 +100,7 @@ if(isset($_POST['game']))
 	}
 	else
 	{
-		write_log("0 Results for the query: ".$sql." in edit.php");
+		write_log("0 Results for the query: ".$sql." in edit_games.php");
 	}
 	
 	$sql = "SELECT * FROM games WHERE block='".$game['block']."' AND time > '".$game['time']."' ORDER BY time ASC";
@@ -137,10 +137,10 @@ if(isset($_POST['game']))
 	}
 	else
 	{
-		write_log("No Points found for game: ".$_POST['game']." in edit.php");
+		write_log("No Points found for game: ".$_POST['game']." in edit_games.php");
 	}
 
-	echo "<form action='edit.php' method='post'>";
+	echo "<form action='edit_games.php' method='post'>";
 	echo "<table><tr><td>Zeit:</td><td><input type='text' name='time' value='".$game['time']."'/></td></tr>";
 	if($settings['Options']['+1_enable']) echo "<tr><td>+1:</td><td><input type='text' name='+1' value='".$point['+1']."'/></td></tr>";
 	if($settings['Options']['+3_enable']) echo "<tr><td>+3:</td><td><input type='text' name='+3' value='".$point['+3']."'/></td></tr>";
@@ -162,7 +162,7 @@ if(isset($_POST['game']))
 		}
 	}
 	echo "<select></td></tr>";
-	echo "<tr><td colspan='2'><button type='submit' name='change' value='".$_POST['game']."'>Best‰tigen</button></td></tr></table></form>";
+	echo "<tr><td colspan='2'><button type='submit' name='change' value='".$_POST['game']."'>Bestaetigen</button></td></tr></table></form>";
 	
 	CloseCon($conn);
 }
@@ -184,7 +184,7 @@ if(isset($_POST['change']))
 	}
 	else
 	{
-		write_log("0 Results for the query: ".$sql." in edit.php");
+		write_log("0 Results for the query: ".$sql." in edit_games.php");
 	}
 
 	
@@ -210,7 +210,7 @@ if(isset($_POST['change']))
 		}
 		else
 		{
-			write_log("0 Results for the query: ".$sql." in edit.php");
+			write_log("0 Results for the query: ".$sql." in edit_games.php");
 		}
 	}
 	
@@ -228,7 +228,7 @@ if(isset($_POST['change']))
 	}
 	else
 	{
-		write_log("No Points found for game: ".$_POST['game']." in edit.php");
+		write_log("No Points found for game: ".$_POST['game']." in edit_games.php");
 	}
 	
 	if(($_POST['time'] != $game['time']) && !$_POST['timeswitch'])

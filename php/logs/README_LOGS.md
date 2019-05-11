@@ -1,0 +1,1 @@
+This is just a filler to include this directory to git. This directory is for logs only.

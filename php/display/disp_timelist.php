@@ -1,8 +1,8 @@
 <?php
-include 'db_connection.php';
-include 'db_manip.php';
+include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_connection.php';
+include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_manip.php';
 
-$settings = parse_ini_file("settings.ini",true);
+$settings = parse_ini_file($_SERVER['DOCUMENT_ROOT']."/robosax/php/settings.ini",true);
 
 $conn = OpenCon();
 
@@ -22,7 +22,7 @@ if($result->num_rows > 0)
 }
 else
 {
-	write_log("0 results for the query: ".$sql." in timelist.php");
+	write_log("0 results for the query: ".$sql." in disp_timelist.php");
 }
 ?>
 <h2>Kommende Spiele:</h2>
@@ -50,7 +50,7 @@ while($i < $size)
 			}
 			else
 			{
-				write_log("0 results for the query: ".$sql." in timelist.php");
+				write_log("0 results for the query: ".$sql." in disp_timelist.php");
 			}
 			
 			

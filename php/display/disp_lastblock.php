@@ -1,6 +1,6 @@
 <?php
-include 'db_connection.php';
-include 'db_manip.php';
+include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_connection.php';
+include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_manip.php';
 
 $conn = OpenCon();
 
@@ -50,7 +50,7 @@ for($i = 0; $i < sizeof($teams); $i++)
 	}
 	else
 	{
-		write_log("No Points found for game: ".$game['gameid']." in lastblock.php");
+		write_log("No Points found for game: ".$game['gameid']." in disp_lastblock.php");
 	}
 	
 	$oc = 1;
