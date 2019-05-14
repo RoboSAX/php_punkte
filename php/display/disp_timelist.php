@@ -1,7 +1,4 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_connection.php';
-include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_manip.php';
-
 $settings = parse_ini_file($_SERVER['DOCUMENT_ROOT']."/robosax/php/settings.ini",true);
 
 $conn = OpenCon();
@@ -25,7 +22,6 @@ else
 	write_log("0 results for the query: ".$sql." in disp_timelist.php");
 }
 ?>
-<h2>Kommende Spiele:</h2>
 <table>
 <?php
 $i = 0;
@@ -36,7 +32,6 @@ while($i < $size)
 	{
 		if(isset($games[$i+$j]))
 		{
-			
 			$sql = "SELECT name FROM teams WHERE teamid='".$games[$tmp+$j]['team']."'";
 			$result = $conn->query($sql);
 			$name = "";
@@ -59,7 +54,8 @@ while($i < $size)
 			{
 			//	echo $name;
 				if(!$j) echo "<tr><td>".int_to_time($games[$i]['time'])." : ";
-				echo $name." ";
+				if(($j + 1) == $settings['Options']['TeamsPerMatch']) echo $name;
+				else echo $name." vs. ";
 				
 			}
 			$i++;

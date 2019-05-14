@@ -1,7 +1,8 @@
 <?php
+/*
 include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_connection.php';
 include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_manip.php';
-
+*/
 $conn = OpenCon();
 
 UpdateDB();
@@ -29,74 +30,6 @@ else
 //0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 
 ?>
-<head>
-<style>
-table.list {
-	border: 1px solid black; 
-	text-align: center; 
-	border-spacing: 0px;
-	margin-top: 10px;
-	}
-table.list td {
-	border: 1px solid black;
-	color: black;	
-	}
-	
-	
-table.games {
-	border: 1px solid black;
-	text-align: left; 
-	border-spacing: 0px;
-	margin-top: 10px;
-	margin-left: 20%;
-	margin-right: 20%;
-	width: 60%;
-	}
-	
-table.games td.normal {
-	border : 1px solid black;
-	color: black;
-	background-color: transparent;
-	}
-	
-table.games td.changed {
-	border: 1px solid black; 
-	color: red;
-	background-color: transparent;
-	}	
-	
-table.games td.h {
-	border: 1px solid black;
-	background-color: yellow;
-	}
-	
-table.games td.hc {
-	border: 1px solid black; 
-	color: red;
-	background-color: yellow;
-	}
-
-table.games tr {
-	
-	}
-
-table.display {
-	border: 0px solid black; 
-	text-align: center; 
-	margin-top: 10px;
-	}
-table.display td {
-	text-align: center;
-	}
-table.display tr {
-	
-}
-
-h2 {
-	text-align: center;
-	}
-</style>
-</head>
 <body>
 <table style='width:100%' class='display'>
 	<tr>
