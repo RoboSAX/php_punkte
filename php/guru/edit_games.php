@@ -119,7 +119,7 @@ if(isset($_POST['game']))
 	}
 	else
 	{
-		write_log("Keine Spiele mehr zum tauschen?");
+		write_log("No games found for a possible change");
 	}
 	
 	
@@ -207,6 +207,18 @@ if(isset($_POST['change']))
 			
 			$sql = "UPDATE games SET time='".$game['time']."' WHERE gameid='".$refgame['gameid']."'";
 			$conn->query($sql);
+			
+			if($refgame['finished'])
+			{
+				$sql = "UPDATE changed SET time='1' WHERE game='".$refgame['gameid']."'";
+				$conn->query($sql);
+			}
+			
+			if($game['finished'])
+			{
+				$sql = "UPDATE changed SET time='1' WHERE game='".$game['gameid']."'";
+				$conn->query($sql);
+			}
 		}
 		else
 		{
@@ -236,8 +248,11 @@ if(isset($_POST['change']))
 		$sql = "UPDATE games SET time='".$_POST['time']."' WHERE gameid='".$_POST['change']."'";
 		$conn->query($sql);
 		
-		$sql = "UPDATE changed SET time='1' WHERE game='".$_POST['change']."'";
-		$conn->query($sql);
+		if($game['finished'])
+		{
+			$sql = "UPDATE changed SET time='1' WHERE game='".$_POST['change']."'";
+			$conn->query($sql);
+		}
 	}
 
 	if(isset($_POST['+1']))
@@ -247,8 +262,11 @@ if(isset($_POST['change']))
 			$sql = "UPDATE pointmanagement SET `+1`='".$_POST['+1']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
 			
-			$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
-			$conn->query($sql);
+			if($game['finished'])
+			{
+				$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
+				$conn->query($sql);
+			}
 		}
 	}
 	if(isset($_POST['+3']))
@@ -258,8 +276,11 @@ if(isset($_POST['change']))
 			$sql = "UPDATE pointmanagement SET `+3`='".$_POST['+3']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
 		
-			$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
-			$conn->query($sql);
+			if($game['finished'])
+			{
+				$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
+				$conn->query($sql);
+			}
 		}
 	}
 	if(isset($_POST['+5']))
@@ -269,8 +290,11 @@ if(isset($_POST['change']))
 			$sql = "UPDATE pointmanagement SET `+5`='".$_POST['+5']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
 		
-			$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
-			$conn->query($sql);
+			if($game['finished'])
+			{
+				$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
+				$conn->query($sql);
+			}
 		}
 	}
 	if(isset($_POST['-1']))
@@ -280,8 +304,11 @@ if(isset($_POST['change']))
 			$sql = "UPDATE pointmanagement SET `-1`='".$_POST['-1']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
 		
-			$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";
-			$conn->query($sql);
+			if($game['finished'])
+			{
+				$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";
+				$conn->query($sql);
+			}
 		}
 	}
 	if(isset($_POST['-3']))
@@ -291,8 +318,11 @@ if(isset($_POST['change']))
 			$sql = "UPDATE pointmanagement SET `-3`='".$_POST['-3']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
 		
-			$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";
-			$conn->query($sql);
+			if($game['finished'])
+			{
+				$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";
+				$conn->query($sql);
+			}
 		}
 	}
 	if(isset($_POST['-5']))
@@ -302,8 +332,11 @@ if(isset($_POST['change']))
 			$sql = "UPDATE pointmanagement SET `-5`='".$_POST['-5']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
 		
-			$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";
-			$conn->query($sql);
+			if($game['finished'])
+			{
+				$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";
+				$conn->query($sql);
+			}
 		}
 	}
 	UpdateGame($_POST['change']);
