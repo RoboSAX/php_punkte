@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 06. Mai 2019 um 15:35
+-- Erstellungszeit: 14. Mai 2019 um 21:51
 -- Server-Version: 10.1.37-MariaDB
 -- PHP-Version: 7.3.1
 
@@ -59,7 +59,7 @@ INSERT INTO `changed` (`changedid`, `game`, `time`, `points`, `objectives`, `pen
 (15, 15, 0, 0, 0, 0),
 (16, 16, 0, 0, 0, 0),
 (17, 17, 0, 0, 0, 0),
-(18, 18, 0, 0, 0, 0),
+(18, 18, 1, 0, 0, 0),
 (19, 19, 0, 0, 0, 0),
 (20, 20, 0, 0, 0, 0),
 (21, 21, 0, 0, 0, 0),
@@ -420,9 +420,22 @@ CREATE TABLE `teams` (
 --
 
 INSERT INTO `teams` (`teamid`, `name`, `roboter`, `points`, `teamleiter`, `games`, `active`) VALUES
-(1, 'Lorem Ipsum1', 'bl', 0, 'Herr Graus', 0, 1),
-(2, 'Lorem Ipsum2', 'bl4', 0, 'Herr Heinz', 0, 0),
-(3, 'Test1', 'awdaw', 0, 'Gieselheimer', 0, 1);
+(1, '', '', 0, '', 0, 0),
+(2, '', '', 0, '', 0, 0),
+(3, '', '', 0, '', 0, 0),
+(4, '', '', 0, '', 0, 0),
+(5, '', '', 0, '', 0, 0),
+(6, '', '', 0, '', 0, 0),
+(7, '', '', 0, '', 0, 0),
+(8, '', '', 0, '', 0, 0),
+(9, '', '', 0, '', 0, 0),
+(10, '', '', 0, '', 0, 0),
+(11, '', '', 0, '', 0, 0),
+(12, '', '', 0, '', 0, 0),
+(13, '', '', 0, '', 0, 0),
+(14, '', '', 0, '', 0, 0),
+(15, '', '', 0, '', 0, 0),
+(16, '', '', 0, '', 0, 0);
 
 --
 -- Indizes der exportierten Tabellen
@@ -456,7 +469,7 @@ ALTER TABLE `pointmanagement`
 -- Indizes für die Tabelle `teams`
 --
 ALTER TABLE `teams`
-  ADD PRIMARY KEY (`teamid`);
+  ADD PRIMARY KEY (`name`);
 
 --
 -- AUTO_INCREMENT für exportierte Tabellen
@@ -485,12 +498,6 @@ ALTER TABLE `login`
 --
 ALTER TABLE `pointmanagement`
   MODIFY `pointid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
-
---
--- AUTO_INCREMENT für Tabelle `teams`
---
-ALTER TABLE `teams`
-  MODIFY `teamid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
