@@ -1,8 +1,8 @@
 <?php
 function write_log($statement)
 {
-	$log = fopen($_SERVER['DOCUMENT_ROOT']."/robosax/logs/".date("Y_m_d")."_log.txt","a+");
-	fwrite($log, date("H:i:s")." : ".$statement."; \n");
+	$log = fopen($_SERVER['DOCUMENT_ROOT'].'/robosax/php/logs/'.date('Y_m_d').'_log.txt','a+');
+	fwrite($log, date("H:i:s").' : '.$statement.';'.PHP_EOL);
 	fclose($log);
 }
 
@@ -116,7 +116,7 @@ function ColCount($table)
 function UpdateDB()
 {
 	$conn = OpenCon();
-	$settings = parse_ini_file($_SERVER['DOCUMENT_ROOT']."/robosax/php/settings.ini", true);
+	$settings = parse_ini_file($_SERVER['DOCUMENT_ROOT'].'/robosax/php/settings.ini',true);
 	$anz = $settings['Options']['AnzTeams'];
 	
 	for($i = 1; $i < $anz+1; $i++)
@@ -237,21 +237,16 @@ function UpdateTime()
 		
 		if($result->num_rows > 0)
 		{
-			while($row = $result->fetch_assoc())
-			{
-				$games[] = $row;
-			}
+			$games = $result->fetch_assoc();
 		}
 		
 		if($games[0]['block'] > 1)
 		{
-			 array_push($times,addTimes($games[0]['time'],$blocktime));
+			array_push($times,addTimes($games['time'],$blocktime));
+			$sql = "UPDATE games SET time='".$times[$i]."' WHERE team='".$teams[$i]." AND block> '";
+			$conn->query($sql);
 		}
 	}
-	for($k = 0; $k < sizeof($teams); $k++)
-	{
-		$sql = "UPDATE games SET time='".$times[$k]."' WHERE team='".$teams[$k]."'";
-		$conn->query($sql);
-	}
+	CloseCon($conn);
 }
 ?>
