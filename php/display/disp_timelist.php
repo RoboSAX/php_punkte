@@ -22,6 +22,7 @@ else
 	write_log("0 results for the query: ".$sql." in disp_timelist.php");
 }
 ?>
+<h2>Kommende Spiele</h2>
 <table>
 <?php
 $i = 0;
@@ -32,7 +33,7 @@ while($i < $size)
 	{
 		if(isset($games[$i+$j]))
 		{
-			$sql = "SELECT name FROM teams WHERE teamid='".$games[$tmp+$j]['team']."'";
+			$sql = "SELECT name FROM teams WHERE teamid='".$games[$tmp+$j]['team']."' AND active='1'";
 			$result = $conn->query($sql);
 			$name = "";
 		
@@ -54,8 +55,8 @@ while($i < $size)
 			{
 			//	echo $name;
 				if(!$j) echo "<tr><td>".int_to_time($games[$i]['time'])." : ";
-				if(($j + 1) == $settings['Options']['TeamsPerMatch']) echo $name;
-				else echo $name." vs. ";
+				if($j != 0) echo " vs. ";
+				echo $name;
 				
 			}
 			$i++;
