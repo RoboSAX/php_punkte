@@ -1,0 +1,3 @@
+# default page is guru_main.php
+DirectoryIndex guru_main.php
+
