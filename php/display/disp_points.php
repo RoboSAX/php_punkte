@@ -169,13 +169,20 @@ else
 				{
 					if($s == 0 && isset($teamrow[$s]['time']))
 					{
-						echo "<td><i>";
+						if($changed['time']) echo "<td class='changed'><i>";
+						else echo "<td><i>";
 						echo int_to_time($teamrow[$s]['time']);
 						echo "</i></td>";
 					}
 					else
 					{
-						if($teamrow[$s-1]['finished']) echo "<td><i>".int_to_time($teamrow[$s]['time'])."</i></td>";
+						if($teamrow[$s-1]['finished']) 
+						{
+							if($changed['time']) echo "<td class='changed'><i>";
+							else echo "<td><i>";
+							echo int_to_time($teamrow[$s]['time']);
+							echo "</i></td>";
+						}
 					}
 				}
 			}				
