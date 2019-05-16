@@ -61,6 +61,11 @@ table.display {
 table.display td {
 	text-align: center;
 	}
+table.display td.changed {
+	color: red;
+	background-color: transparent;
+	}
+	
 table.display tr {
 	
 }
@@ -75,10 +80,10 @@ h2 {
 </style>
 </head>
 <body>
-<table style='width:100%' class='main'>
+<table style='width:100%; height:100%' class='main'>
 	<tr>
-		<td style='width:20%'><?php include $_SERVER['DOCUMENT_ROOT']."/robosax/php/display/disp_timelist.php"; ?></td>
-		<td style='width:80%'><?php include $_SERVER['DOCUMENT_ROOT']."/robosax/php/display/disp_points.php" ?></td>
+		<td style='width:20%; border-right:1px solid black' valign='top'><?php include $_SERVER['DOCUMENT_ROOT']."/robosax/php/display/disp_timelist.php"; ?></td>
+		<td style='width:80%' valign='top'><?php include $_SERVER['DOCUMENT_ROOT']."/robosax/php/display/disp_points.php" ?></td>
 	</tr>
 </table>
 </body>
