@@ -103,7 +103,7 @@ if(isset($_POST['game']))
 		write_log("0 Results for the query: ".$sql." in edit_games.php");
 	}
 	
-	$sql = "SELECT * FROM games WHERE block='".$game['block']."' AND time > '".$game['time']."' ORDER BY time ASC";
+	$sql = "SELECT * FROM games WHERE block='".$game['block']."' AND time <> '".$game['time']."' ORDER BY time ASC";
 	$result = $conn->query($sql);
 	
 	$refgames = array();
@@ -139,9 +139,17 @@ if(isset($_POST['game']))
 	{
 		write_log("No Points found for game: ".$_POST['game']." in edit_games.php");
 	}
+	
+	$teamname = array();
+	
+	$sql = "SELECT name FROM teams WHERE teamid='".$game['team']."' ";
+	$result = $conn->query($sql);
+	$teamname = $result->fetch_assoc();
 
 	echo "<form action='edit_games.php' method='post'>";
-	echo "<table><tr><td>Zeit:</td><td><input type='text' name='time' value='".$game['time']."'/></td></tr>";
+	echo "<table><tr><td>Team:</td><td>".$teamname['name']."</td></tr>";
+	echo "<tr><td>Block:</td><td>".$game['block']."</td></tr>";
+	echo "<tr><td>Zeit:</td><td><input type='text' name='time' value='".$game['time']."'/></td></tr>";
 	if($settings['Options']['+1_enable']) echo "<tr><td>+1:</td><td><input type='text' name='+1' value='".$point['+1']."'/></td></tr>";
 	if($settings['Options']['+3_enable']) echo "<tr><td>+3:</td><td><input type='text' name='+3' value='".$point['+3']."'/></td></tr>";
 	if($settings['Options']['+5_enable']) echo "<tr><td>+5:</td><td><input type='text' name='+5' value='".$point['+5']."'/></td></tr>";
@@ -208,17 +216,12 @@ if(isset($_POST['change']))
 			$sql = "UPDATE games SET time='".$game['time']."' WHERE gameid='".$refgame['gameid']."'";
 			$conn->query($sql);
 			
-			if($refgame['finished'])
-			{
-				$sql = "UPDATE changed SET time='1' WHERE game='".$refgame['gameid']."'";
-				$conn->query($sql);
-			}
+			$sql = "UPDATE changed SET time='1' WHERE game='".$refgame['gameid']."'";
+			$conn->query($sql);
 			
-			if($game['finished'])
-			{
-				$sql = "UPDATE changed SET time='1' WHERE game='".$game['gameid']."'";
-				$conn->query($sql);
-			}
+			$sql = "UPDATE changed SET time='1' WHERE game='".$game['gameid']."'";
+			$conn->query($sql);
+			
 		}
 		else
 		{
@@ -340,6 +343,7 @@ if(isset($_POST['change']))
 		}
 	}
 	UpdateGame($_POST['change']);
+	//UpdateTime();
 	UpdateDB();
 }
 
