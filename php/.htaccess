@@ -1,0 +1,2 @@
+# default page is disp_main.php
+DirectoryIndex display/disp_main.php
