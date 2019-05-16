@@ -1,0 +1,3 @@
+# hide all files
+RedirectMatch 403 .+
+
