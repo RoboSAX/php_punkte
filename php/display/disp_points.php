@@ -1,7 +1,7 @@
 <?php
 /*
-include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_connection.php';
-include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_manip.php';
+include '../lib/db_connection.php';
+include '../lib/db_manip.php';
 */
 $conn = OpenCon();
 

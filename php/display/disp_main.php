@@ -1,6 +1,6 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_connection.php';
-include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_manip.php';
+include '../lib/db_connection.php';
+include '../lib/db_manip.php';
 ?>
 <head>
 <style>
@@ -82,8 +82,8 @@ h2 {
 <body>
 <table style='width:100%; height:100%' class='main'>
 	<tr>
-		<td style='width:20%; border-right:1px solid black' valign='top'><?php include $_SERVER['DOCUMENT_ROOT']."/robosax/php/display/disp_timelist.php"; ?></td>
-		<td style='width:80%' valign='top'><?php include $_SERVER['DOCUMENT_ROOT']."/robosax/php/display/disp_points.php" ?></td>
+		<td style='width:20%; border-right:1px solid black' valign='top'><?php include "../display/disp_timelist.php"; ?></td>
+		<td style='width:80%' valign='top'><?php include "../display/disp_points.php" ?></td>
 	</tr>
 </table>
 </body>

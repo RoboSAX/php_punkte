@@ -1,8 +1,8 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_connection.php';
-include $_SERVER['DOCUMENT_ROOT'].'/robosax/php/lib/db_manip.php';
+include '../lib/db_connection.php';
+include '../lib/db_manip.php';
 
-$settings = parse_ini_file($_SERVER['DOCUMENT_ROOT'].'/robosax/php/config/settings.ini',true);
+$settings = parse_ini_file('../config/settings.ini',true);
 
 $teams = Select('teams','*');
 

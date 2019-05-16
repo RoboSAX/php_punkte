@@ -1,7 +1,7 @@
 <?php
 function write_log($statement)
 {
-	$log = fopen($_SERVER['DOCUMENT_ROOT'].'/robosax/php/logs/'.date('Y_m_d').'_log.txt','a+');
+	$log = fopen('../logs/'.date('Y_m_d').'_log.txt','a+');
 	fwrite($log, date("H:i:s").' : '.$statement.';'.PHP_EOL);
 	fclose($log);
 }
@@ -116,7 +116,7 @@ function ColCount($table)
 function UpdateDB()
 {
 	$conn = OpenCon();
-	$settings = parse_ini_file($_SERVER['DOCUMENT_ROOT'].'/robosax/php/config/settings.ini',true);
+	$settings = parse_ini_file('../config/settings.ini',true);
 	$anz = $settings['Options']['AnzTeams'];
 	
 	for($i = 1; $i < $anz+1; $i++)
@@ -205,7 +205,7 @@ function UpdateGame($id)
 
 function UpdateTime()
 {
-	$settings = parse_ini_file($_SERVER['DOCUMENT_ROOT']."/robosax/php/config/settings.ini",true);
+	$settings = parse_ini_file("../config/settings.ini",true);
 	$conn = OpenCon();
 	
 	$sql = "SELECT teamid FROM teams WHERE active='1' ORDER BY points DESC, teamid ASC";
