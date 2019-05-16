@@ -1,6 +1,6 @@
 <?php
-include '../lib/db_connection.php';
-include '../lib/db_manip.php';
+include_once '../lib/db_connection.php';
+include_once '../lib/db_manip.php';
 
 $conn = OpenCon();
 

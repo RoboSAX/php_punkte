@@ -1,7 +1,7 @@
 <?php
 
-include 'db_connection.php';
-include 'db_manip.php';
+include_once 'db_connection.php';
+include_once 'db_manip.php';
 
 $conn = OpenCon();
 
