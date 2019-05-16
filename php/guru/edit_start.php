@@ -56,6 +56,8 @@ if(isset($_POST['change']) || isset($_POST['counter']))
 			$count = 0;
 		}
 	}
+	
+	
 
 	if(!$count) header("Location: edit_start.php");
 	
