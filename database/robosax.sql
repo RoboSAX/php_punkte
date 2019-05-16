@@ -407,7 +407,7 @@ INSERT INTO `pointmanagement` (`pointid`, `game`, `+1`, `+3`, `+5`, `-1`, `-3`, 
 
 CREATE TABLE `teams` (
   `teamid` int(11) NOT NULL,
-  `name` varchar(20) NOT NULL,
+  `name` varchar(50) NOT NULL,
   `roboter` varchar(20) NOT NULL,
   `points` int(11) NOT NULL,
   `teamleiter` varchar(20) NOT NULL,
