@@ -1,4 +1,7 @@
 <?php
+include_once '../lib/db_connection.php';
+include_once '../lib/db_manip.php';
+
 $settings = parse_ini_file("../config/settings.ini",true);
 
 $conn = OpenCon();
