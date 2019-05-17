@@ -5,57 +5,57 @@ include_once '../lib/db_manip.php';
 <head>
 <style>
 table.list {
-	border: 1px solid black; 
-	text-align: center; 
+	border: 1px solid black;
+	text-align: center;
 	border-spacing: 0px;
 	margin-top: 10px;
 	}
 table.list td {
 	border: 1px solid black;
-	color: black;	
+	color: black;
 	}
-	
-	
+
+
 table.games {
 	border: 1px solid black;
-	text-align: left; 
+	text-align: left;
 	border-spacing: 0px;
 	margin-top: 10px;
 	margin-left: 20%;
 	margin-right: 20%;
 	width: 60%;
 	}
-	
+
 table.games td.normal {
 	border : 1px solid black;
 	color: black;
 	background-color: transparent;
 	}
-	
+
 table.games td.changed {
-	border: 1px solid black; 
+	border: 1px solid black;
 	color: red;
 	background-color: transparent;
-	}	
-	
+	}
+
 table.games td.h {
 	border: 1px solid black;
 	background-color: yellow;
 	}
-	
+
 table.games td.hc {
-	border: 1px solid black; 
+	border: 1px solid black;
 	color: red;
 	background-color: yellow;
 	}
 
 table.games tr {
-	
+
 	}
 
 table.display {
-	border: 0px solid black; 
-	text-align: center; 
+	border: 0px solid black;
+	text-align: center;
 	margin-top: 10px;
 	}
 table.display td {
@@ -65,9 +65,9 @@ table.display td.changed {
 	color: red;
 	background-color: transparent;
 	}
-	
+
 table.display tr {
-	
+
 }
 
 table.main {
@@ -87,3 +87,4 @@ h2 {
 	</tr>
 </table>
 </body>
+ <meta http-equiv="refresh" content="5; URL=https://www-user.tu-chemnitz.de/~wepet/rs/php/">
