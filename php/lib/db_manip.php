@@ -249,4 +249,34 @@ function UpdateTime()
 	}
 	CloseCon($conn);
 }
+function SetGamesInactive()
+{
+	$conn = OpenCon();
+	
+	for($i = 0; $i < 2; $i++)
+	{
+		$sql = "SELECT teamid FROM teams WHERE active='".$i."'";
+		$result = $conn->query($sql);
+	
+		$size = 0;
+		$teams = array();
+	
+		if($result->num_rows > 0)
+		{
+			while($row = $result->fetch_assoc())
+			{
+				$teams[] = $row;
+				$size++;
+			}
+		}
+	
+		for($i = 0; $i < $size; $i++)
+		{
+			$sql = "UPDATE games SET teamactive='".$i."' WHERE team='".$teams[$i]['teamid']."'";
+			$conn->query($sql);
+		}
+	}
+	CloseCon($conn);
+	
+}
 ?>

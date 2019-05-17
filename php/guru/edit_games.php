@@ -156,6 +156,7 @@ if(isset($_POST['game']))
 	if($settings['Options']['-1_enable']) echo "<tr><td>-1:</td><td><input type='text' name='-1' value='".$point['-1']."'/></td></tr>";
 	if($settings['Options']['-3_enable']) echo "<tr><td>-3:</td><td><input type='text' name='-3' value='".$point['-3']."'/></td></tr>";
 	if($settings['Options']['-5_enable']) echo "<tr><td>-5:</td><td><input type='text' name='-5' value='".$point['-5']."'/></td></tr>";
+	if(!$game['finished']) echo "<tr><td>Spiel beendet?</td><td><input type='checkbox' name='finished' /></td></tr>";
 	echo "<tr><td>Spiel tauschen</td><td><select id='timeswitch' name='timeswitch'><option value='0'>--Nur bei Spielwechsel auswaehlen--</option>";
 	for($i = 0; $i < $size; $i++)
 	{
@@ -169,7 +170,7 @@ if(isset($_POST['game']))
 			echo "<option value='".$refgames[$i]['gameid']."'>".int_to_time($refgames[$i]['time'])." ".$name['name']."</option>";
 		}
 	}
-	echo "<select></td></tr>";
+	echo "</select></td></tr>";
 	echo "<tr><td colspan='2'><button type='submit' name='change' value='".$_POST['game']."'>Bestaetigen</button></td></tr></table></form>";
 	
 	CloseCon($conn);
@@ -193,6 +194,12 @@ if(isset($_POST['change']))
 	else
 	{
 		write_log("0 Results for the query: ".$sql." in edit_games.php");
+	}
+
+	if(isset($_POST['finished']))
+	{
+		$sql = "UPDATE games SET finished=1 WHERE gameid='".$game['gameid']."'";
+		$conn->query($sql);
 	}
 
 	

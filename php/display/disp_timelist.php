@@ -3,18 +3,26 @@ $settings = parse_ini_file("../config/settings.ini",true);
 
 $conn = OpenCon();
 
-$sql = "SELECT * FROM games WHERE time>'0' AND finished='0' AND active='0' ORDER BY time ASC";
+$sql = "SELECT time FROM games WHERE time>'0' AND finished='0' AND active='0' AND teamactive='1' ORDER BY time ASC";
 $result = $conn->query($sql);
 
-$games = array();
-$size = 0;
+$times = array();
+$size = 1;
 
 if($result->num_rows > 0)
 {
+	$row = $result->fetch_assoc();
+	$times[0] = $row['time'];
 	while($row = $result->fetch_assoc())
 	{
-		$games[] = $row;
-		$size++;
+		if(isset($times[$size-1]))
+		{
+			if($times[$size-1] != $times[$size])
+			{
+				array_push($times,$row['time']);
+				$size++;
+			}
+		}
 	}
 }
 else
@@ -29,13 +37,26 @@ $i = 0;
 while($i < $size)
 {
 	$tmp = $i;
-	for($j = 0; $j < $settings['Options']['TeamsPerMatch']; $j++)
+	$anzeige = "";
+	$name = "";
+	
+	$sql = "SELECT * FROM games WHERE time='".$times[$i]."' AND teamactive=1";
+	$result = $conn->query($sql);
+	
+	$games = array();
+	$gr = 0;
+	
+	if($result->num_rows > 0)
 	{
-		if(isset($games[$i+$j]))
+		while($games[] = $result->fetch_assoc()) $gr++;
+	}
+	
+	for($j = 0; $j < $settings['Options']['TeamsPerMatch'] || $j < $gr; $j++)
+	{
+		if(isset($games[$j]))
 		{
-			$sql = "SELECT name FROM teams WHERE teamid='".$games[$tmp+$j]['team']."' AND active='1'";
+			$sql = "SELECT name FROM teams WHERE teamid='".$games[$j]['team']."' AND active='1'";
 			$result = $conn->query($sql);
-			$name = "";
 		
 			if($result->num_rows > 0)
 			{
@@ -48,20 +69,16 @@ while($i < $size)
 			{
 				write_log("0 results for the query: ".$sql." in disp_timelist.php");
 			}
-			
-			
 		
 			if($name)
 			{
-			//	echo $name;
-				if(!$j) echo "<tr><td>".int_to_time($games[$i]['time'])." : ";
-				if($j != 0) echo " vs. ";
-				echo $name;
-				
+				if($j != 0 && ($gr-1)) $anzeige .= " vs. ";
+				if($anzeige != $name." vs. ") $anzeige .= $name;
 			}
 			$i++;
 		}
 	}
+	if($name) echo "<tr><td>".int_to_time($times[$tmp])." : ".$anzeige;
 	echo "</td></tr>";
 }
 
