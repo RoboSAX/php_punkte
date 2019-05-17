@@ -87,4 +87,4 @@ h2 {
 	</tr>
 </table>
 </body>
- <meta http-equiv="refresh" content="5; URL=https://www-user.tu-chemnitz.de/~wepet/rs/php/">
+ <meta http-equiv="refresh" content="5; URL=<?php echo basename(__FILE__) ?>">
