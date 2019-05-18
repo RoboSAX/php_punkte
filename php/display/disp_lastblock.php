@@ -1,7 +1,9 @@
 <?php
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
+?>
 
+<?php
 $conn = OpenCon();
 
 $sql = "SELECT * FROM teams ORDER BY points DESC, teamid ASC";
@@ -24,9 +26,9 @@ for($i = 0; $i < sizeof($teams); $i++)
 {
 	$sql = "SELECT * FROM games WHERE block='6' AND team='".$teams[$i]['teamid']."'";
 	$result = $conn->query($sql);
-	
+
 	$game = array();
-	
+
 	if($result->num_rows > 0)
 	{
 		$game = $result->fetch_assoc();
@@ -35,12 +37,12 @@ for($i = 0; $i < sizeof($teams); $i++)
 	{
 		//Dieser Fall kann eigentlich nur eintreten, wenn irgendjemand diese Seite aufmacht, BEVOR es einen 6. Block gibt
 	}
-	
+
 	$sql = "SELECT * FROM pointmanagement WHERE game='".$game['gameid']."'";
 	$result = $conn->query($sql);
-				
+
 	$points = array();
-				
+
 	if($result->num_rows > 0)
 	{
 		while($row = $result->fetch_assoc())
@@ -52,12 +54,12 @@ for($i = 0; $i < sizeof($teams); $i++)
 	{
 		write_log("No Points found for game: ".$game['gameid']." in disp_lastblock.php");
 	}
-	
+
 	$oc = 1;
 	$octmp = 1;
-	
-	echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>"; 
-	
+
+	echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
+
 	if($teams[$i]['active'])
 	{
 		if($i == 0)
@@ -79,7 +81,7 @@ for($i = 0; $i < sizeof($teams); $i++)
 				$oc++;
 			}
 		}
-			
+
 	}
 
 	echo "</td><td colspan='2'><b>";
@@ -94,10 +96,10 @@ for($i = 0; $i < sizeof($teams); $i++)
 
 	if($game['finished'])
 	{
-			
+
 		$pospoints = $points['+1'] * 1 + $points['+3'] * 3 + $points['+5'] * 5;
 		$negpoints = $points['-1'] * -1 + $points['-3'] * -3 + $points['-5'] * -5;
-					
+
 		echo "<td>";
 		echo "<table>";
 		echo "</td><td>";
@@ -114,13 +116,13 @@ for($i = 0; $i < sizeof($teams); $i++)
 		echo "</td><td>";
 		echo $negpoints;		//Minuspunkte
 		echo "</td></tr></table></td>";
-					
+
 	}
 	else
 	{
 		echo "<td><i>".int_to_time($game['time'])."</i></td>";
 	}
-		
+
 
 	echo "</tr>";
 }

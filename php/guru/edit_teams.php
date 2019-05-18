@@ -1,9 +1,9 @@
 <?php
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
+?>
 
-$settings = parse_ini_file("../config/settings.ini",true);
-
+<?php
 $conn = OpenCon();
 
 $sql = "SELECT * FROM teams ORDER BY points DESC, teamid ASC";

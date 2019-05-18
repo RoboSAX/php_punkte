@@ -1,6 +1,4 @@
 <?php
-# include main function for settings and database connection
-include_once $settings['Server']['base_url'].'lib/db_connection.php';
 
 function OpenCon()
 {

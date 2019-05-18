@@ -1,9 +1,9 @@
-<?php 
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
+<?php
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
+?>
 
-$settings = parse_ini_file("../config/settings.ini",true);
-
+<?php
 $conn = OpenCon();
 
 if(!isset($_POST['counter']) && isset($_POST['change']))
@@ -16,7 +16,7 @@ if(isset($_POST['counter']) && isset($_POST['team']))
 	if($_POST['counter'])
 	{
 		$sql = "UPDATE teams SET teamid='".($_POST['counter'])."', active='0' WHERE name='".$_POST['team']."'";
-		$conn->query($sql);	
+		$conn->query($sql);
 	}
 }
 $i = 0;
@@ -28,7 +28,7 @@ if(!isset($_POST['counter']) && !isset($_POST['change'])) echo "<form action='ed
 
 if(isset($_POST['change']) || isset($_POST['counter']))
 {
-	
+
 	$teams = array();
 
 	$sql = "SELECT * FROM teams WHERE teamid=0";
@@ -39,7 +39,7 @@ if(isset($_POST['change']) || isset($_POST['counter']))
 		while($teams[] = $result->fetch_assoc());
 	}
 
-	
+
 	echo "<table>";
 	echo "<form action='edit_start.php' method='post'>";
 
@@ -56,11 +56,11 @@ if(isset($_POST['change']) || isset($_POST['counter']))
 			$count = 0;
 		}
 	}
-	
-	
+
+
 
 	if(!$count) header("Location: edit_start.php");
-	
+
 	echo "Aktuelle ID: ".$count;
 
 	while(isset($teams[$i]))

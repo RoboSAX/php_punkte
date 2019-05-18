@@ -1,7 +1,6 @@
 <?php
-
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
 ?>
 
 <head>
@@ -116,16 +115,16 @@ else
 		<td style='width:300px'>Teams</td><td>Spielblock I</td><td>Spielblock II</td><td>Spielblock III</td><td>Spielblock IV</td><td>Spielblock V</td>
 	</tr>
 		<?php
-		
+
 		$oc = 1;
 		$octmp = 1;
-		
+
 		for($i = 0;$i < $anz; $i++) //Liste mit Teams
 		{
-			echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>"; 
+			echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
 			if(!$teams[$i]['active']) echo "-";
 			if($teams[$i]['active'] && $teams[$i]['games'] == 0) echo $i+1;			//Platz
-			else 
+			else
 			{
 				if($teams[$i]['active'])
 				{
@@ -148,7 +147,7 @@ else
 							$oc++;
 						}
 					}
-					
+
 				}
 			}
 			echo "</td><td colspan='2'><b>";
@@ -160,12 +159,12 @@ else
 			echo "</td><td style='width:125px'>";
 			echo $teams[$i]['roboter']; //Roboter
 			echo "</td></tr></table></td>";
-				
+
 			$sql = "SELECT * FROM games WHERE team='".$teams[$i]['teamid']."' ORDER BY block ASC";
 			$result = $conn->query($sql);
-	
-			$teamrow = array(); 
-	
+
+			$teamrow = array();
+
 			if ($result->num_rows > 0)
 			{
 				while($row = $result->fetch_assoc())
@@ -177,16 +176,16 @@ else
 			{
 				write_log("0 results for the query: ".$sql." : (display.php)");
 			}
-				
-			
+
+
 			for($s = 0; $s < 5 && $teams[$i]['active']; $s++)
-			{				
+			{
 				$time = int_to_time($teamrow[$s]['time']);
 				$sql = "SELECT * FROM changed WHERE game='".$teamrow[$s]['gameid']."'";
 				$result = $conn->query($sql);
-			
+
 				$changed = array();
-			
+
 				if ($result->num_rows > 0)
 				{
 					while($row = $result->fetch_assoc())
@@ -198,12 +197,12 @@ else
 				{
 					write_log("No Changes found for game: ".$teamrow[$s]['gameid']." in display.php");
 				}
-				
+
 				$sql = "SELECT * FROM pointmanagement WHERE game='".$teamrow[$s]['gameid']."'";
 				$result = $conn->query($sql);
-				
+
 				$points = array();
-				
+
 				if($result->num_rows > 0)
 				{
 					while($row = $result->fetch_assoc())
@@ -215,13 +214,13 @@ else
 				{
 					write_log("No Points found for game: ".$teams[$s]['gameid']." in display");
 				}
-				
-				
+
+
 				if($teamrow[$s]['finished'])
 				{
 					$pospoints = $points['+1'] * 1 + $points['+3'] * 3 + $points['+5'] * 5;
 					$negpoints = $points['-1'] * -1 + $points['-3'] * -3 + $points['-5'] * -5;
-					
+
 					echo "<td>";
 					echo "<table class='games'>";
 					if($changed['time']) echo "<tr><td class='changed'>";
@@ -243,7 +242,7 @@ else
 					echo "</td><td class='normal'>";
 					echo $negpoints;		//Minuspunkte
 					echo "</td></tr></table></td>";
-					
+
 				}
 				else
 				{
@@ -256,7 +255,7 @@ else
 					}
 					else
 					{
-						if($teamrow[$s-1]['finished']) 
+						if($teamrow[$s-1]['finished'])
 						{
 							if($changed['time']) echo "<td class='changed'><i>";
 							else echo "<td><i>";
@@ -265,13 +264,13 @@ else
 						}
 					}
 				}
-			}				
-			
-		} 	
-		
+			}
+
+		}
+
 		?>
 </table>
-<?php 
+<?php
 
 CloseCon($conn);
 

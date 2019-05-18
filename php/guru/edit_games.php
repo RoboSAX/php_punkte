@@ -1,9 +1,9 @@
 <?php
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
+?>
 
-$settings = parse_ini_file('../config/settings.ini',true);
-
+<?php
 $teams = Select('teams','*');
 
 ?>
@@ -26,12 +26,12 @@ $teams = Select('teams','*');
 if(isset($_POST['team']))
 {
 	$conn = OpenCon();
-	
+
 	$sql = "SELECT * FROM games WHERE team='".$_POST['team']."' ORDER BY block ASC";
 	$result = $conn->query($sql);
-	
+
 	$games = array();
-	
+
 	if($result->num_rows > 0)
 	{
 		while($row = $result->fetch_assoc())
@@ -43,14 +43,14 @@ if(isset($_POST['team']))
 	{
 		write_log("0 Results for the query: ".$sql." in edit_games.php");
 	}
-	
+
 	for($i = 0; isset($games[$i]) && $i < 7; $i++)
 	{
 		$sql = "SELECT * FROM pointmanagement WHERE game='".$games[$i]['gameid']."'";
 		$result = $conn->query($sql);
-		
+
 		$points = array();
-		
+
 		if($result->num_rows > 0)
 		{
 			while($row = $result->fetch_assoc())
@@ -62,7 +62,7 @@ if(isset($_POST['team']))
 		{
 			write_log("No Points found for game: ".$games[$i]['gameid']." in edit_games.php");
 		}
-		
+
 		echo "Block : ".$games[$i]['block'];
 		echo "<table><tr><td>";
 		echo $games[$i]['time'];
@@ -85,12 +85,12 @@ if(isset($_POST['team']))
 if(isset($_POST['game']))
 {
 	$conn = OpenCon();
-	
+
 	$sql = "SELECT * FROM games WHERE gameid='".$_POST['game']."'";
 	$result = $conn->query($sql);
-	
+
 	$game = array();
-	
+
 	if($result->num_rows > 0)
 	{
 		while($row = $result->fetch_assoc())
@@ -102,13 +102,13 @@ if(isset($_POST['game']))
 	{
 		write_log("0 Results for the query: ".$sql." in edit_games.php");
 	}
-	
+
 	$sql = "SELECT * FROM games WHERE block='".$game['block']."' AND time <> '".$game['time']."' ORDER BY time ASC";
 	$result = $conn->query($sql);
-	
+
 	$refgames = array();
 	$size = 0;
-	
+
 	if($result->num_rows > 0)
 	{
 		while($row = $result->fetch_assoc())
@@ -121,13 +121,13 @@ if(isset($_POST['game']))
 	{
 		write_log("No games found for a possible change");
 	}
-	
-	
+
+
 	$sql = "SELECT * FROM pointmanagement WHERE game='".$_POST['game']."'";
 	$result = $conn->query($sql);
-	
+
 	$point = array();
-	
+
 	if($result->num_rows > 0)
 	{
 		while($row = $result->fetch_assoc())
@@ -139,9 +139,9 @@ if(isset($_POST['game']))
 	{
 		write_log("No Points found for game: ".$_POST['game']." in edit_games.php");
 	}
-	
+
 	$teamname = array();
-	
+
 	$sql = "SELECT name FROM teams WHERE teamid='".$game['team']."' ";
 	$result = $conn->query($sql);
 	$teamname = $result->fetch_assoc();
@@ -162,9 +162,9 @@ if(isset($_POST['game']))
 	{
 		$sql = "SELECT name FROM teams WHERE teamid='".$refgames[$i]['team']."'";
 		$result = $conn->query($sql);
-	
+
 		$name = $result->fetch_assoc();
-		
+
 		if($name['name'])
 		{
 			echo "<option value='".$refgames[$i]['gameid']."'>".int_to_time($refgames[$i]['time'])." ".$name['name']."</option>";
@@ -172,18 +172,18 @@ if(isset($_POST['game']))
 	}
 	echo "</select></td></tr>";
 	echo "<tr><td colspan='2'><button type='submit' name='change' value='".$_POST['game']."'>Bestaetigen</button></td></tr></table></form>";
-	
+
 	CloseCon($conn);
 }
 if(isset($_POST['change']))
 {
 	$conn = OpenCon();
-	
+
 	$sql = "SELECT * FROM games WHERE gameid='".$_POST['change']."'";
 	$result = $conn->query($sql);
-	
+
 	$game = array();
-	
+
 	if($result->num_rows > 0)
 	{
 		while($row = $result->fetch_assoc())
@@ -202,45 +202,45 @@ if(isset($_POST['change']))
 		$conn->query($sql);
 	}
 
-	
+
 	$refgame = array();
-	
+
 	if($_POST['timeswitch'])
 	{
 		$sql = "SELECT * FROM games WHERE gameid='".$_POST['timeswitch']."'";
 		$result = $conn->query($sql);
-	
+
 		if($result->num_rows > 0)
 		{
 			while($row = $result->fetch_assoc())
 			{
 				$refgame = $row;
 			}
-	
+
 			$sql = "UPDATE games SET time='".$refgame['time']."' WHERE gameid='".$game['gameid']."'";
 			$conn->query($sql);
-			
+
 			$sql = "UPDATE games SET time='".$game['time']."' WHERE gameid='".$refgame['gameid']."'";
 			$conn->query($sql);
-			
+
 			$sql = "UPDATE changed SET time='1' WHERE game='".$refgame['gameid']."'";
 			$conn->query($sql);
-			
+
 			$sql = "UPDATE changed SET time='1' WHERE game='".$game['gameid']."'";
 			$conn->query($sql);
-			
+
 		}
 		else
 		{
 			write_log("0 Results for the query: ".$sql." in edit_games.php");
 		}
 	}
-	
+
 	$sql = "SELECT * FROM pointmanagement WHERE game='".$_POST['change']."'";
 	$result = $conn->query($sql);
-	
+
 	$point = array();
-	
+
 	if($result->num_rows > 0)
 	{
 		while($row = $result->fetch_assoc())
@@ -252,12 +252,12 @@ if(isset($_POST['change']))
 	{
 		write_log("No Points found for game: ".$_POST['game']." in edit_games.php");
 	}
-	
+
 	if(($_POST['time'] != $game['time']) && !$_POST['timeswitch'])
 	{
 		$sql = "UPDATE games SET time='".$_POST['time']."' WHERE gameid='".$_POST['change']."'";
 		$conn->query($sql);
-		
+
 		if($game['finished'])
 		{
 			$sql = "UPDATE changed SET time='1' WHERE game='".$_POST['change']."'";
@@ -271,7 +271,7 @@ if(isset($_POST['change']))
 		{
 			$sql = "UPDATE pointmanagement SET `+1`='".$_POST['+1']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
-			
+
 			if($game['finished'])
 			{
 				$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
@@ -285,7 +285,7 @@ if(isset($_POST['change']))
 		{
 			$sql = "UPDATE pointmanagement SET `+3`='".$_POST['+3']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
-		
+
 			if($game['finished'])
 			{
 				$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
@@ -299,7 +299,7 @@ if(isset($_POST['change']))
 		{
 			$sql = "UPDATE pointmanagement SET `+5`='".$_POST['+5']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
-		
+
 			if($game['finished'])
 			{
 				$sql = "UPDATE changed SET objectives='1' WHERE game='".$_POST['change']."'";
@@ -313,7 +313,7 @@ if(isset($_POST['change']))
 		{
 			$sql = "UPDATE pointmanagement SET `-1`='".$_POST['-1']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
-		
+
 			if($game['finished'])
 			{
 				$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";
@@ -327,7 +327,7 @@ if(isset($_POST['change']))
 		{
 			$sql = "UPDATE pointmanagement SET `-3`='".$_POST['-3']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
-		
+
 			if($game['finished'])
 			{
 				$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";
@@ -341,7 +341,7 @@ if(isset($_POST['change']))
 		{
 			$sql = "UPDATE pointmanagement SET `-5`='".$_POST['-5']."' WHERE game='".$_POST['change']."'";
 			$conn->query($sql);
-		
+
 			if($game['finished'])
 			{
 				$sql = "UPDATE changed SET penalties='1' WHERE game='".$_POST['change']."'";

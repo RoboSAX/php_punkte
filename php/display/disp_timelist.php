@@ -1,9 +1,9 @@
 <?php
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
+?>
 
-$settings = parse_ini_file("../config/settings.ini",true);
-
+<?php
 $conn = OpenCon();
 
 $sql = "SELECT time FROM games WHERE time>'0' AND finished='0' AND active='0' AND teamactive='1' ORDER BY time ASC";
@@ -43,25 +43,25 @@ while($i < $size)
 	$tmp = $i;
 	$anzeige = "";
 	$name = "";
-	
+
 	$sql = "SELECT * FROM games WHERE time='".$times[$i]."' AND teamactive=1";
 	$result = $conn->query($sql);
-	
+
 	$games = array();
 	$gr = 0;
-	
+
 	if($result->num_rows > 0)
 	{
 		while($games[] = $result->fetch_assoc()) $gr++;
 	}
-	
+
 	for($j = 0; $j < $settings['Options']['TeamsPerMatch'] || $j < $gr; $j++)
 	{
 		if(isset($games[$j]))
 		{
 			$sql = "SELECT name FROM teams WHERE teamid='".$games[$j]['team']."' AND active='1'";
 			$result = $conn->query($sql);
-		
+
 			if($result->num_rows > 0)
 			{
 				while($row = $result->fetch_assoc())
@@ -73,7 +73,7 @@ while($i < $size)
 			{
 				write_log("0 results for the query: ".$sql." in disp_timelist.php");
 			}
-		
+
 			if($name)
 			{
 				if($j != 0 && ($gr-1)) $anzeige .= " vs. ";

@@ -1,9 +1,9 @@
 <?php
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
+?>
 
-$settings = parse_ini_file("../config/settings.ini",true);
-
+<?php
 $conn = OpenCon();
 
 $sql = "SELECT * FROM teams ORDER BY points DESC, teamid ASC";
@@ -43,28 +43,28 @@ else
 	</tr>
 </table>
 <br>
-<?php 
+<?php
 if(isset($_POST['changetime']))
 {
 	$sql = "SELECT time FROM games WHERE block='".($_POST['changetime']+1)."', finished='0', active='0', time>'0' ORDER BY time ASC";
-	
+
 	$result = $conn->query($sql);
 	$times = array();
-	
+
 	if($result->num_rows > 0)
 	{
 		while($row = $result->fetch_assoc())
 		{
 			$times[] = $row;
 		}
-		
-		
+
+
 		if($_POST['changetime'] < 5)
 		{
 			$sql = "SELECT time FROM games WHERE block='".$_POST['changetime']."', finished='0', active='0' ORDER BY time DESC";
-			
+
 			$result = $conn->query($sql);
-			
+
 			if($result->num_rows > 0)
 			{
 				$v = array();
@@ -72,7 +72,7 @@ if(isset($_POST['changetime']))
 				{
 					$v[] = $row;
 				}
-				
+
 				if($v[0]['time'] > $times[0]['times'])
 				{
 					for($i = 0; $i < sizeof($times); $i++)
@@ -87,8 +87,8 @@ if(isset($_POST['changetime']))
 	{
 		write_log("No games left in block ".$_POST['changetime'].". Not possible to move this block in edit_blocks.php");
 	}
-	
-	
+
+
 }
 
 CloseCon($conn);

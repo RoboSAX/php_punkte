@@ -1,6 +1,6 @@
 <?php
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
 ?>
 
 <body style="overflow:hidden">
@@ -11,4 +11,3 @@ include_once '../lib/db_manip.php';
 	</tr>
 </table>
 </body>
- <meta http-equiv="refresh" content="5; URL=<?php echo basename(__FILE__) ?>">

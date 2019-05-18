@@ -1,10 +1,8 @@
 <?php
-# include main function for settings and database connection
-include_once $settings['Server']['base_url'].'lib/db_connection.php';
 
 function write_log($statement)
 {
-	$log = fopen('../logs/'.date('Y_m_d').'_log.txt','a+');
+	$log = fopen($settings['Server']['base_url'].'logs/'.date('Y_m_d').'_log.txt','a+');
 	fwrite($log, date("H:i:s").' : '.$statement.';'.PHP_EOL);
 	fclose($log);
 }

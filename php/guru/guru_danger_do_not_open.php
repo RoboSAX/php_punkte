@@ -1,7 +1,9 @@
 <?php
-include_once '../lib/db_connection.php';
-include_once '../lib/db_manip.php';
-$settings = parse_ini_file('../config/settings.ini',true);
+    # include main function for settings and database connection
+    include_once '../lib/db_main.php';
+?>
+
+<?php
 $conn = OpenCon();
 ?>
 
@@ -373,15 +375,15 @@ if(isset($_POST['safety']))
 	  `active` tinyint(1) NOT NULL
 	) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 	$conn->query($sql);
-	
+
 	$sql = "INSERT INTO teams VALUES";
-	
+
 	for($i = 0; $i < $settings['Options']['AnzTeams']; $i++)
 	{
 		$sql .= "(".($i+1).", team".$i.", roboter".$i.", 0, 'Mr Nobody', 0, 1)";
 		if($i < ($settings['Options']['AnzTeams'] - 1)) $sql .= ", ";
 		else $sql .= ";";
-		
+
 	}
 	$conn->query($sql);
 
