@@ -24,23 +24,23 @@ else
 }
 
 ?>
-<table>
+<form action='edit_teams.php' method='post'><table>
 <?php
 for($i = 0; $i < $settings['Options']['AnzTeams']; $i++)
 {
 	if(isset($teams[$i]))
 	{
-		echo "<table style='width:300px' class='list'><tr><form action='edit_teams.php' method='post'><td>";
+		echo "<tr><td>\"";
 		echo $teams[$i]['name'];
-		echo "</td><td>";
-		echo "<button type='submit' value='".$teams[$i]['teamid']."' name='team'>Daten zum Team anpassen</button>";
-		echo "</td></tr></table></form><br>";
+		echo "\"</td><td>";
+		echo "<button type='submit' value='".$teams[$i]['teamid']."' name='team".$i."'>Daten zum Team anpassen</button>";
+		echo "</td></tr>";
 	}
 }
 ?>
-</table>
+</table></form>
 <br>
-<?php 
+<?php
 if(isset($_POST['team']))
 {
 	$sql = "SELECT * FROM teams WHERE teamid='".$_POST['team']."'";
@@ -89,17 +89,17 @@ if(isset($_POST['changedata']))
 	{
 		write_log("HIER STIMMT WAS NICHT?!?!?!");
 	}
-	
+
 	if($_POST['name'] != $team['name'])
 	{
 		$sql = "UPDATE teams SET name='".$_POST['name']."' WHERE teamid='".$team['teamid']."'";
 		$conn->query($sql);
-		
+
 		write_log("Updated teamname for teamid: ".$team['teamid']." to: ".$_POST['name']." in edit_teams.php");
 	}
 	if($_POST['teamleiter'] != $team['teamleiter'])
 	{
-		
+
 	}
 }
 
