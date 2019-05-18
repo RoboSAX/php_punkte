@@ -33,7 +33,7 @@ else
 	write_log("0 results for the query: ".$sql." in disp_timelist.php");
 }
 ?>
-<body style='overflow:hidden'>
+<body>
 <h2>Kommende Spiele</h2>
 <table>
 <?php
