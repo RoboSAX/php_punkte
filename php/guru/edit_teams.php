@@ -33,7 +33,7 @@ for($i = 0; $i < $settings['Options']['AnzTeams']; $i++)
 		echo "<tr><td>\"";
 		echo $teams[$i]['name'];
 		echo "\"</td><td>";
-		echo "<button type='submit' value='".$teams[$i]['teamid']."' name='team".$i."'>Daten zum Team anpassen</button>";
+		echo "<button type='submit' value='".$teams[$i]['teamid']."' name='team'>Daten zum Team anpassen</button>";
 		echo "</td></tr>";
 	}
 }
