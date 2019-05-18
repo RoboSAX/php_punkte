@@ -99,7 +99,18 @@ if(isset($_POST['changedata']))
 	}
 	if($_POST['teamleiter'] != $team['teamleiter'])
 	{
-
+		$sql = "UPDATE teams SET teamleiter='".$_POST['teamleiter']."' WHERE teamid='".$team['teamid']."'";
+		$conn->query($sql);
+	}
+	if($_POST['roboter'] != $team['roboter'])
+	{
+		$sql = "UPDATE teams SET roboter='".$_POST['roboter']."' WHERE teamid='".$team['teamid']."'";
+		$conn->query($sql);
+	}
+	if($_POST['active'] != $team['active'])
+	{
+		$sql = "UPDATE teams SET active='".$_POST['active']."' WHERE teamid='".$team['teamid']."'";
+		$conn->query($sql);
 	}
 }
 
