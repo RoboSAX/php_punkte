@@ -19,7 +19,6 @@ if(isset($_POST['safety']))
 		while($row = $result->fetch_array(MYSQLI_NUM))
 		{
 			$conn->query('DROP TABLE IF EXISTS '.$row[0]);
-			echo "loesche table ".$row[0]."<br>";
 		}
 	}
 
@@ -386,7 +385,7 @@ if(isset($_POST['safety']))
 		else $sql .= ";";
 
 	}
-	echo $sql."<br>";
+	
 	$conn->query($sql);
 
 	$sql = "ALTER TABLE `changed`
