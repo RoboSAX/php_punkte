@@ -1,4 +1,9 @@
 <?php
+    // debugging
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ERROR); // error_reporting(E_ALL);
+
     // parse settings
     $settings_filename='settings.ini';
     $settings_file='../config/'.$settings_filename;
