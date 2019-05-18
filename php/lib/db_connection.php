@@ -2,6 +2,8 @@
 
 function OpenCon()
 {
+    global $settings
+
 	$dbhost = $settings['DB']['host'];
 	$dbuser = $settings['DB']['username'];
 	$dbpass = $settings['DB']['password'];

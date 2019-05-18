@@ -2,7 +2,9 @@
 
 function write_log($statement)
 {
-	$log = fopen($settings['Server']['base_url'].'logs/'.date('Y_m_d').'_log.txt','a+');
+    global $settings
+
+    $log = fopen($settings['Server']['base_url'].'logs/'.date('Y_m_d').'_log.txt','a+');
 	fwrite($log, date("H:i:s").' : '.$statement.';'.PHP_EOL);
 	fclose($log);
 }
@@ -110,12 +112,15 @@ function ColCount($table)
 	{
 
 	}
+	CloseCon($conn);
 
 	return $colnum;
 }
 
 function UpdateDB()
 {
+    global $settings
+
 	$conn = OpenCon();
 	$anz = $settings['Options']['AnzTeams'];
 
@@ -205,6 +210,8 @@ function UpdateGame($id)
 
 function UpdateTime()
 {
+    global $settings
+
 	$conn = OpenCon();
 
 	$sql = "SELECT teamid FROM teams WHERE active='1' ORDER BY points DESC, teamid ASC";
