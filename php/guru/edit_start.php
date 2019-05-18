@@ -49,7 +49,7 @@ if(isset($_POST['change']) || isset($_POST['counter']))
 	if(isset($_POST['counter']))
 	{
 		$count = $_POST['counter'] + 1;
-		if(($count == $settings['Options']['AnzTeams']) || !sizeof($teams))
+		if(($count == ($settings['Options']['AnzTeams'])+1) || !sizeof($teams))
 		{
 			$sql = "UPDATE teams SET active='1' WHERE 1";
 			$conn->query($sql);
