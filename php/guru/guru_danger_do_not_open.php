@@ -19,6 +19,7 @@ if(isset($_POST['safety']))
 		while($row = $result->fetch_array(MYSQLI_NUM))
 		{
 			$conn->query('DROP TABLE IF EXISTS '.$row[0]);
+			echo "loesche table ".$row[0]."<br>";
 		}
 	}
 
@@ -361,8 +362,7 @@ if(isset($_POST['safety']))
 	(93, 93, 0, 0, 0, 0, 0, 0),
 	(94, 94, 0, 0, 0, 0, 0, 0),
 	(95, 95, 0, 0, 0, 0, 0, 0),
-	(96, 96, 0, 0, 0, 0, 0, 0);
-	";
+	(96, 96, 0, 0, 0, 0, 0, 0);";
 	$conn->query($sql);
 
 	$sql = "CREATE TABLE `teams` (
@@ -376,15 +376,17 @@ if(isset($_POST['safety']))
 	) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
 	$conn->query($sql);
 
-	$sql = "INSERT INTO teams VALUES";
+	$sql = "INSERT INTO teams (`teamid`, `name`, `roboter`, `points`, `teamleiter`, `games`, `active`) VALUES \n";
 
 	for($i = 0; $i < $settings['Options']['AnzTeams']; $i++)
 	{
-		$sql .= "(".($i+1).", team".$i.", roboter".$i.", 0, 'Mr Nobody', 0, 1)";
-		if($i < ($settings['Options']['AnzTeams'] - 1)) $sql .= ", ";
+		$sql .= "(".($i+1).", 'team".($i+1)."', 'roboter".($i+1)."', 0, 'Mr Nobody', 0, 1)";
+		
+		if($i < ($settings['Options']['AnzTeams'] - 1)) $sql .= ", \n";
 		else $sql .= ";";
 
 	}
+	echo $sql."<br>";
 	$conn->query($sql);
 
 	$sql = "ALTER TABLE `changed`
