@@ -277,9 +277,9 @@ function SetGamesInactive()
 			}
 		}
 
-		for($i = 0; $i < $size; $i++)
+		for($j = 0; $j < $size; $j++)
 		{
-			$sql = "UPDATE games SET teamactive='".$i."' WHERE team='".$teams[$i]['teamid']."'";
+			$sql = "UPDATE games SET teamactive='".$i."' WHERE team='".$teams[$j]['teamid']."'";
 			$conn->query($sql);
 		}
 	}
