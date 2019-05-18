@@ -7,6 +7,6 @@
 <meta http-equiv="refresh" content="5; URL=<?php echo basename(__FILE__) ?>">
 </head>
 <body style='overflow:hidden'>
-<?php include $settings['Server']['base_url']."display/disp_timelist.php"; ?>
+<?php include "../display/disp_timelist.php"; ?>
 </body>
 

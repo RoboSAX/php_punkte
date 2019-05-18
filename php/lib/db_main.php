@@ -32,6 +32,6 @@
     if ($settings['Blocktimes']['Block6'] == NULL) { die($settings_filename." without [Blocktimes][Block6]!"); }
 
     // include main functions
-    include_once $settings['Server']['base_url'].'lib/db_connection.php';
-    include_once $settings['Server']['base_url'].'lib/db_manip.php';
+    include_once '../lib/db_connection.php';
+    include_once '../lib/db_manip.php';
 ?>
