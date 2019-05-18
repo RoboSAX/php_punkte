@@ -25,6 +25,12 @@
                             } elseif($_POST['changeview'] == "blocks") {
                                 echo $settings['Server']['base_url']."guru/edit_blocks.php";
 
+                            } elseif($_POST['changeview'] == "ref") {
+                                echo $settings['Server']['base_url']."referee/schiri.php";
+
+                            } elseif($_POST['changeview'] == "disp") {
+                                echo $settings['Server']['base_url']."display/disp_points_refresh.php";
+
                             } else {
                                 echo $settings['Server']['base_url']."guru/edit_games.php";
                             }
