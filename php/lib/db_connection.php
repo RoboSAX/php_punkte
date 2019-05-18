@@ -2,7 +2,7 @@
 
 function OpenCon()
 {
-    global $settings
+    global $settings;
 
 	$dbhost = $settings['DB']['host'];
 	$dbuser = $settings['DB']['username'];

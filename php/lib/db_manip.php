@@ -2,7 +2,7 @@
 
 function write_log($statement)
 {
-    global $settings
+    global $settings;
 
     $log = fopen($settings['Server']['base_url'].'logs/'.date('Y_m_d').'_log.txt','a+');
 	fwrite($log, date("H:i:s").' : '.$statement.';'.PHP_EOL);
@@ -119,7 +119,7 @@ function ColCount($table)
 
 function UpdateDB()
 {
-    global $settings
+    global $settings;
 
 	$conn = OpenCon();
 	$anz = $settings['Options']['AnzTeams'];
@@ -210,7 +210,7 @@ function UpdateGame($id)
 
 function UpdateTime()
 {
-    global $settings
+    global $settings;
 
 	$conn = OpenCon();
 
