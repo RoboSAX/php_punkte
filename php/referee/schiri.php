@@ -7,8 +7,6 @@
 SetGamesInactive();
 ?>
 
-<table>
-<tr><td valign='top' style='border-right:1px solid black'><iframe src="<?php echo $settings['Server']['base_url'].'display/disp_timelist_refresh.php'; ?>" style='width:100%; height:100%; border: 0'></iframe></td><td valign='top'>
 <?php
 $conn = OpenCon();
 
@@ -188,6 +186,6 @@ if(isset($_POST['changes']))
 }
 CloseCon($conn);
 ?>
-</td></tr></table>
+
 
 
