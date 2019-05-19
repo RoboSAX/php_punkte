@@ -4,9 +4,15 @@ function write_log($statement)
 {
     global $settings;
 
-    $log = fopen($settings['Server']['base_url'].'logs/'.date('Y_m_d').'_log.txt','a+');
-	fwrite($log, date("H:i:s").' : '.$statement.';'.PHP_EOL);
-	fclose($log);
+    if ($settings['Server']['logging'])
+    {
+        $log = fopen($settings['Server']['base_url'].'logs/'.date('Y_m_d').'_log.txt','a+');
+        if ($log)
+        {
+            fwrite($log, date("H:i:s").' : '.$statement.';'.PHP_EOL);
+            fclose($log);
+        }
+    }
 }
 
 function int_to_time($int)
@@ -40,7 +46,7 @@ function addTimes($time1, $time2)
 	$h = int($time1/100) + int($time2/100);
 	$m = int($time1%100) + int($time2%100);
 
-	if($m > 59)
+	while ($m > 59)
 	{
 		$h++;
 		$m -= 60;

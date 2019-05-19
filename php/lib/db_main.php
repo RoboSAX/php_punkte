@@ -2,7 +2,7 @@
     // debugging
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
-    error_reporting(E_ERROR); // error_reporting(E_ALL);
+    error_reporting(E_ERROR | E_WARNING); // error_reporting(E_ALL);
 
     // parse settings
     $settings_filename='settings.ini';
@@ -17,18 +17,24 @@
     if ($settings['DB']['username'] == NULL) { die($settings_filename." without [DB][username]!"); }
     // string password
     if ($settings['DB']['database'] == NULL) { die($settings_filename." without [DB][database]!"); }
+
     if ($settings['Server']['base_url']   == NULL) { die($settings_filename." without [Server][base_url]!"  ); }
-    if ($settings['Options']['AnzTeams']  == NULL) { die($settings_filename." without [Options][AnzTeams]!" ); }
-    if ($settings['Options']['GameTime']  == NULL) { die($settings_filename." without [Options][GameTime]!" ); }
-    if ($settings['Options']['TeamsPerMatch']       == NULL) { die($settings_filename." without [Options][TeamsPerMatch]!"      ); }
+
+    if ($settings['Options']['AnzTeams']            == NULL) { die($settings_filename." without [Options][AnzTeams]!"     ); }
+    if ($settings['Options']['GameTime']            == NULL) { die($settings_filename." without [Options][GameTime]!"     ); }
+    if ($settings['Options']['TeamsPerMatch']       == NULL) { die($settings_filename." without [Options][TeamsPerMatch]!"); }
+
+    // bool logging
     if ($settings['Options']['RefreshRateInternal'] == NULL) { die($settings_filename." without [Options][RefreshRateInternal]!"); }
     if ($settings['Options']['RefreshRateDisp']     == NULL) { die($settings_filename." without [Options][RefreshRateDisp]!"    ); }
+
     // bool +5_enable
     // bool +3_enable
     // bool +1_enable
     // bool -1_enable
     // bool -3_enable
     // bool -5_enable
+
     if ($settings['Blocktimes']['Block1'] == NULL) { die($settings_filename." without [Blocktimes][Block1]!"); }
     if ($settings['Blocktimes']['Block2'] == NULL) { die($settings_filename." without [Blocktimes][Block2]!"); }
     if ($settings['Blocktimes']['Block3'] == NULL) { die($settings_filename." without [Blocktimes][Block3]!"); }
