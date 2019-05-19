@@ -116,40 +116,40 @@ else
 	</tr>
 	<?php
 
-		$oc = 1;
-		$octmp = 1;
+		$current_place = 1;
+		$last_place = 1;
 
 		for($i = 0;$i < $anz; $i++) //Liste mit Teams
 		{
 			echo "<tr>\n\t\t";
 			echo "<td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
-			if(!$teams[$i]['active']) echo "-";
-			if($teams[$i]['active'] && $teams[$i]['games'] == 0) echo $i+1;			//Platz
+			if(!$teams[$i]['active'])
+			{
+				echo "-";
+			}
 			else
 			{
-				if($teams[$i]['active'])
+				if($teams[$i]['games'] == 0)
+				{
+					echo "";
+				}
+				else
 				{
 					if($i == 0)
 					{
-						echo $oc;
-						$oc++;
+						echo $current_place;
+					}
+					elseif($teams[$i]['points'] == $teams[$i-1]['points'])
+					{
+						echo $last_place;
 					}
 					else
 					{
-						if($i > 0 && $teams[$i]['points'] == $teams[$i-1]['points'])
-						{
-							echo $octmp;
-							$oc++;
-						}
-						else
-						{
-							echo $oc;
-							$octmp = $oc;
-							$oc++;
-						}
+						echo $current_place;
+						$last_place = $current_place;
 					}
-
 				}
+				$current_place++;
 			}
 			echo "</td><td colspan='2'><b>";
 			echo $teams[$i]['name']; //Name
