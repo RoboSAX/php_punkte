@@ -114,14 +114,15 @@ else
 	<tr>
 		<td style='width:300px'>Teams</td><td>Spielblock I</td><td>Spielblock II</td><td>Spielblock III</td><td>Spielblock IV</td><td>Spielblock V</td>
 	</tr>
-		<?php
+	<?php
 
 		$oc = 1;
 		$octmp = 1;
 
 		for($i = 0;$i < $anz; $i++) //Liste mit Teams
 		{
-			echo "<tr><td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
+			echo "<tr>\n\t\t";
+			echo "<td style='width:300px'><table style='width:300px' class='list'><tr><td rowspan='2' style='width:25px'>";
 			if(!$teams[$i]['active']) echo "-";
 			if($teams[$i]['active'] && $teams[$i]['games'] == 0) echo $i+1;			//Platz
 			else
@@ -158,7 +159,7 @@ else
 			echo $teams[$i]['teamleiter']; //Teamleiter
 			echo "</td><td style='width:125px'>";
 			echo $teams[$i]['roboter']; //Roboter
-			echo "</td></tr></table></td>";
+			echo "</td></tr></table></td>\n\t\t";
 
 			$sql = "SELECT * FROM games WHERE team='".$teams[$i]['teamid']."' ORDER BY block ASC";
 			$result = $conn->query($sql);
@@ -221,10 +222,9 @@ else
 					$pospoints = $points['+1'] * 1 + $points['+3'] * 3 + $points['+5'] * 5;
 					$negpoints = $points['-1'] * -1 + $points['-3'] * -3 + $points['-5'] * -5;
 
-					echo "<td>";
-					echo "<table class='games'>";
+					echo "<td><table class='games'>";
 					if($changed['time']) echo "<tr><td class='changed'>";
-					else echo "</td><td class='normal'>";
+					else echo "<tr><td class='normal'>";
 					echo $time;
 					if($changed['objectives']) echo "</td><td class='changed'>Li: ";
 					else echo "</td><td class='normal'>Li: ";
@@ -234,7 +234,7 @@ else
 					echo $teamrow[$s]['penalties'];				//Anzahl der Strafen
 					echo "</td></tr><tr>";
 					if($teamrow[$s]['highlight']) echo "<td class='h'>";
-					else echo "</td><td class='normal'>";
+					else echo "<td class='normal'>";
 					if($pospoints + $negpoints <= 0) echo "0";
 					else echo $pospoints + $negpoints; 			//Anzahl der Punkte
 					echo "</td><td class='normal'>";
@@ -264,11 +264,13 @@ else
 						}
 					}
 				}
+				echo "\n\t\t";
 			}
 
+			echo "</tr>\n\t";
 		}
 
-		?>
+	?>
 </table>
 <?php
 
