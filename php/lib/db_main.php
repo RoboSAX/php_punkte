@@ -6,7 +6,7 @@
 
     // parse settings
     $settings_filename='settings.ini';
-    $settings_file='../config/'.$settings_filename;
+    $settings_file='../../config/'.$settings_filename;
     if (!file_exists($settings_file)) {
         die("Can't find ".$settings_filename."!");
     }
