@@ -7,7 +7,7 @@
 $conn = OpenCon();
 ?>
 
-<form action='guru_danger_do_not_open.php' method='post'><button type='submit' name='safety'>Datenbank wirklich neu aufsetzen?</button></form>
+<form action='guru_reset_database.php' method='post'><button type='submit' name='safety'>Datenbank wirklich neu aufsetzen?</button></form>
 
 <?php
 if(isset($_POST['safety']))
@@ -381,12 +381,12 @@ if(isset($_POST['safety']))
 	for($i = 0; $i < $settings['Options']['AnzTeams']; $i++)
 	{
 		$sql .= "(".($i+1).", 'team".($i+1)."', 'roboter".($i+1)."', 0, 'Mr Nobody', 0, 1)";
-		
+
 		if($i < ($settings['Options']['AnzTeams'] - 1)) $sql .= ", \n";
 		else $sql .= ";";
 
 	}
-	
+
 	$conn->query($sql);
 
 	$sql = "ALTER TABLE `changed`
@@ -416,7 +416,7 @@ if(isset($_POST['safety']))
 	$sql = "ALTER TABLE `pointmanagement`
 	  MODIFY `pointid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;";
 	$conn->query($sql);
-	
+
 	echo "Done";
 }
 CloseCon($conn);
