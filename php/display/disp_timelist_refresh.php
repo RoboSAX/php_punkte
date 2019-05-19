@@ -4,7 +4,7 @@
 ?>
 
 <head>
-<meta http-equiv="refresh" content="5; URL=<?php echo basename(__FILE__) ?>">
+<meta http-equiv="refresh" content="5">
 </head>
 <body style='overflow:hidden'>
 <?php require "../display/disp_timelist.php"; ?>

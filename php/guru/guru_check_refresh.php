@@ -4,4 +4,4 @@
 ?>
 
 <?php require "../guru/guru_check.php"; ?>
-<meta http-equiv="refresh" content="5; URL=../guru/guru_check_refresh.php">
+<meta http-equiv="refresh" content="5">
