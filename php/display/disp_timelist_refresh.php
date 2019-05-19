@@ -7,6 +7,6 @@
 <meta http-equiv="refresh" content="5">
 </head>
 <body style='overflow:hidden'>
-<?php require "../display/disp_timelist.php"; ?>
+<?php require "disp_timelist.php"; ?>
 </body>
 

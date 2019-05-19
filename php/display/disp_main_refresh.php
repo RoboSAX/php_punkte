@@ -4,9 +4,8 @@
 ?>
 
 <head>
-<meta http-equiv="refresh" content="5">
+    <meta http-equiv="refresh" content="5">
 </head>
 <body style='overflow:hidden'>
-<?php require "disp_points.php"; ?>
+    <?php require "disp_main.php"; ?>
 </body>
-

@@ -1,2 +1,2 @@
-# default page is disp_main.php
-DirectoryIndex display/disp_main.php
+# default page is same as for display-folder
+DirectoryIndex display/
