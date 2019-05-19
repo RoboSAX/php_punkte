@@ -89,7 +89,7 @@
         {
             for($j = 1; $j <= $AnzTeams; $j++)
             {
-                if (($i != 1) and ($j != 1)) $sql .= ", \n";
+                if (($i != 1) or ($j != 1)) $sql .= ", \n";
                 $sql.= "(".(($i - 1) * $AnzTeams + $j).", ".($i).", ";
                 $sql.= "0, 0, 0, 0, ".($j).", 0, 0, 0, 1)";
             }
@@ -154,11 +154,11 @@
 
         $sql = "INSERT INTO teams (`teamid`, `name`, `roboter`, `points`, ";
         $sql.= "`teamleiter`, `games`, `active`) VALUES \n";
-        for($i = 0; $i < $AnzTeams; $i++)
+        for($i = 1; $i <= $AnzTeams; $i++)
         {
             if ($i != 1) $sql .= ", \n";
-            $sql.= "(".($i+1).", 'team".($i+1)."', 'roboter".($i+1);
-            $sql.= "', 0, 'teamleiter'".($i+1).", 0, 1)";
+            $sql.= "(".($i).", 'team".($i)."', 'roboter".($i);
+            $sql.= "', 0, 'teamleiter".($i)."', 0, 1)";
         }
         $sql.= ";";
         $conn->query($sql);
