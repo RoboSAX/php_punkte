@@ -3,5 +3,9 @@
     require_once '../lib/db_main.php';
 ?>
 
-<?php require "../guru/guru_check.php"; ?>
-<meta http-equiv="refresh" content="5">
+<head>
+    <meta http-equiv="refresh" content="<?php echo $settings['Options']['RefreshRateInternal']; ?>">
+</head>
+<body style='overflow:hidden'>
+    <?php require "guru_check.php"; ?>
+</body>
