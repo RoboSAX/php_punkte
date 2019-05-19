@@ -14,27 +14,28 @@
     {
         $AnzTeams = $settings['Options']['AnzTeams'];
 
-        echo "";
-        echo "Lösche alte Tabellen:";
+        echo "<br>";
+        echo "Lösche alte Tabellen:<br>";
+
         $conn->query('SET foreign_key_checks = 0');
         if ($result = $conn->query("SHOW TABLES"))
         {
             while($row = $result->fetch_array(MYSQLI_NUM))
             {
-                echo "    ".$row[0];
+                echo "<div style='text-indent:20px;'>".$row[0]."</div>";
                 $conn->query('DROP TABLE IF EXISTS '.$row[0]);
             }
         }
 
 
 
-        echo "";
-        echo "Lege Tabellen neu an:";
+        echo "<br>";
+        echo "Lege Tabellen neu an:<br>";
         $conn->query('SET foreign_key_checks = 1');
 
 
 
-        echo "    changed";
+        echo "<div style='text-indent:20px;'>changed</div>";
         $sql = "CREATE TABLE `changed` (
                 `changedid`  int(11)    NOT NULL,
                 `game`       int(11)    NOT NULL,
@@ -52,7 +53,7 @@
             if ($i != 1) $sql .= ", \n";
             $sql.= "(".($i).", ".($i).", 0, 0, 0, 0)";
         }
-        sql.= ";";
+        $sql.= ";";
         $conn->query($sql);
 
         $sql = "ALTER TABLE `changed`
@@ -65,7 +66,7 @@
 
 
 
-        echo "    games";
+        echo "<div style='text-indent:20px;'>games</div>";
         $sql = "CREATE TABLE `games` (
                 `gameid`     int(11)    NOT NULL,
                 `block`      int(11)    NOT NULL,
@@ -86,14 +87,14 @@
         $sql.= "`highlight`, `teamactive`) VALUES \n";
         for($i = 1; $i <= 6; $i++)
         {
-            for($j = 1; $j <= $AnzTeams; $i++)
+            for($j = 1; $j <= $AnzTeams; $j++)
             {
                 if (($i != 1) and ($j != 1)) $sql .= ", \n";
                 $sql.= "(".(($i - 1) * $AnzTeams + $j).", ".($i).", ";
                 $sql.= "0, 0, 0, 0, ".($j).", 0, 0, 0, 1)";
             }
         }
-        sql.= ";";
+        $sql.= ";";
         $conn->query($sql);
 
         $sql = "ALTER TABLE `games`
@@ -106,7 +107,7 @@
 
 
 
-        echo "    pointmanagement";
+        echo "<div style='text-indent:20px;'>pointmanagement</div>";
         $sql = "CREATE TABLE `pointmanagement` (
                 `pointid` int(11) NOT NULL,
                 `game`    int(11) NOT NULL,
@@ -126,7 +127,7 @@
             if ($i != 1) $sql .= ", \n";
             $sql.= "(".($i).", ".($i).", 0, 0, 0, 0, 0, 0)";
         }
-        sql.= ";";
+        $sql.= ";";
         $conn->query($sql);
 
         $sql = "ALTER TABLE `pointmanagement`
@@ -139,16 +140,16 @@
 
 
 
-        echo "    teams";
+        echo "<div style='text-indent:20px;'>teams</div>";
         $sql = "CREATE TABLE `teams` (
-            `teamid`     int(11)     NOT NULL,
-            `name`       varchar(40) NOT NULL,
-            `roboter`    varchar(20) NOT NULL,
-            `points`     int(11)     NOT NULL,
-            `teamleiter` varchar(20) NOT NULL,
-            `games`      int(11)     NOT NULL,
-            `active`     tinyint(1)  NOT NULL
-        ) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+                `teamid`     int(11)     NOT NULL,
+                `name`       varchar(40) NOT NULL,
+                `roboter`    varchar(20) NOT NULL,
+                `points`     int(11)     NOT NULL,
+                `teamleiter` varchar(20) NOT NULL,
+                `games`      int(11)     NOT NULL,
+                `active`     tinyint(1)  NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
         $conn->query($sql);
 
         $sql = "INSERT INTO teams (`teamid`, `name`, `roboter`, `points`, ";
@@ -159,7 +160,7 @@
             $sql.= "(".($i+1).", 'team".($i+1)."', 'roboter".($i+1);
             $sql.= "', 0, 'teamleiter'".($i+1).", 0, 1)";
         }
-        sql.= ";";
+        $sql.= ";";
         $conn->query($sql);
 
         $sql = "ALTER TABLE `teams`
@@ -168,7 +169,8 @@
 
 
 
-        echo "Done";
+        echo "<br>";
+        echo "Done<br>";
     }
 
     CloseCon($conn);
