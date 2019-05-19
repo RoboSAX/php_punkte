@@ -21,22 +21,22 @@ function int_to_time($int)
 	{
 		if($int%100 >= 10)
 		{
-			return intdiv($int,100) . ":" . $int%100;
+			return floor($int / 100) . ":" . $int%100;
 		}
 		else
 		{
-			return intdiv($int,100) . ":0" . $int%100;
+			return floor($int / 100) . ":0" . $int%100;
 		}
 	}
 	else
 	{
 		if($int%100 >= 10)
 		{
-			return "0" . intdiv($int,100) . ":" . $int%100;
+			return "0" . floor($int / 100) . ":" . $int%100;
 		}
 		else
 		{
-			return "0" . intdiv($int,100) . ":0" . $int%100;
+			return "0" . floor($int / 100) . ":0" . $int%100;
 		}
 	}
 }
@@ -202,7 +202,7 @@ function UpdateGame($id)
 	$pospoints = $points['+1'] * 1 + $points['+3'] * 3 + $points['+5'] * 5;
 	$negpoints = $points['-1'] * -1 + $points['-3'] * -3 + $points['-5'] * -5;
 
-	if($pospoints + $negpoints < 0)
+	if($pospoints + $negpoints <= 0)
 	{
 		$sql = "UPDATE games SET points='0' WHERE gameid='".$id."'";
 		$conn->query($sql);
@@ -212,6 +212,12 @@ function UpdateGame($id)
 		$sql = "UPDATE games SET points='".($pospoints + $negpoints)."' WHERE gameid='".$id."'";
 		$conn->query($sql);
 	}
+
+	$sql = "UPDATE games SET objectives='".($points['+1']+$points['+3']+$points['+5'])."' WHERE gameid='".$id."'";
+	$conn->query($sql);
+
+	$sql = "UPDATE games SET penalties='".($points['-1']+$points['-3']+$points['-5'])."' WHERE gameid='".$id."'";
+	$conn->query($sql);
 }
 
 function UpdateTime()

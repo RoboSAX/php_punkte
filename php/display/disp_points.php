@@ -235,7 +235,7 @@ else
 					echo "</td></tr><tr>";
 					if($teamrow[$s]['highlight']) echo "<td class='h'>";
 					else echo "</td><td class='normal'>";
-					if($pospoints + $negpoints < 0) echo "0";
+					if($pospoints + $negpoints <= 0) echo "0";
 					else echo $pospoints + $negpoints; 			//Anzahl der Punkte
 					echo "</td><td class='normal'>";
 					echo $pospoints;		//Pluspunkte
