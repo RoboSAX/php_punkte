@@ -13,6 +13,7 @@
     if(isset($_POST['safety']))
     {
         $AnzTeams = $settings['Options']['AnzTeams'];
+		$TimeStart = $settings['Blocktimes']['Block1'];
 
         echo "<br>";
         echo "Lösche alte Tabellen:<br>";
@@ -48,7 +49,7 @@
 
         $sql = "INSERT INTO `changed` (`changedid`, `game`, `time`, ";
         $sql.= "`points`, `objectives`, `penalties`) VALUES \n";
-        for($i = 1; $i <= $AnzTeams * 6; $i++)
+        for($i = 1; $i <= $AnzTeams; $i++)
         {
             if ($i != 1) $sql .= ", \n";
             $sql.= "(".($i).", ".($i).", 0, 0, 0, 0)";
@@ -85,15 +86,14 @@
         $sql = "INSERT INTO `games` (`gameid`, `block`, `time`, `points`, ";
         $sql.= "`objectives`, `penalties`, `team`, `active`, `finished`, ";
         $sql.= "`highlight`, `teamactive`) VALUES \n";
-        for($i = 1; $i <= 6; $i++)
+        for($j = 1; $j <= $AnzTeams; $j++)
         {
-            for($j = 1; $j <= $AnzTeams; $j++)
-            {
-                if (($i != 1) or ($j != 1)) $sql .= ", \n";
-                $sql.= "(".(($i - 1) * $AnzTeams + $j).", ".($i).", ";
-                $sql.= "0, 0, 0, 0, ".($j).", 0, 0, 0, 1)";
-            }
+            if($j != 1) $sql .= ", \n";
+            $sql.= "(".$j.", 1, ";
+			$sql.= addTimes($TimeStart,($j-1)*5).",";
+            $sql.= "0, 0, 0, ".$j.", 0, 0, 0, 1)";
         }
+        
         $sql.= ";";
         $conn->query($sql);
 
@@ -122,7 +122,7 @@
 
         $sql = "INSERT INTO `pointmanagement` (`pointid`, `game`, `+1`, ";
         $sql.= "`+3`, `+5`, `-1`, `-3`, `-5`) VALUES ";
-        for($i = 1; $i <= $AnzTeams * 6; $i++)
+        for($i = 1; $i <= $AnzTeams; $i++)
         {
             if ($i != 1) $sql .= ", \n";
             $sql.= "(".($i).", ".($i).", 0, 0, 0, 0, 0, 0)";
@@ -157,7 +157,7 @@
         for($i = 1; $i <= $AnzTeams; $i++)
         {
             if ($i != 1) $sql .= ", \n";
-            $sql.= "(".($i).", 'team".($i)."', 'roboter".($i);
+            $sql.= "(0, 'team".($i)."', 'roboter".($i);
             $sql.= "', 0, 'teamleiter".($i)."', 0, 1)";
         }
         $sql.= ";";
