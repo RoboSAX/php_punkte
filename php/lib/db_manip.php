@@ -43,10 +43,13 @@ function int_to_time($int)
 
 function addTimes($time1, $time2)
 {
-	$h = int($time1/100) + int($time2/100);
-	$m = int($time1%100) + int($time2%100);
+	$h = (int)($time1/100) + (int)($time2/100);
+	$m = (int)($time1%100) + (int)($time2%100);
 
-	while ($m > 59)
+	echo " ".$h;
+	echo " ".$m;
+
+	if($m > 59)
 	{
 		$h++;
 		$m -= 60;
