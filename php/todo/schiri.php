@@ -25,106 +25,91 @@ if($result->num_rows > 0)
 	}
 
 	echo "<form action='schiri.php' method='post'>";
-
+	echo "<table><tr><td>Block: ".$active[0]['block']."</td><td>".int_to_time($active[0]['time'])." Uhr</td></tr>";
 	for($o = 0; $o < $settings['Options']['TeamsPerMatch'] && $o < $anz; $o++)
 	{
 		$sql = "SELECT name FROM teams WHERE teamid='".$active[$o]['team']."'";
 		$erg = $conn->query($sql);
 
 		if($erg->num_rows > 0) $team = $erg->fetch_assoc();
-		echo "<table><tr><td colspan=2>".$team['name']."</td></tr>";
+		echo "<tr><td colspan=2>".$team['name']."</td></tr>";
 		echo "<tr><td>Gesamtpunktzahl: </td><td><input type='text' name='team".$o."' /></td></tr>";
 		if($settings['Options']['-1_enable']) echo "<tr><td>Anzahl -1: </td><td><input type='text' name='-1".$o."' /></td></tr>";
 		if($settings['Options']['-3_enable']) echo "<tr><td>Anzahl -3: </td><td><input type='text' name='-3".$o."' /></td></tr>";
-		if($settings['Options']['-5_enable']) echo "<tr><td>Anzahl -5: </td><td><input type='text' name='-5".$o."' /></td></tr></table><br>";
+		if($settings['Options']['-5_enable']) echo "<tr><td>Anzahl -5: </td><td><input type='text' name='-5".$o."' /></td></tr>";
 		echo "<input type='hidden' name='teamid".$o."' value='".$active[$o]['gameid']."' />";
+		echo "<tr><td><br></td><td><br></td></tr>";
 	}
-
-	echo "<table><tr><td>Geteilte Punkte: </td><td><input type='text' name='gesamt' /></td></tr>";
+	echo "<tr><td>Geteilte Punkte: </td><td><input type='text' name='gesamt' /></td></tr>";
 	echo "<tr><td colspan=2><button type='submit' name='changes' value='".$active[0]['time']."'>Absenden</button</td></tr></table></form>";
 }
 else
 {
+	write_log("0 results for the query: ".$sql." in disp_timelist.php");
 
-    $sql = "SELECT time FROM games WHERE time>'0' AND finished='0' AND active='0' AND teamactive='1' ORDER BY time ASC";
-    $result = $conn->query($sql);
+	$sql = "SELECT * FROM games WHERE time>'0' AND finished='0' AND active='0' ORDER BY time ASC";
+	$result = $conn->query($sql);
 
-    $times = array();
-    $size = 1;
+	$games = array();
+	$size = 0;
 
-    if($result->num_rows > 0)
-    {
-        $row = $result->fetch_assoc();
-        $times[0] = $row['time'];
-        while($row = $result->fetch_assoc())
-        {
-            if(isset($times[$size-1]))
-            {
-                if($times[$size-1] != $times[$size])
-                {
-                    array_push($times,$row['time']);
-                    $size++;
-                }
-            }
-        }
-    }
-    else
-    {
-        write_log("0 results for the query: ".$sql." in disp_timelist.php");
-    }
+	if($result->num_rows > 0)
+	{
+		while($row = $result->fetch_assoc())
+		{
+			$games[] = $row;
+			$size++;
+		}
+	}
+	else
+	{
+		write_log("0 results for the query: ".$sql." in disp_timelist.php");
+	}
+	$test = array();
+	echo "<form action='schiri.php' method='post'>";
+	echo "<select id='time' name='time'>";
+	$i = 0;
+	while($i < $size)
+	{
+		$tmp = $i;
+		$teamnames = "";
+		$times = 0;
+		for($j = 0; $j < $settings['Options']['TeamsPerMatch']; $j++)
+		{
+			if(isset($games[$i+$j]))
+			{
+				$sql = "SELECT name FROM teams WHERE teamid='".$games[$tmp+$j]['team']."' AND active='1'";
+				$result = $conn->query($sql);
+				$name = "";
 
+				if($result->num_rows > 0)
+				{
+					while($row = $result->fetch_assoc())
+					{
+						$name = $row['name'];
+					}
+				}
+				else
+				{
+					write_log("0 results for the query: ".$sql." in disp_timelist.php");
+				}
 
-    $i = 0;
-    while($i < $size)
-    {
-        $tmp = $i;
-        $anzeige = "";
-        $name = "";
+				if($name)
+				{
+					if(!$j) $times = $games[$i]['time'];
+					if($j != 0) $teamnames .= " vs. ";
+					$teamnames .= $name;
 
-        $sql = "SELECT * FROM games WHERE time='".$times[$i]."' AND teamactive=1";
-        $result = $conn->query($sql);
+				}
+				$i++;
+				array_push($test,$teamnames);
+			}
+		}
+		if($teamnames) echo "<option value='".$times."'>".$teamnames."</option>";
 
-        $games = array();
-        $gr = 0;
-
-        if($result->num_rows > 0)
-        {
-            while($games[] = $result->fetch_assoc()) $gr++;
-        }
-
-        for($j = 0; $j < $settings['Options']['TeamsPerMatch'] || $j < $gr; $j++)
-        {
-            if(isset($games[$j]))
-            {
-                $sql = "SELECT name FROM teams WHERE teamid='".$games[$j]['team']."' AND active='1'";
-                $result = $conn->query($sql);
-
-                if($result->num_rows > 0)
-                {
-                    while($row = $result->fetch_assoc())
-                    {
-                        $name = $row['name'];
-                    }
-                }
-                else
-                {
-                    write_log("0 results for the query: ".$sql." in disp_timelist.php");
-                }
-
-                if($name)
-                {
-                    if($j != 0 && ($gr-1)) $anzeige .= " vs. ";
-                    if($anzeige != $name." vs. ") $anzeige .= $name;
-                }
-                $i++;
-            }
-        }
-        if($name) echo "<option name='time' value='".$times[$tmp]."'>".int_to_time($times[$tmp])." : ".$anzeige."</option>";
-    }
-
-
-
+	}
 	echo "</select><br><button name='submit' type='submit'>Bestaetigen</button></form>";
+	//var_dump($test);
 }
 if(isset($_POST['time']))
 {
