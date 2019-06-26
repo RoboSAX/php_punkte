@@ -86,11 +86,17 @@
         $sql = "INSERT INTO `games` (`gameid`, `block`, `time`, `points`, ";
         $sql.= "`objectives`, `penalties`, `team`, `active`, `finished`, ";
         $sql.= "`highlight`, `teamactive`) VALUES \n";
+		$curTime = 0;
         for($j = 1; $j <= $AnzTeams; $j++)
         {
             if($j != 1) $sql .= ", \n";
             $sql.= "(".$j.", 1, ";
-			$sql.= addTimes($TimeStart,($j-1)*5).",";
+			if((($j % $settings['Options']['TeamsPerMatch']) == ($settings['Options']['TeamsPerMatch'] - 1)) && $j > 1)
+			{
+				$curTime = addTimes($curTime,'5');
+			}		
+			
+			$sql.= addTimes($TimeStart,$curTime).",";
             $sql.= "0, 0, 0, ".$j.", 0, 0, 0, 1)";
         }
         
