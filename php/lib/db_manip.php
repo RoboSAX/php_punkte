@@ -46,9 +46,6 @@ function addTimes($time1, $time2)
 	$h = (int)($time1/100) + (int)($time2/100);
 	$m = (int)($time1%100) + (int)($time2%100);
 
-	echo " ".$h;
-	echo " ".$m;
-
 	if($m > 59)
 	{
 		$h++;
