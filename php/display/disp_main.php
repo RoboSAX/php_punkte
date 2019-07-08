@@ -1,5 +1,5 @@
 <?php
-    # include main function for settings and database connection
+    // include main function for settings and database connection
     require_once '../lib/db_main.php';
 ?>
 

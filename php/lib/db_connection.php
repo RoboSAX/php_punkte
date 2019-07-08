@@ -4,20 +4,19 @@ function OpenCon()
 {
     global $settings;
 
-	$dbhost = $settings['DB']['host'];
-	$dbuser = $settings['DB']['username'];
-	$dbpass = $settings['DB']['password'];
-	$db = $settings['DB']['database'];
+    $dbhost = $settings['DB']['host'];
+    $dbuser = $settings['DB']['username'];
+    $dbpass = $settings['DB']['password'];
+    $db = $settings['DB']['database'];
 
-	$conn = new mysqli($dbhost, $dbuser, $dbpass,$db) or die("Connect failed: %s\n". $conn -> error);
+    $conn = new mysqli($dbhost, $dbuser, $dbpass,$db) or die("Connect failed: %s\n". $conn -> error);
 
-
-	return $conn;
+    return $conn;
 }
 
 function CloseCon($conn)
 {
-	$conn -> close();
+    $conn -> close();
 }
 
 ?>
