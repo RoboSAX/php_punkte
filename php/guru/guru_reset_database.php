@@ -13,10 +13,11 @@
     if(isset($_POST['safety']))
     {
         $AnzTeams = $settings['Options']['AnzTeams'];
-		$TimeStart = $settings['Blocktimes']['Block1'];
+        $TimeStart = $settings['Blocktimes']['Block1'];
 
         echo "<br>";
         echo "Lösche alte Tabellen:<br>";
+        flush(); ob_flush();
 
         $conn->query('SET foreign_key_checks = 0');
         if ($result = $conn->query("SHOW TABLES"))
@@ -24,6 +25,7 @@
             while($row = $result->fetch_array(MYSQLI_NUM))
             {
                 echo "<div style='text-indent:20px;'>".$row[0]."</div>";
+                flush(); ob_flush();
                 $conn->query('DROP TABLE IF EXISTS '.$row[0]);
             }
         }
@@ -32,11 +34,13 @@
 
         echo "<br>";
         echo "Lege Tabellen neu an:<br>";
+        flush(); ob_flush();
         $conn->query('SET foreign_key_checks = 1');
 
 
 
         echo "<div style='text-indent:20px;'>changed</div>";
+        flush(); ob_flush();
         $sql = "CREATE TABLE `changed` (
                 `changedid`  int(11)    NOT NULL,
                 `game`       int(11)    NOT NULL,
@@ -68,6 +72,7 @@
 
 
         echo "<div style='text-indent:20px;'>games</div>";
+        flush(); ob_flush();
         $sql = "CREATE TABLE `games` (
                 `gameid`     int(11)    NOT NULL,
                 `block`      int(11)    NOT NULL,
@@ -86,20 +91,20 @@
         $sql = "INSERT INTO `games` (`gameid`, `block`, `time`, `points`, ";
         $sql.= "`objectives`, `penalties`, `team`, `active`, `finished`, ";
         $sql.= "`highlight`, `teamactive`) VALUES \n";
-		$curTime = 0;
+        $curTime = 0;
         for($j = 1; $j <= $AnzTeams; $j++)
         {
             if($j != 1) $sql .= ", \n";
             $sql.= "(".$j.", 1, ";
-			if((($j % $settings['Options']['TeamsPerMatch']) == ($settings['Options']['TeamsPerMatch'] - 1)) && $j > 1)
-			{
-				$curTime = addTimes($curTime,'5');
-			}		
-			
-			$sql.= addTimes($TimeStart,$curTime).",";
+            if((($j % $settings['Options']['TeamsPerMatch']) == ($settings['Options']['TeamsPerMatch'] - 1)) && $j > 1)
+            {
+                $curTime = addTimes($curTime,'5');
+            }
+
+            $sql.= addTimes($TimeStart,$curTime).",";
             $sql.= "0, 0, 0, ".$j.", 0, 0, 0, 1)";
         }
-        
+
         $sql.= ";";
         $conn->query($sql);
 
@@ -114,6 +119,7 @@
 
 
         echo "<div style='text-indent:20px;'>pointmanagement</div>";
+        flush(); ob_flush();
         $sql = "CREATE TABLE `pointmanagement` (
                 `pointid` int(11) NOT NULL,
                 `game`    int(11) NOT NULL,
@@ -147,6 +153,7 @@
 
 
         echo "<div style='text-indent:20px;'>teams</div>";
+        flush(); ob_flush();
         $sql = "CREATE TABLE `teams` (
                 `teamid`     int(11)     NOT NULL,
                 `name`       varchar(40) NOT NULL,
