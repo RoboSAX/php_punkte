@@ -64,7 +64,6 @@ function Select($table, $col)
 
     if($col == '*')
     {
-
         $list = array(array());
         if ($result->num_rows > 0)
         {

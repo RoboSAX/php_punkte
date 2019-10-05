@@ -21,7 +21,8 @@
     }
     $i = 0;
 ?>
-<p>Immer das Team anklicken, welches die naechste Startnummer besitzt</p>
+<p>Immer das Team anklicken, welches die naechste Startnummer besitzt.<br><br>
+<font color="red">Achtung: Betätigen der Schaltfläche setzt alle aktuellen Startnummern zurück!</font></p>
 <br>
 <?php
     if(!isset($_POST['counter']) && !isset($_POST['change'])) echo "<form action='edit_start.php' method='post'><button name='change' value='1' type='submit'>Werte aendern</button></form>";

@@ -3,25 +3,39 @@
     require_once '../lib/db_main.php';
 ?>
 
-<?php
-$teams = Select('teams','*');
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" href="../../css/select.css"/>
+</head>
 
+<?php
+    $teams = Select('teams','*');
+    //var_dump($teams['1']);
+    if(isset($_POST['game'])) $_POST['team'] = $_POST['game'];
 ?>
-<p>Ein Team auswählen:</p>
-<form action='edit_games.php' method='post'>
-<select id='team' name='team'>
-    <option value='0'>---Auswahl---</option>
-    <?php
-    for($i = 0; isset($teams[$i]); $i++)
-    {
-        echo "<option value='".$teams[$i]['teamid']."'>".$teams[$i]['name']."</option>";
-    }
-    ?>
-</select><br>
-<input type='submit' value='Akzeptieren'/>
-</form>
-<br>
-<table style='width:100%'>
+
+<table>
+    <tr><td>Wähle ein Team aus:</td></tr>
+    <tr>
+        <td style="padding-right: 20px;">
+            <form action='edit_games.php' method='post'>
+                <div class="select" style="max-height:116px;">
+<?php
+                    for($i = 0; isset($teams[$i]); $i++)
+                    {
+                        if(isset($teams[$i]))
+                        {
+                            echo "\t\t\t\t\t<button type='submit' name='team'";
+                            if($_POST['team'] and $teams[$i]['teamid'] == $_POST['team'])
+                                echo "style='color:blue'";
+                            echo " value='".$teams[$i]['teamid']."'>".$teams[$i]['name']."</button><hr>\n";
+                        }
+                    }
+?>
+                </div>
+            </form>
+        </td>
 <?php
     if(isset($_POST['team']))
     {
@@ -62,27 +76,37 @@ $teams = Select('teams','*');
             {
                 write_log("No Points found for game: ".$games[$i]['gameid']." in edit_games.php");
             }
-
-            echo "Block : ".$games[$i]['block'];
-            echo "<table><tr><td>";
-            echo $games[$i]['time'];
-            echo "</td><td>Objectives: ";
-            echo $games[$i]['objectives'];
-            echo "</td><td>Strafen: ";
-            echo $games[$i]['penalties'];
-            echo "</td></tr><tr><td>";
-            echo $games[$i]['points'];
-            echo "</td><td>+Punkte: ";
+            echo "\t\t<td>Block : ".$games[$i]['block']."\n";
+            echo "\t\t\t<table>\n";
+            echo "\t\t\t\t<tr>\n";
+            echo "\t\t\t\t\t<td style='padding:5px'>".$games[$i]['time']."</td>\n";
+            echo "\t\t\t\t\t<td style='padding:5px'>Objectives: ".$games[$i]['objectives']."</td>\n";
+            echo "\t\t\t\t\t<td style='padding:5px'>Strafen: ".$games[$i]['penalties']."</td>\n";
+            echo "\t\t\t\t</tr>\n";
+            echo "\t\t\t\t<tr>\n";
+            echo "\t\t\t\t\t<td>".$games[$i]['points']."</td>\n";
+            echo "\t\t\t\t\t<td>+Punkte: ";
             echo $points['+1'] * 1 + $points['+3'] * 3 + $points['+5'] * 5;
-            echo "</td><td>-Punkte: ";
+            echo "</td>\n";
+            echo "\t\t\t\t\t<td>-Punkte: ";
             echo $points['-1'] * -1 + $points['-3'] * -3 + $points['-5'] * -5;
-            echo "</td></tr><tr><td colspan='3'>";
-            echo "<form action='edit_games.php' method='post'><button type='submit' name='game' value='".$games[$i]['gameid']."'>Bearbeiten</button></form>";
-            echo "</td></tr></table>";
+            echo "</td>\n";
+            echo "\t\t\t\t</tr>\n";
+            echo "\t\t\t\t<tr>\n";
+            echo "\t\t\t\t\t<td colspan='3'>\n";
+            echo "\t\t\t\t\t\t<form action='edit_games.php' method='post'>\n";
+            echo "\t\t\t\t\t\t\t<button type='submit' name='game' value='".$games[$i]['gameid']."'>Bearbeiten</button>\n";
+            echo "\t\t\t\t\t\t</form>\n";
+            echo "\t\t\t\t\t</td>\n";
+            echo "\t\t\t\t</tr>\n";
+            echo "\t\t\t</table>\n";
+            echo "\t\t</td>\n";
         }
         CloseCon($conn);
     }
-    
+
+    echo "\t</tr>\n</table>\n";
+
     if(isset($_POST['game']))
     {
         $conn = OpenCon();
@@ -147,21 +171,44 @@ $teams = Select('teams','*');
         $result = $conn->query($sql);
         $teamname = $result->fetch_assoc();
 
-        echo "<form action='edit_games.php' method='post'>";
-        echo "<table><tr><td>Team:</td><td>".$teamname['name']."</td></tr>";
-        echo "<tr><td>Block:</td><td>".$game['block']."</td></tr>";
-        echo "<tr><td>Zeit:</td><td><input type='text' name='time' value='".$game['time']."'/></td></tr>";
+        echo "<br>\n<form action='edit_games.php' method='post'>\n";
+        echo "\t<table>\n";
+        echo "\t\t<tr>\n";
+        echo "\t\t\t<td>Team:</td>\n";
+        echo "\t\t\t<td>".$teamname['name']."</td>\n";
+        echo "\t\t</tr>\n";
+        echo "\t\t<tr>\n";
+        echo "\t\t\t<td>Block:</td>\n";
+        echo "\t\t\t<td>".$game['block']."</td>\n";
+        echo "\t\t</tr>\n";
+        echo "\t\t<tr>\n";
+        echo "\t\t\t<td>Zeit:</td>\n";
+        echo "\t\t\t<td><input type='text' name='time' value='".$game['time']."'/></td>\n";
+        echo "\t\t</tr>\n";
 
         foreach(array("+1", "+3", "+5", "-1", "-3", "-5") as $value)
         {
             if($settings['Options'][$value."_enable"])
             {
-                echo "<tr><td>$value:</td><td><input type='text' name='$value' value='".$point['$value']."'/></td></tr>";
+                echo "\t\t<tr>\n";
+                echo "\t\t\t<td>$value:</td>\n";
+                echo "\t\t\t<td><input type='text' name='$value' value='".$point['$value']."'/></td>\n";
+                echo "\t\t</tr>\n";
             }
         }
-        if(!$game['finished']) echo "<tr><td>Spiel beendet?</td><td><input type='checkbox' name='finished' /></td></tr>";
+        if(!$game['finished'])
+        {
+            echo "\t\t<tr>\n";
+            echo "\t\t\t<td>Spiel beendet?</td>\n";
+            echo "\t\t\t<td><input type='checkbox' name='finished' /></td>\n";
+            echo "\t\t</tr>\n";
+        }
 
-        echo "<tr><td>Spiel tauschen</td><td><select id='timeswitch' name='timeswitch'><option value='0'>--Nur bei Spielwechsel auswaehlen--</option>";
+        echo "\t\t<tr>\n";
+        echo "\t\t\t<td>Spiel tauschen</td>\n";
+        echo "\t\t\t<td>\n";
+        echo "\t\t\t\t<select id='timeswitch' name='timeswitch'>\n";
+        echo "\t\t\t\t\t<option value='0'>--Nur bei Spielwechsel auswaehlen--</option>\n";
 
         for($i = 0; $i < $size; $i++)
         {
@@ -172,11 +219,17 @@ $teams = Select('teams','*');
 
             if($name['name'])
             {
-                echo "<option value='".$refgames[$i]['gameid']."'>".int_to_time($refgames[$i]['time'])." ".$name['name']."</option>";
+                echo "\t\t\t\t\t<option value='".$refgames[$i]['gameid']."'>".int_to_time($refgames[$i]['time'])." ".$name['name']."</option>\n";
             }
         }
-        echo "</select></td></tr>";
-        echo "<tr><td colspan='2'><button type='submit' name='change' value='".$_POST['game']."'>Bestaetigen</button></td></tr></table></form>";
+        echo "\t\t\t\t</select>\n";
+        echo "\t\t\t</td>\n";
+        echo "\t\t</tr>\n";
+        echo "\t\t<tr>\n";
+        echo "\t\t\t<td colspan='2'><button type='submit' name='change' value='".$_POST['game']."'>Bestaetigen</button></td>\n";
+        echo "\t\t</tr>\n";
+        echo "\t</table>\n";
+        echo "</form>";
 
         CloseCon($conn);
     }
@@ -295,4 +348,5 @@ $teams = Select('teams','*');
     }
 
 ?>
-</table>
+
+</html>

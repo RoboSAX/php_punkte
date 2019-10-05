@@ -4,7 +4,7 @@
 ?>
 
 <head>
-    <link rel="stylesheet" href="../../css/disp_points.css">
+    <link rel="stylesheet" href="../../css/disp_points.css"/>
 </head>
 
 <?php
