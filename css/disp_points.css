@@ -85,6 +85,19 @@ table.main {
     text-align: left;
 }
 
+table button {
+	background-color: white;
+	border: 0;
+	color: blue;
+	font-family: initial;
+	font-size: medium;
+}
+
+table button:hover {
+	color:red;
+	cursor: pointer;
+}
+
 h2 {
     text-align: center;
 }

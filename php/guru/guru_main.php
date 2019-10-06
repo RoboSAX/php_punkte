@@ -14,21 +14,23 @@
             <table style='width:100%; height:100%'>
                 <tr>
                     <td style='width:100%; border-bottom:1px solid black'>
-                        <table>
+                        <form action='guru_main.php' method='post'>
+						<table>
                             <tr>
                                 <td style="text-align:center" colspan="3">Guru : Editor</td>
                                 <td style="text-align:center">Schiri</td>
                                 <td style="text-align:center">Display</td>
                             </tr>
                             <tr>
-                                <td><form action='guru_main.php' method='post'><button type='submit' name='changeview' value='teams' >Teams</button></form></td>
-                                <td><form action='guru_main.php' method='post'><button type='submit' name='changeview' value='start' >Startnummern</button></form></td>
-                                <td><form action='guru_main.php' method='post'><button type='submit' name='changeview' value='games' >Spiele</button></form></td>
-                                <!-- <td><form action='guru_main.php' method='post'><button type='submit' name='changeview' value='blocks'>edit Blocks</button></form></td> -->
-                                <td><form action='guru_main.php' method='post'>&nbsp;<button type='submit' name='changeview' value='ref' >Vorschau</button>&nbsp;</form></td>
-                                <td><form action='guru_main.php' method='post'><button type='submit' name='changeview' value='disp' >Vorschau</button></form></td>
+                                <td><button type='submit' name='changeview' value='teams' >Teams</button></td>
+                                <td><button type='submit' name='changeview' value='start' >Startnummern</button></td>
+                                <td><button type='submit' name='changeview' value='games' >Spiele</button></td>
+                                <!-- <td><button type='submit' name='changeview' value='blocks'>edit Blocks</button></td> -->
+                                <td>&nbsp;<button type='submit' name='changeview' value='ref' >Vorschau</button>&nbsp;</td>
+                                <td><button type='submit' name='changeview' value='disp' >Vorschau</button></td>
                             </tr>
                         </table>
+						</form>
                     </td>
                 </tr>
                 <tr>
