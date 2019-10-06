@@ -76,7 +76,8 @@
         $sql = "CREATE TABLE `games` (
                 `gameid`     int(11)    NOT NULL,
                 `block`      int(11)    NOT NULL,
-                `time`       int(11)    NOT NULL,
+                `time_start` int(11)    NOT NULL,
+				`time_act`	 int(11)	NOT NULL,
                 `points`     int(11)    NOT NULL,
                 `objectives` int(11)    NOT NULL,
                 `penalties`  int(11)    NOT NULL,
@@ -88,7 +89,7 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
         $conn->query($sql);
 
-        $sql = "INSERT INTO `games` (`gameid`, `block`, `time`, `points`, ";
+        $sql = "INSERT INTO `games` (`gameid`, `block`, `time_start`, `time_act`, `points`, ";
         $sql.= "`objectives`, `penalties`, `team`, `active`, `finished`, ";
         $sql.= "`highlight`, `teamactive`) VALUES \n";
         $curTime = 0;
@@ -101,8 +102,10 @@
                 $curTime = addTimes($curTime,'5');
             }
 
-            $sql.= addTimes($TimeStart,$curTime).",";
-            $sql.= "0, 0, 0, ".$j.", 0, 0, 0, 1)";
+			
+
+            $sql.= addTimes($TimeStart,$curTime).", 0,";
+            $sql.= "0, 0, 0, 0, 0, 0, 0, 1)";
         }
 
         $sql.= ";";
@@ -157,27 +160,27 @@
         $sql = "CREATE TABLE `teams` (
                 `teamid`     int(11)     NOT NULL,
                 `name`       varchar(40) NOT NULL,
-                `roboter`    varchar(20) NOT NULL,
+                `robot`   	 varchar(20) NOT NULL,
                 `points`     int(11)     NOT NULL,
-                `teamleiter` varchar(20) NOT NULL,
-                `games`      int(11)     NOT NULL,
-                `active`     tinyint(1)  NOT NULL
+                `teamleader` varchar(20) NOT NULL,
+				`position`	 int(11)	 NOT NULL,
+				`active`	 tinyint(1)	 NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
         $conn->query($sql);
 
-        $sql = "INSERT INTO teams (`teamid`, `name`, `roboter`, `points`, ";
-        $sql.= "`teamleiter`, `games`, `active`) VALUES \n";
+        $sql = "INSERT INTO teams (`teamid`, `name`, `robot`, `points`, ";
+        $sql.= "`teamleader`, `position`, `active`) VALUES \n";
         for($i = 1; $i <= $AnzTeams; $i++)
         {
             if ($i != 1) $sql .= ", \n";
-            $sql.= "(0, 'team".($i)."', 'roboter".($i);
-            $sql.= "', 0, 'teamleiter".($i)."', 0, 1)";
+            $sql.= "(".$i.", 'team".($i)."', 'robot".($i);
+            $sql.= "', 0, 'teamleader".($i)."', 0, 1)";
         }
         $sql.= ";";
         $conn->query($sql);
 
         $sql = "ALTER TABLE `teams`
-          ADD PRIMARY KEY (`name`);";
+          ADD PRIMARY KEY (`teamid`);";
         $conn->query($sql);
 
 
