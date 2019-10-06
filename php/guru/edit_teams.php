@@ -1,13 +1,8 @@
 <?php
     # include main function for settings and database connection
+    $styles = array("select.css");
     require_once '../lib/db_main.php';
 ?>
-
-<!doctype html>
-<html>
-<head>
-    <link rel="stylesheet" href="../../css/select.css"/>
-</head>
 
 <?php
     $conn = OpenCon();
@@ -42,7 +37,7 @@
                         {
                             echo "\t\t\t\t\t<button type='submit' name='team'";
                             if($_POST['team'] and $teams[$i]['teamid'] == $_POST['team'])
-                                echo "style='color:blue'";
+                                echo " style='color:blue'";
                             echo " value='".$teams[$i]['teamid']."'>".$teams[$i]['name']."</button><hr>\n";
                         }
                     }

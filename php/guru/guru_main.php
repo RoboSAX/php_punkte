@@ -1,16 +1,14 @@
 <?php
     # include main function for settings and database connection
+    $styles = array("select.css");
     require_once '../lib/db_main.php';
 ?>
 
-<!doctype html>
-<html>
-
 <body>
-<table style='width:100%; height:95vh' class='main'>
+<table style='width:100%; height:100%' class='main'>
     <tr>
         <td style='width:20%; border-right:1px solid black' valign='top'>
-            <iframe style='width:100%; height:100%; border: 0' src="<?php echo $settings['Server']['base_url']."display/disp_timelist_refresh.php"; ?>" ></iframe>
+            <iframe src="<?php echo $settings['Server']['base_url']."display/disp_timelist_refresh.php"; ?>" ></iframe>
         </td>
         <td style='width:60%' valign='top'>
             <table style='width:100%; height:100%'>
@@ -35,7 +33,7 @@
                 </tr>
                 <tr>
                     <td style='width:100%; height:100%'>
-                        <iframe style='width:100%; min-height:255px; height:100%; border: 0' src="<?php
+                        <iframe src="<?php
                             echo $settings['Server']['base_url'];
                             switch($_POST['changeview']) {
                                 case "teams":  echo "guru/edit_teams.php";  break;
@@ -57,5 +55,3 @@
     </tr>
 </table>
 </body>
-
-</html>

@@ -1,0 +1,13 @@
+iframe {
+	height: 100%;
+	border: 0;
+	width: 100%;
+}
+
+body {
+	height: 95vh;
+}
+
+body {
+	scrollbar-width: thin;
+}

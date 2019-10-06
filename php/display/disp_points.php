@@ -1,11 +1,8 @@
 <?php
     # include main function for settings and database connection
+	$styles = array("disp_points.css");
     require_once '../lib/db_main.php';
 ?>
-
-<head>
-    <link rel="stylesheet" href="../../css/disp_points.css"/>
-</head>
 
 <?php
     $conn = OpenCon();
@@ -34,7 +31,6 @@
     // 0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 
 ?>
-<body>
 <table style='width:100%' class='display'>
     <tr>
         <th style='width:300px'>Teams</th>
@@ -213,7 +209,6 @@
     }
 ?>
 </table>
-</body>
 
 <?php
 CloseCon($conn);
