@@ -1,7 +1,8 @@
 <?php
     # include main function for settings and database connection
-	$styles = array("disp_points.css");
     require_once '../lib/db_main.php';
+	$styles = array("disp_points.css");
+    require_once '../lib/head.php';
 ?>
 
 <?php
