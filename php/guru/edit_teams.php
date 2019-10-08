@@ -75,11 +75,11 @@
         echo "\t\t\t\t\t</tr>\n";
         echo "\t\t\t\t\t<tr>\n";
         echo "\t\t\t\t\t\t<td>Leiter: </td>\n";
-        echo "\t\t\t\t\t\t<td><input type='text' value='".$team['teamleiter']."' name='teamleiter'/></td>\n";
+        echo "\t\t\t\t\t\t<td><input type='text' value='".$team['teamleader']."' name='teamleader'/></td>\n";
         echo "\t\t\t\t\t</tr>\n";
         echo "\t\t\t\t\t<tr>\n";
         echo "\t\t\t\t\t\t<td>Roboter: </td>\n";
-        echo "\t\t\t\t\t\t<td><input type='text' value='".$team['roboter']."' name='roboter'/></td>\n";
+        echo "\t\t\t\t\t\t<td><input type='text' value='".$team['robot']."' name='robot'/></td>\n";
         echo "\t\t\t\t\t</tr>\n";
         echo "\t\t\t\t\t<tr>\n";
         echo "\t\t\t\t\t\t<td>Aktiv: </td>\n";
@@ -122,14 +122,14 @@
 
             write_log("Updated teamname for teamid: ".$team['teamid']." to: ".$_POST['name']." in edit_teams.php");
         }
-        if($_POST['teamleiter'] != $team['teamleiter'])
+        if($_POST['teamleader'] != $team['teamleader'])
         {
-            $sql = "UPDATE teams SET teamleiter='".$_POST['teamleiter']."' WHERE teamid='".$team['teamid']."'";
+            $sql = "UPDATE teams SET teamleader='".$_POST['teamleader']."' WHERE teamid='".$team['teamid']."'";
             $conn->query($sql);
         }
-        if($_POST['roboter'] != $team['roboter'])
+        if($_POST['robot'] != $team['robot'])
         {
-            $sql = "UPDATE teams SET roboter='".$_POST['roboter']."' WHERE teamid='".$team['teamid']."'";
+            $sql = "UPDATE teams SET robot='".$_POST['robot']."' WHERE teamid='".$team['teamid']."'";
             $conn->query($sql);
         }
         if($_POST['active'] != $team['active'])

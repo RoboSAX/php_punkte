@@ -86,16 +86,16 @@ table.main {
 }
 
 table button {
-	background-color: white;
-	border: 0;
-	color: blue;
-	font-family: initial;
-	font-size: medium;
+    background-color: white;
+    border: 0;
+    color: blue;
+    font-family: initial;
+    font-size: medium;
 }
 
 table button:hover {
-	color:red;
-	cursor: pointer;
+    color:red;
+    cursor: pointer;
 }
 
 h2 {

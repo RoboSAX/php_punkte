@@ -77,7 +77,7 @@
                 `gameid`     int(11)    NOT NULL,
                 `block`      int(11)    NOT NULL,
                 `time_start` int(11)    NOT NULL,
-				`time_act`	 int(11)	NOT NULL,
+                `time_act`   int(11)    NOT NULL,
                 `points`     int(11)    NOT NULL,
                 `objectives` int(11)    NOT NULL,
                 `penalties`  int(11)    NOT NULL,
@@ -102,7 +102,7 @@
                 $curTime = addTimes($curTime,'5');
             }
 
-			
+
 
             $sql.= addTimes($TimeStart,$curTime).", 0,";
             $sql.= "0, 0, 0, 0, 0, 0, 0, 1)";
@@ -160,11 +160,11 @@
         $sql = "CREATE TABLE `teams` (
                 `teamid`     int(11)     NOT NULL,
                 `name`       varchar(40) NOT NULL,
-                `robot`   	 varchar(20) NOT NULL,
+                `robot`      varchar(20) NOT NULL,
                 `points`     int(11)     NOT NULL,
                 `teamleader` varchar(20) NOT NULL,
-				`position`	 int(11)	 NOT NULL,
-				`active`	 tinyint(1)	 NOT NULL
+                `position`   int(11)     NOT NULL,
+                `active`     tinyint(1)  NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
         $conn->query($sql);
 

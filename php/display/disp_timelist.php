@@ -9,7 +9,7 @@ $sql = "SELECT time FROM games WHERE time>'0' AND finished='0' AND active='0' AN
 $result = $conn->query($sql);
 
 $times = array();
-$size = 1;
+$size = 0;
 
 if($result->num_rows > 0)
 {

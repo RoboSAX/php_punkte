@@ -1,7 +1,7 @@
 <?php
     # include main function for settings and database connection
     require_once '../lib/db_main.php';
-	$styles = array("disp_points.css");
+    $styles = array("disp_points.css");
     require_once '../lib/head.php';
 ?>
 
@@ -32,16 +32,16 @@
     // 0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 ?>
 <?php
-	$guru = $_SERVER['HTTP_REFERER'] == $settings['Server']['base_url']."guru/guru_main.php";
+    $guru = $_SERVER['HTTP_REFERER'] == $settings['Server']['base_url']."guru/guru_main.php";
 
-	if($guru) echo "<form action='".$settings['Server']['base_url']."guru/edit_teams.php' method='post'>\n";
+    if($guru) echo "<form action='".$settings['Server']['base_url']."guru/edit_teams.php' method='post'>\n";
 
-	function mklink($link, $href, $param, $arg)
-	{
-		if($GLOBALS['guru'])
-			$link = "<button type='submit' name='$param' value='$arg'><u>$link</u></button>";
-		return $link;
-	}
+    function mklink($link, $href, $param, $arg)
+    {
+        if($GLOBALS['guru'])
+            $link = "<button type='submit' name='$param' value='$arg'><u>$link</u></button>";
+        return $link;
+    }
 ?>
 <table style='width:100%' class='display'>
     <tr>
@@ -53,7 +53,7 @@
         <th>Spielblock V</th>
     </tr>
 <?php
-	$current_place = 1;
+    $current_place = 1;
     $last_place = 1;
 
     for($i = 0;$i < $anz; $i++) //Liste mit Teams
@@ -90,9 +90,9 @@
         echo "</td>\n";
 
         echo "\t\t\t\t\t<td colspan='2'>".mklink(
-			"<b>".$teams[$i]['name']."</b>", "guru/guru_main.php",
-			"team", $teams[$i]['teamid']
-		)."</td>\n";
+            "<b>".$teams[$i]['name']."</b>", "guru/guru_main.php",
+            "team", $teams[$i]['teamid']
+        )."</td>\n";
         echo "\t\t\t\t\t<td rowspan='2' style='width:25px'>".$teams[$i]['points']."</td>\n";
         echo "\t\t\t\t</tr>\n";
         echo "\t\t\t\t<tr>\n";

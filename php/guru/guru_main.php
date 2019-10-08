@@ -16,7 +16,7 @@
                 <tr>
                     <td style='width:100%; border-bottom:1px solid black'>
                         <form action='guru_main.php' method='post'>
-						<table>
+                        <table>
                             <tr>
                                 <td style="text-align:center" colspan="3">Guru : Editor</td>
                                 <td style="text-align:center">Schiri</td>
@@ -31,7 +31,7 @@
                                 <td><button type='submit' name='changeview' value='disp' >Vorschau</button></td>
                             </tr>
                         </table>
-						</form>
+                        </form>
                     </td>
                 </tr>
                 <tr>
