@@ -36,4 +36,5 @@
     // include main functions
     require_once '../lib/db_connection.php';
     require_once '../lib/db_manip.php';
+	require_once '../lib/objects.php';
 ?>
