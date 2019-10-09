@@ -188,7 +188,7 @@ class Team
 	}
 }
 
-class Teams
+class Teams extends Team
 {
 	private $tms = [], $AnzTeam;
 	public function __construct()
@@ -255,6 +255,57 @@ class Teams
 		}
 		echo "No Team with ID".$tmp."found"; //Durch LOG ersetzen
 	}	
+	public function order_teams_by_points()
+	{
+		if(!sizeof($this->tms)) return false;
+		$array_out = [];
+		$used = [];
+		
+		while(sizeof($array_out) != sizeof($this->tms))
+		{
+			$tmp = 0;
+			
+			for($i = 0; $i < sizeof($this->tms); $i++)
+			{
+				if($this->tms[$i]->get_points() >= $this->tms[$tmp]->get_points() AND !in_array($i, $used))
+				{
+					$tmp = $i;
+				}
+			}
+			
+			array_push($used, $tmp);
+			array_push($array_out, $this->tms[$tmp]);
+		}
+		
+		$this->tms = $array_out;
+		return true;
+		
+	}
+	public function order_teams_by_id()
+	{
+		if(sizeof($this->tms) == 0) return false;
+		$array_out = [];
+		$used = [];
+		
+		while(sizeof($array_out) != sizeof($this->tms))
+		{
+			$tmp = 0;
+			
+			for($i = 0; $i < sizeof($this->tms); $i++)
+			{
+				if($this->tms[$i]->get_id() <= $this->tms[$tmp]->get_id() AND !in_array($i, $used))
+				{
+					$tmp = $i;
+				}
+			}
+			
+			array_push($used, $tmp);
+			array_push($array_out, $this->tms[$tmp]);
+		}
+		
+		$this->tms = $array_out;
+		return true;
+	}
 }
 
 class Game
