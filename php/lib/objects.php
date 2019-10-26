@@ -52,9 +52,11 @@ class Team
 		else
 		{
 			echo "No Data found"; //Durch LOG ersetzen
+			CloseCon($conn);
 			return false;
 		}
 		
+		CloseCon($conn);
 		return true;
 	}
 	public function save_team_to_db()
@@ -62,7 +64,7 @@ class Team
 		$conn = OpenCon();
 		$sql = "SELECT * FROM teams WHERE teamid='".$this->teamid."'";
 		$tmp = $conn->query($sql);
-		if($this->teamid != 0 AND $tmp->num_rows == 0)
+		if($this->teamid != 0 OR $tmp->num_rows == 0)
 		{	
 			$sql = "INSERT INTO teams (`position`, `name`, `robot`, `points`, `teamleader`, `active`) VALUES (" . $this->position . ", '" . $this->name . "', '" . $this->robot . "', " . $this->points . ", '" . $this->teamleader . "', " . $this->active . ")";
 			$conn->query($sql);		
@@ -78,7 +80,7 @@ class Team
 									 `teamleader`='". $this->teamleader . "',
 									 `position`=". $this->position . ",
 									 `active`=". $this->active . " WHERE `teamid`=". $this->teamid;
-			echo $sql;
+			
 			$conn->query($sql);
 			CloseCon($conn);
 			return true;
@@ -120,6 +122,17 @@ class Team
 	{
 		return $this->active;
 	}
+	public function set_id($tmp)
+	{
+		if(!is_int($tmp) OR $tmp < 0)
+		{
+			echo "Wrong datatype or input. Use TeamID (pos INT)";
+			return false;
+		}
+		
+		$this->teamid = $tmp;
+		return true;
+	}
 	public function set_teamleader($tmp)
 	{
 		if(!is_string($tmp))
@@ -133,9 +146,9 @@ class Team
 	}
 	public function set_points($tmp)
 	{
-		if(!is_int($tmp))
+		if(!is_int($tmp) OR $tmp < 0)
 		{
-			echo "Wrong datatype. Use Points (INT)"; //Durch LOG ersetzen
+			echo "Wrong datatype or input. Use Points (pos INT)"; //Durch LOG ersetzen
 			return false;
 		}
 		
@@ -166,9 +179,9 @@ class Team
 	}
 	public function set_position($tmp)
 	{
-		if(!is_int($tmp))
+		if(!is_int($tmp) OR $tmp < 0)
 		{
-			echo "Wrong datatype. Use Position (INT)"; //Durch LOG ersetzen
+			echo "Wrong datatype or input. Use Position (pos INT)"; //Durch LOG ersetzen
 			return false;
 		}
 		
@@ -188,25 +201,60 @@ class Team
 	}
 }
 
-class Teams extends Team
+class Teams
 {
-	private $tms = [], $AnzTeam;
+	private $tms, $AnzTeam;
 	public function __construct()
 	{
-		$settings_filename='settings.ini';					//Keine Ahnung warum, aber offensichtlich kann eine Funktion nicht auf global variablen zugreifen
-		$settings_file='../../config/'.$settings_filename;
-		if (!file_exists($settings_file)) {
-			die("Can't find ".$settings_filename."!");
-		}
-		$settings = parse_ini_file($settings_file,true);
-		
-		$this->AnzTeam = $settings['Options']['AnzTeams'];
-		
-		for($i = 0; $i < $this->AnzTeam; $i++)
+		$this->tms = [];
+		$this->AnzTeam = 0;
+	}
+	public function add_team($nt)
+	{
+		if(!is_a($nt, "Team"))
 		{
-			$tmp = new Team();
-			array_push($this->tms, $tmp);
+			echo "Wrong Datatype. Use Object of Class 'Team'";
+			return false;
 		}
+		
+		for($i = 0; $i < $this->AnzTeam; $i++) //To make sure that IDs stay unique
+		{
+			if($this->tms[$i]->get_id() == $nt->get_id())
+			{
+				echo "TeamID allready exists. Please change ID";
+				return false;
+			}
+		}
+	
+		if($nt->get_id() == 0)	//If the team doesnt have a valid ID yet, it just gets the last ID + 1 of all listed teams in the private array tms
+		{
+			$nt->set_id(sizeof($this->tms) + 1);
+		}
+		
+		array_push($this->tms, $nt);
+		$this->AnzTeam++;
+		return true;
+		
+	}
+	public function remove_team($id)
+	{
+		if(!is_int($id)) 
+		{
+			echo "Wrong Datatype. Use TeamID (INT)";
+			return false;
+		}
+		
+		for($i = 0; $i < sizeof($this->tms); $i++)
+		{
+			if($id == $this->tms[$i]->get_id())
+			{
+				array_splice($this->tms, $i, 1);
+				$this->AnzTeam--;
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	public function get_teams()
 	{
@@ -214,13 +262,23 @@ class Teams extends Team
 	}
 	public function load_teams_from_db()
 	{
-		for($i = 0; $i < $this->AnzTeam; $i++)
+		$conn = OpenCon();
+		$sql = "SELECT COUNT(*) FROM teams";
+		$tmp = $conn->query($sql);
+		$row = $tmp->fetch_assoc();
+		$db_teams = $row['COUNT(*)'];
+		CloseCon($conn);
+		
+		for($i = 0; $i < $db_teams; $i++)
 		{
-			if(!($this->tms[$i]->load_team_from_db($i+1)))
+			$tmp2 = new Team();
+			if(!($tmp2->load_team_from_db($i+1)))
 			{
-				echo "Team with id: ". $this->tms[$i]->get_id() . " could not be loaded.";
+				echo "Team with id: ". $i . " could not be loaded.";
+				CloseCon($conn);
 				return false;
 			}
+			$this->add_team($tmp2);
 		}
 		
 		return true;
@@ -364,16 +422,47 @@ class Game
 		return true;
 	}
 	public function save_game_to_db()
-	{/*
+	{
 		$conn = OpenCon();
-		$sql = "SELECT * FROM games WHERE gameid=" . $this->gameid;
+		$sql = "SELECT * FROM games WHERE gameid='".$this->gameid."'";
 		$tmp = $conn->query($sql);
 		if($this->gameid != 0 AND $tmp->num_rows == 0)
+		{	
+			$sql = "INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `objectives`, `penalties`, `team`, `active`, `finished`, `highlight`, `teamactive`) 
+					VALUES (" . $this->block . ", " . $this->time_start . ", " . $this->time_act . ", " . $this->points . ", " . $this->objectives . ", " . $this->penalties . 
+					", " . $this->team . ", " . $this->active . ", " . $this->finished . ", " . $this->highlight . ", " . $this->teamactive . ")";
+			$conn->query($sql);		
+			CloseCon($conn);
+			$this->update_id();
+			return true;
+		}
+		elseif($this->teamid != 0 AND $tmp->num_rows == 1)
 		{
-			$sql = "INSERT INTO `games` (`gameid`"
+			$sql = "UPDATE games SET `block`=". $this->block .",
+									 `time_start`=". $this->time_start .",
+									 `time_act`=". $this->time_act .",
+									 `points`=". $this->points . ",
+									 `objectives`=". $this->objectives . ",
+									 `penalties`=". $this->penalties .",
+									 `team`=". $this->team .",
+									 `active`=". $this->active .",
+									 `finished`=". $this->finished .",
+									 `highlight`=". $this->hightlight .",
+									 `teamactive`=". $this->teamactive . " WHERE `gameid`=". $this->gameid;
+			echo $sql;
+			$conn->query($sql);
+			CloseCon($conn);
+			return true;
+		}
+		else
+		{
+			CloseCon($conn);
+			//Noch irgendein LOG
+			return false;
 		}
 		
-		*/
+		return false;
+		
 	}
 }
 
