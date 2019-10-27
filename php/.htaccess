@@ -1,2 +1,15 @@
 # default page is same as for display-folder
 DirectoryIndex display/
+
+# hide lib, logs and trash directory explicitly
+RedirectMatch 403 lib/
+RedirectMatch 403 logs/
+RedirectMatch 403 trash/
+
+# hide all hidden files (starting with ".")
+RedirectMatch 403 .*/\..*
+
+# redirect php-scripts to correct subfolders
+RedirectMatch 303 "^((?!.*guru/).*)/((?=guru)([^/]*))\.php$" "$1/guru/$2\.php"
+RedirectMatch 303 "^((?!.*guru/).*)/((?=edit)([^/]*))\.php$" "$1/guru/$2\.php"
+RedirectMatch 303 "^((?!.*display/).*)/((?=disp)([^/]*))\.php$" "$1/display/$2\.php"

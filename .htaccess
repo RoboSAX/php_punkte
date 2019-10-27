@@ -1,0 +1,17 @@
+# default page is same as for php-folder
+DirectoryIndex php/
+
+# hide git-repo, config and scripts directory explicitly
+RedirectMatch 403 \.git/
+RedirectMatch 403 config/
+RedirectMatch 403 scripts/
+
+# hide all hidden files (starting with ".")
+RedirectMatch 403 .*/\..*
+
+# redirect php-scripts to correct subfolder (further redirect is done in the php-folder)
+RedirectMatch 303 "^((?!.*php/).*)/(([^/]*))\.php$" "$1/php/$2\.php"
+
+# redirect css-files to correct subfolder
+RedirectMatch 303 "^((?!.*css/).*)/([^/]*)\.css$" "$1/css/$2\.css"
+
