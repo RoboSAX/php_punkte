@@ -3,8 +3,23 @@ require_once '../lib/db_main.php';
 
 class Team
 {
-	private $teamid, $teamleader, $points, $robot, $name, $position, $active;
-
+	/**
+	  *	ID of team
+	  *
+	  * @var integer $teamid
+	  */
+	private $teamid;
+	private $teamleader;
+	private	$name;
+	private	$points;
+	private	$robot;
+	private	$position;
+	private	$active;
+ 
+	/*! \brief 	Constructor of a Team object.
+	 *			Sets all private variables to 0, "" or true (active).
+	 *
+	 */
 	public function __construct()
 	{
 		$this->teamid = 0;
@@ -25,6 +40,19 @@ class Team
 		$this->teamid = $new_id;
 		CloseCon($conn);
 	}
+	/*! \brief Loads team data from the database.
+	 *
+	 *	This function sends a sql request to the linked database (specified in the settings.ini file)
+	 *	to get the data of the team with the ID $id. The data is safed in the private attributes.
+	 *
+	 *	Returns 'false' if one of the following events occure:
+	 *		- $id is not an integer
+	 *		- no data for a team with ID: $id ; was found in the database
+	 *	
+	 *	Returns 'true' if there were no errors
+	 *
+	 *	'false'-outputs will be logged (if enabled in the settings.ini file)
+	 */
 	public function load_team_from_db($id)
 	{
 		if(!is_int($id))
@@ -59,12 +87,32 @@ class Team
 		CloseCon($conn);
 		return true;
 	}
+	/*! \brief Saves team data in the database
+	 *
+	 *	This function sends a sql request to the linked database (specified in the settings.ini file)
+	 *	to safe the objects private attributes in the database.
+	 *
+	 *	There are two possible uses for this function:
+	 *		- if a team with the same ID already exists in the database -> The function updates the values in the database.
+	 *		- if no team with the same ID exists -> The function creates a new entry in the database 
+	 *		  and updates the ID (also of the object)
+	 *		  Use with care, is you may have to manually delete wrong inputs in your database
+	 *
+	 *	Returns 'true' if one of the following events occure:
+	 *		- created a new entry in the database
+	 *		- u pdated a existing entry in the database
+	 *
+	 *	Returns 'false' in all other cases.
+	 *	For example: 
+	 *		- if two teams with the same ID exists (look for the checks!)
+	 *		- if a team with ID = 0 exists (it should not be the case, but you never know)
+	 */
 	public function save_team_to_db()
 	{
 		$conn = OpenCon();
 		$sql = "SELECT * FROM teams WHERE teamid='".$this->teamid."'";
 		$tmp = $conn->query($sql);
-		if($this->teamid != 0 OR $tmp->num_rows == 0)
+		if($tmp->num_rows == 0)
 		{	
 			$sql = "INSERT INTO teams (`position`, `name`, `robot`, `points`, `teamleader`, `active`) VALUES (" . $this->position . ", '" . $this->name . "', '" . $this->robot . "', " . $this->points . ", '" . $this->teamleader . "', " . $this->active . ")";
 			$conn->query($sql);		
@@ -92,36 +140,63 @@ class Team
 			return false;
 		}
 		
+		CloseCon($conn);
 		return false;
 	}
+	/*!
+	 * \brief Returns the atribute $teamid of this object
+	 */
 	public function get_id()
 	{
 		return $this->teamid;
 	}
-	public function get_teamleader()
+	/*!
+	 * \brief Returns the atribute $teamleader of this object
+	 */
+	public function get_teamleader() //!< \brief Returns the atribute $teamleader of this object
 	{
 		return $this->teamleader;
 	}
-	public function get_points()
+	/*!
+	 * \brief Returns the atribute $points of this object
+	 */
+	public function get_points() //!< \brief Returns the atribute $points of this object
 	{
 		return $this->points;
 	}
-	public function get_robot()
+	/*!
+	 * \brief Returns the atribute $robot of this object
+	 */
+	public function get_robot() //!< \brief Returns the atribute $robot of this object
 	{
 		return $this->robot;
 	}
-	public function get_name()
+	/*!
+	 * \brief Returns the atribute $name of this object
+	 */
+	public function get_name() //!< \brief Returns the atribute $name of this object
 	{
 		return $this->name;
 	}
-	public function get_position()
+	/*!
+	 * \brief Returns the atribute $position of this object
+	 */
+	public function get_position() //!< \brief Returns the atribute $position of this object
 	{
 		return $this->position;
 	}
+	/*!
+	 * \brief Returns the atribute $active of this object
+	 */
 	public function get_active()
 	{
 		return $this->active;
 	}
+	/*!	\brief Sets $teamid of this object to $tmp
+	 *
+	 *	Returns 'false' if $tmp is not of type integer.
+	 *	Returns 'true' else.
+	 */
 	public function set_id($tmp)
 	{
 		if(!is_int($tmp) OR $tmp < 0)
@@ -133,6 +208,11 @@ class Team
 		$this->teamid = $tmp;
 		return true;
 	}
+	/*!	\brief Sets $teamleader of this object to $tmp
+	 *
+	 *	Returns 'false' if $tmp is not of type string.
+	 *	Returns 'true' else.
+	 */
 	public function set_teamleader($tmp)
 	{
 		if(!is_string($tmp))
@@ -144,6 +224,11 @@ class Team
 		$this->teamleader = $tmp;
 		return true;
 	}
+	/*!	\brief Sets $points of this object to $tmp
+	 *
+	 *	Returns 'false' if $tmp is not of type integer.
+	 *	Returns 'true' else.
+	 */
 	public function set_points($tmp)
 	{
 		if(!is_int($tmp) OR $tmp < 0)
@@ -155,6 +240,11 @@ class Team
 		$this->points = $tmp;
 		return true;
 	}
+	/*!	\brief Sets $robot of this object to $tmp
+	 *
+	 *	Returns 'false' if $tmp is not of type string.
+	 *	Returns 'true' else.
+	 */
 	public function set_robot($tmp)
 	{
 		if(!is_string($tmp))
@@ -166,6 +256,11 @@ class Team
 		$this->robot = $tmp;
 		return true;
 	}
+	/*!	\brief Sets $name of this object to $tmp
+	 *
+	 *	Returns 'false' if $tmp is not of type string.
+	 *	Returns 'true' else.
+	 */
 	public function set_name($tmp)
 	{
 		if(!is_string($tmp))
@@ -177,6 +272,11 @@ class Team
 		$this->name = $tmp;
 		return true;
 	}
+	/*!	\brief Sets $position of this object to $tmp
+	 *
+	 *	Returns 'false' if $tmp is not of type integer.
+	 *	Returns 'true' else.
+	 */
 	public function set_position($tmp)
 	{
 		if(!is_int($tmp) OR $tmp < 0)
@@ -188,27 +288,40 @@ class Team
 		$this->position = $tmp;
 		return true;
 	}
+	/*!	\brief Sets $active of this object to $tmp
+	 *
+	 *	Returns 'false' if $tmp is not of type integer (as 0 is interpreted as false and all other numbers as true) or boolean.
+	 *	Returns 'true' else.
+	 */
 	public function set_active($tmp)
 	{
-		if(!is_int($tmp))
+		if(!is_int($tmp) and !is_bool($tmp))
 		{
 			echo "Wrong datatype. Use Active (BOOL)"; //Durch LOG ersetzen
 			return false;
 		}
 		
-		$this->active = $tmp;
+		$this->active = bool($tmp);
 		return true;
 	}
 }
 
 class Teams
 {
-	private $tms, $AnzTeam;
+	private $tms = [];
+	private $AnzTeam;
+	/*! \brief Constructor of Teams objects.
+	 *
+	 * Sets $tms to an empty array and $AnzTeams to 0.
+	 */
 	public function __construct()
 	{
 		$this->tms = [];
 		$this->AnzTeam = 0;
 	}
+	/*! \brief Adds a Team object to tms
+	 *
+	 */
 	public function add_team($nt)
 	{
 		if(!is_a($nt, "Team"))
