@@ -308,7 +308,7 @@ class Team
 
 class Teams
 {
-	private $tms = [];
+	public $tms = [];
 	private $AnzTeam;
 	/*! \brief Constructor of Teams objects.
 	 *
@@ -319,8 +319,15 @@ class Teams
 		$this->tms = [];
 		$this->AnzTeam = 0;
 	}
-	/*! \brief Adds a Team object to tms
+	/*! \brief Adds the transmitted object of type Team to tms.
 	 *
+	 *	Returns 'false' if one of the following events occures:
+	 *	- $nt is not an object of class Team.
+	 *	- ID of $nt isn't unique in $tms.
+	 *
+	 *	Returns 'true' if the integration of the transmitted object was successfully.
+	 *
+	 *	If the ID of $nt is zero, it will change automaticly to size of $tms + 1.
 	 */
 	public function add_team($nt)
 	{
@@ -349,6 +356,15 @@ class Teams
 		return true;
 		
 	}
+	/*	\brief Removes the team object with the ID $id from $tms.
+	 *
+	 *	Returns 'true' if an object was successfully deleted from $tms.
+	 *
+	 *	Returns 'false' if either:
+	 *	- $id is not of type integer or
+	 *	- no object with the transmitted ID exists in $tms.
+	 *
+	 */
 	public function remove_team($id)
 	{
 		if(!is_int($id)) 
@@ -369,25 +385,44 @@ class Teams
 		
 		return false;
 	}
-	public function get_teams()
-	{
-		return $this->tms;
-	}
+	/*	\brief Loads all teams from the database.
+	 *
+	 *	This function uses the load_team_from_db($id) function of a Team object, to load all teams from the database.
+	 *
+	 *	Returns 'false' if one of the following events occure:
+	 *	- no data was found in the database.
+	 *	- load_team_from_db($id) returned false.
+	 *
+	 *	Returns 'true' if all teams were loaded successfully.
+	 */
 	public function load_teams_from_db()
 	{
 		$conn = OpenCon();
-		$sql = "SELECT COUNT(*) FROM teams";
+		$sql = "SELECT teamid FROM teams";
 		$tmp = $conn->query($sql);
-		$row = $tmp->fetch_assoc();
-		$db_teams = $row['COUNT(*)'];
+		$db_teams = [];
+		if($tmp->num_rows > 0)
+		{
+			while($row = $tmp->fetch_assoc())
+			{
+				$db_teams[] = $row['teamid'];
+			}
+		}
+		else
+		{
+			echo "No data found";
+			CloseCon($conn);
+			return false;
+		}
+		
 		CloseCon($conn);
 		
-		for($i = 0; $i < $db_teams; $i++)
+		for($i = 0; $i < sizeof($db_teams); $i++)
 		{
 			$tmp2 = new Team();
-			if(!($tmp2->load_team_from_db($i+1)))
+			if(!($tmp2->load_team_from_db($db_teams[$i])))
 			{
-				echo "Team with id: ". $i . " could not be loaded.";
+				echo "Team with id: ". $db_teams[$i] . " could not be loaded.";
 				CloseCon($conn);
 				return false;
 			}
@@ -396,6 +431,15 @@ class Teams
 		
 		return true;
 	}
+	/*	\brief Saves the data inside $tms in the database.
+	 *
+	 *	This function uses the save_team_to_db() function of a Team object in a loop to save the data inside of $tms.
+	 *
+	 *	Returns 'false' if save_team_to_db() returns false.
+	 *
+	 *	Returns 'true' if the data could be saved to the database successfully.
+	 *
+	 */
 	public function save_teams_to_db()
 	{
 		for($i = 0; $i < $this->AnzTeam; $i++)
@@ -409,9 +453,16 @@ class Teams
 		
 		return true;
 	}
+	/*	\brief Returns a Team object with the ID $tmp.
+	 *
+	 *	This function searches $tms for a Team object with the teamid $tmp and, if found, returns it.
+	 *
+	 *	Returns an empty Team object, if no Team object with the teamid $tmp exists in $tms.
+	 *
+	 */
 	public function get_team_by_id($tmp)
 	{
-		if(!is_int($tmp))
+		if(!is_int($tmp) or $tmp < 1)
 		{
 			echo "Wrong datatype. Use TeamID (INT)"; //Durch LOG ersetzen
 			return;
@@ -426,6 +477,9 @@ class Teams
 		}
 		echo "No Team with ID".$tmp."found"; //Durch LOG ersetzen
 	}	
+	/* \brief Orders $tms [desc] by points of the Team objects
+	 *
+	 */
 	public function order_teams_by_points()
 	{
 		if(!sizeof($this->tms)) return false;
@@ -452,6 +506,9 @@ class Teams
 		return true;
 		
 	}
+	/*	\brief Orders $tms [asc] by teamid of the Team objects.
+	 *
+	 */
 	public function order_teams_by_id()
 	{
 		if(sizeof($this->tms) == 0) return false;
