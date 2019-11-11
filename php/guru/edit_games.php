@@ -24,7 +24,7 @@
                             echo "\t\t\t\t\t<button type='submit' name='team'";
                             if($_POST['team'] and $teams[$i]['teamid'] == $_POST['team'])
                                 echo " style='color:blue'";
-                            echo " value='".$teams[$i]['teamid']."'>".$teams[$i]['name']."</button><hr>\n";
+                            echo " value='".$teams[$i]['teamid']."'>".$teams[$i]['name']."</button><br>\n"; #"</button><hr>\n";
                         }
                     }
 ?>
