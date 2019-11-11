@@ -9,9 +9,13 @@ RedirectMatch 403 scripts/
 # hide all hidden files (starting with ".")
 RedirectMatch 403 .*/\..*
 
-# redirect php-scripts to correct subfolder (further redirect is done in the php-folder)
-RedirectMatch 303 "^((?!.*php/).*)/(([^/]*))\.php$" "$1/php/$2\.php"
+# redirect php-scripts to correct subfolder
+# (further redirect is done in the php-folder)
+RedirectMatch 303 "^((?!.*(php/|doc/)).*)/(([^/]*))\.php$" "$1/php/$2\.php"
+
+RedirectMatch 303 "^((?!.*(php/|doc/)).*)/guru/?$" "$1/php/guru/"
+RedirectMatch 303 "^((?!.*(php/|doc/)).*)/ref[^/]*/?$" "$1/php/referee/"
+RedirectMatch 303 "^((?!.*(php/|doc/)).*)/disp[^/]*/?$" "$1/php/display/"
 
 # redirect css-files to correct subfolder
-RedirectMatch 303 "^((?!.*css/).*)/([^/]*)\.css$" "$1/css/$2\.css"
-
+RedirectMatch 303 "^((?!.*(css/|doc/)).*)/([^/]*)\.css$" "$1/css/$2\.css"
