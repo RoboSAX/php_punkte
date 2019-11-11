@@ -16,12 +16,12 @@
     $check = array(
         "DB" => array("host", "username", /* "password", */ "database"),
         "Server" => array("base_url"),
+        "Files" => array("logging_path"),
         "Options" => array(
-            "AnzTeams", "GameTime", "TeamsPerMatch", /* bool "logging", */
-            "RefreshRateInternal", "RefreshRateDisp"
-        ),
-        /* bool "+5_enable", */  /* bool "+3_enable", */  /* bool "+1_enable", */
-        /* bool "-1_enable", */  /* bool "-3_enable", */  /* bool "-5_enable" */
+            "AnzTeams", "GameTime", "TeamsPerMatch", "Logging",
+            "RefreshRateInternal", "RefreshRateDisp",
+            "+5_enable", "+3_enable", "+1_enable",
+            "-1_enable", "-3_enable", "-5_enable"),
         "Blocktimes" => array("Block1", "Block2", "Block3", "Block4", "Block5", "Block6")
     );
 
@@ -29,12 +29,12 @@
     {
         foreach($names as $name)
         {
-            if($settings[$switch][$name] == NULL) die($settings_filename." without [".$switch."][".$name."]!" );
+            if(!isset($settings[$switch][$name])) die($settings_filename." without [".$switch."][".$name."]!" );
         }
     }
 
     // include main functions
     require_once '../lib/db_connection.php';
     require_once '../lib/db_manip.php';
-	require_once '../lib/objects.php';
+    require_once '../lib/objects.php';
 ?>
