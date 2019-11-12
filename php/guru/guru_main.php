@@ -44,7 +44,7 @@
                                 case "games":  echo "guru/edit_games.php";  break;
                                 case "blocks": echo "guru/edit_blocks.php"; break;
                                 case "ref":    echo "referee/schiri.php";   break;
-                                case "disp":   echo "display/disp_points_refresh.php"; break;
+                                case "disp":   echo "display/disp_points_refresh.php?guru=1"; break;
                                 default:       echo "guru/edit_games.php";  break;
                             }
                         ?>" ></iframe>
