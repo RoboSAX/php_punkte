@@ -6,141 +6,93 @@
 ?>
 
 <?php
-    $conn = OpenCon();
+    // get current team_id (if set)
+    if (isset($_POST['team_id'])) {
+        $current_team_id = (int)$_POST['team_id'];
+    } else {
+        $current_team_id = -1;
+    }
 
-    $sql = "SELECT * FROM teams ORDER BY points DESC, teamid ASC";
-    $result = $conn->query($sql);
+    // check if save-button was pushed
+    if (isset($_POST['changedata']) && ($current_team_id > 0)) {
+        $current_team = new Team;
+        if ($current_team->load_team_from_db($current_team_id)) {
 
-    $teams = array();
+            if (isset($_POST['name']      )) $current_team->set_name      ($_POST['name']        );
+            if (isset($_POST['teamleader'])) $current_team->set_teamleader($_POST['teamleader']  );
+            if (isset($_POST['robot']     )) $current_team->set_robot     ($_POST['robot']       );
+            if (isset($_POST['active']    )) {
+                $current_team->set_active((int) $_POST['active']);
+            } else {
+                $current_team->set_active(false);
+            }
 
-    if($result->num_rows > 0)
-    {
-        while($row = $result->fetch_assoc())
-        {
-            $teams[] = $row;
+            $current_team->save_team_to_db();
         }
     }
-    else
-    {
-        write_log("0 results for query: ".$sql." in edit_teams.php");
+
+    // load all teams and current team
+    $teams = new Teams;
+    if (!$teams->load_teams_from_db()) {
+        die("0 results for team query: in edit_teams.php");
+    }
+
+    if ($current_team_id > 0) {
+        $current_team = $teams->get_team_by_id($current_team_id);
     }
 ?>
+
 <table>
     <tr><td>Wähle ein Team aus:</td></tr>
     <tr>
         <td style="padding-right: 20px;">
             <form action='edit_teams.php' method='post'>
                 <div class="select" style="max-height: 150px;">
-<?php
-                    for($i = 0; isset($teams[$i]); $i++)
-                    {
-                        if(isset($teams[$i]))
-                        {
-                            echo "\t\t\t\t\t<button type='submit' name='team'";
-                            if($_POST['team'] and $teams[$i]['teamid'] == $_POST['team'])
+                    <?php
+                        foreach ($teams->tms as $team) {
+                            echo "                    <button type='submit' name='team_id'";
+                            if ($team->get_id() == $current_team_id) {
                                 echo " style='color:blue'";
-                            echo " value='".$teams[$i]['teamid']."'>".$teams[$i]['name']."</button><hr>\n";
+                            }
+                            echo " value='".$team->get_id()."'>".$team->get_name()."</button><br>\n"; #"</button><hr>\n";
                         }
-                    }
-?>
+                    ?>
                 </div>
             </form>
         </td>
-<?php
-    if(isset($_POST['team']))
-    {
-        $sql = "SELECT * FROM teams WHERE teamid='".$_POST['team']."'";
-        $result = $conn->query($sql);
+        <?php
+            if (isset($current_team)) {
 
-        $team = array();
-
-        if($result->num_rows > 0)
-        {
-            while($row = $result->fetch_assoc())
-            {
-                $team = $row;
+                echo "        <td>\n";
+                echo "            <form action='edit_teams.php' method='post'>\n";
+                echo "                <input type='hidden' name='team_id' value='".$_POST['team_id']."'/>";
+                echo "                <table>\n";
+                echo "                    <tr>\n";
+                echo "                        <td>Name: </td>\n";
+                echo "                        <td><input type='text' value='".$current_team->get_name()."' name='name'/></td>\n";
+                echo "                    </tr>\n";
+                echo "                    <tr>\n";
+                echo "                        <td>Leiter: </td>\n";
+                echo "                        <td><input type='text' value='".$current_team->get_teamleader()."' name='teamleader'/></td>\n";
+                echo "                    </tr>\n";
+                echo "                    <tr>\n";
+                echo "                        <td>Roboter: </td>\n";
+                echo "                        <td><input type='text' value='".$current_team->get_robot()."' name='robot'/></td>\n";
+                echo "                    </tr>\n";
+                echo "                    <tr>\n";
+                echo "                        <td>Aktiv: </td>\n";
+                echo "                        <td><input type='checkbox' value='1' name='active'";
+                if ($current_team->get_active()) echo " checked";
+                echo "/></td>\n";
+                echo "                    </tr>\n";
+                echo "                    <tr>\n";
+                echo "                        <td colspan='2' align='center'><button name='changedata' value='1' type='submit'>Speichern</button></td>\n";
+                echo "                    </tr>\n";
+                echo "                </table>\n";
+                echo "            </form>";
+                echo "        </td>\n";
             }
-        }
-        else
-        {
-            write_log("HIER STIMMT WAS NICHT?!?!?!");
-        }
-
-        echo "\t\t<td>\n";
-        echo "\t\t\t<form action='edit_teams.php' method='post'>\n";
-        echo "\t\t\t\t<table>\n";
-        echo "\t\t\t\t\t<tr>\n";
-        echo "\t\t\t\t\t\t<td>Name: </td>\n";
-        echo "\t\t\t\t\t\t<td><input type='text' value='".$team['name']."' name='name'/></td>\n";
-        echo "\t\t\t\t\t</tr>\n";
-        echo "\t\t\t\t\t<tr>\n";
-        echo "\t\t\t\t\t\t<td>Leiter: </td>\n";
-        echo "\t\t\t\t\t\t<td><input type='text' value='".$team['teamleader']."' name='teamleader'/></td>\n";
-        echo "\t\t\t\t\t</tr>\n";
-        echo "\t\t\t\t\t<tr>\n";
-        echo "\t\t\t\t\t\t<td>Roboter: </td>\n";
-        echo "\t\t\t\t\t\t<td><input type='text' value='".$team['robot']."' name='robot'/></td>\n";
-        echo "\t\t\t\t\t</tr>\n";
-        echo "\t\t\t\t\t<tr>\n";
-        echo "\t\t\t\t\t\t<td>Aktiv: </td>\n";
-        echo "\t\t\t\t\t\t<td><input type='checkbox' name='active'";
-            if($team['active']) echo " checked";
-            echo "/></td>\n";
-        echo "\t\t\t\t\t</tr>\n";
-        echo "\t\t\t\t\t<tr>\n";
-        echo "\t\t\t\t\t\t<td colspan='2' align='center'><button name='changedata' value='".$_POST['team']."' type='submit'>Speichern</button></td>\n";
-        echo "\t\t\t\t\t</tr>\n";
-        echo "\t\t\t\t</table>\n";
-        echo "\t\t\t</form>";
-        echo "\t\t</td>\n";
-    }
-
-    if(isset($_POST['changedata']))
-    {
-        $sql = "SELECT * FROM teams WHERE teamid='".$_POST['changedata']."'";
-        $result = $conn->query($sql);
-
-        $team = array();
-
-        if($result->num_rows > 0)
-        {
-            while($row = $result->fetch_assoc())
-            {
-                $team = $row;
-            }
-        }
-        else
-        {
-            write_log("HIER STIMMT WAS NICHT?!?!?!");
-        }
-
-        //note: loop possible
-        if($_POST['name'] != $team['name'])
-        {
-            $sql = "UPDATE teams SET name='".$_POST['name']."' WHERE teamid='".$team['teamid']."'";
-            $conn->query($sql);
-
-            write_log("Updated teamname for teamid: ".$team['teamid']." to: ".$_POST['name']." in edit_teams.php");
-        }
-        if($_POST['teamleader'] != $team['teamleader'])
-        {
-            $sql = "UPDATE teams SET teamleader='".$_POST['teamleader']."' WHERE teamid='".$team['teamid']."'";
-            $conn->query($sql);
-        }
-        if($_POST['robot'] != $team['robot'])
-        {
-            $sql = "UPDATE teams SET robot='".$_POST['robot']."' WHERE teamid='".$team['teamid']."'";
-            $conn->query($sql);
-        }
-        if($_POST['active'] != $team['active'])
-        {
-            $sql = "UPDATE teams SET active='".$_POST['active']."' WHERE teamid='".$team['teamid']."'";
-            $conn->query($sql);
-        }
-    }
-
-    CloseCon($conn);
-?>
+        ?>
     </tr>
 </table>
 

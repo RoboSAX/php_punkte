@@ -3,10 +3,9 @@
 function write_log($statement)
 {
     global $settings;
-
-    if ($settings['Server']['logging'])
+    if ($settings['Options']['Logging'])
     {
-        $log = fopen($settings['Server']['base_url'].'logs/'.date('Y_m_d').'_log.txt','a+');
+        $log = fopen($settings['Files']['logging_path'].date('Y_m_d').'_log.txt','a+');
         if ($log)
         {
             fwrite($log, date("H:i:s").' : '.$statement.';'.PHP_EOL);

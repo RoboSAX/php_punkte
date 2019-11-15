@@ -4,19 +4,28 @@
 ?>
 
 <form action='guru_reset_database.php' method='post'>
-    <button type='submit' name='safety'>Datenbank wirklich neu aufsetzen?</button>
+    <?php
+        if(!isset($_POST['safety'])) {
+            echo "    <button type='submit' name='safety'>Datenbank wirklich neu aufsetzen ?</button>\n";
+        } else {
+            echo "    <button type='submit' name='clear'>Datenbank komplett löschen ?</button><br>\n";
+            echo "    <button type='submit' name='test' value='1'>Testwerte 1 setzen ?</button><br>\n";
+            echo "    <button type='submit' name='test' value='2'>Testwerte 2 setzen ?</button><br>\n";
+            echo "    <button type='submit' name='test' value='3'>Testwerte 3 setzen ?</button><br>\n";
+        }
+    ?>
 </form>
 
 <?php
     $conn = OpenCon();
 
-    if(isset($_POST['safety']))
-    {
+    # Datenbank löschen
+    if(isset($_POST['clear']) || isset($_POST['test'])) {
         $AnzTeams = $settings['Options']['AnzTeams'];
         $TimeStart = $settings['Blocktimes']['Block1'];
 
-        echo "<br>";
-        echo "Lösche alte Tabellen:<br>";
+        echo "<br>\n";
+        echo "Lösche alte Tabellen:<br>\n";
         flush(); ob_flush();
 
         $conn->query('SET foreign_key_checks = 0');
@@ -24,7 +33,7 @@
         {
             while($row = $result->fetch_array(MYSQLI_NUM))
             {
-                echo "<div style='text-indent:20px;'>".$row[0]."</div>";
+                echo "    <div style='text-indent:20px;'>".$row[0]."</div>\n";
                 flush(); ob_flush();
                 $conn->query('DROP TABLE IF EXISTS '.$row[0]);
             }
@@ -32,14 +41,14 @@
 
 
 
-        echo "<br>";
-        echo "Lege Tabellen neu an:<br>";
+        echo "<br>\n";
+        echo "Lege Tabellen neu an:<br>\n";
         flush(); ob_flush();
         $conn->query('SET foreign_key_checks = 1');
 
 
 
-        echo "<div style='text-indent:20px;'>changed</div>";
+        echo "    <div style='text-indent:20px;'>changed</div>\n";
         flush(); ob_flush();
         $sql = "CREATE TABLE `changed` (
                 `changedid`  int(11)    NOT NULL,
@@ -71,7 +80,7 @@
 
 
 
-        echo "<div style='text-indent:20px;'>games</div>";
+        echo "    <div style='text-indent:20px;'>games</div>\n";
         flush(); ob_flush();
         $sql = "CREATE TABLE `games` (
                 `gameid`     int(11)    NOT NULL,
@@ -121,7 +130,7 @@
 
 
 
-        echo "<div style='text-indent:20px;'>pointmanagement</div>";
+        echo "    <div style='text-indent:20px;'>pointmanagement</div>\n";
         flush(); ob_flush();
         $sql = "CREATE TABLE `pointmanagement` (
                 `pointid` int(11) NOT NULL,
@@ -155,7 +164,7 @@
 
 
 
-        echo "<div style='text-indent:20px;'>teams</div>";
+        echo "    <div style='text-indent:20px;'>teams</div>\n";
         flush(); ob_flush();
         $sql = "CREATE TABLE `teams` (
                 `teamid`     int(11)     NOT NULL,
@@ -185,8 +194,40 @@
 
 
 
-        echo "<br>";
-        echo "Done<br>";
+        echo "<br>\n";
+        if(isset($_POST['clear'])) {
+            echo "Done<br>\n";
+            }
+    }
+
+    # Testdatensatz anlegen
+    if(isset($_POST['test'])) {
+        echo "<br>\n";
+        echo "Lege Testdatensatz an:<br>\n";
+
+        if ($_POST['test'] >= 1) {
+            echo "    <div style='text-indent:20px;'>Stufe 1</div>\n";
+
+            # ...
+            echo "        <div style='text-indent:40px;'>...todo...</div>\n";
+        }
+
+        if ($_POST['test'] >= 2) {
+            echo "    <div style='text-indent:20px;'>Stufe 2</div>\n";
+
+            # ...
+            echo "        <div style='text-indent:40px;'>...todo...</div>\n";
+        }
+
+        if ($_POST['test'] >= 3) {
+            echo "    <div style='text-indent:20px;'>Stufe 3</div>\n";
+
+            # ...
+            echo "        <div style='text-indent:40px;'>...todo...</div>\n";
+        }
+
+        echo "<br>\n";
+        echo "Done<br>\n";
     }
 
     CloseCon($conn);

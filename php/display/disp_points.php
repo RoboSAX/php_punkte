@@ -32,7 +32,7 @@
     // 0 -> Punkte; 1 -> Name; 2 -> Teamleiter; 3 -> Roboter; 4 -> TeamID
 ?>
 <?php
-    $guru = $_SERVER['HTTP_REFERER'] == $settings['Server']['base_url']."guru/guru_main.php";
+    $guru = isset($_GET['guru']);
 
     if($guru) echo "<form action='".$settings['Server']['base_url']."guru/edit_teams.php' method='post'>\n";
 
@@ -91,7 +91,7 @@
 
         echo "\t\t\t\t\t<td colspan='2'>".mklink(
             "<b>".$teams[$i]['name']."</b>", "guru/guru_main.php",
-            "team", $teams[$i]['teamid']
+            "team_id", $teams[$i]['teamid']
         )."</td>\n";
         echo "\t\t\t\t\t<td rowspan='2' style='width:25px'>".$teams[$i]['points']."</td>\n";
         echo "\t\t\t\t</tr>\n";
