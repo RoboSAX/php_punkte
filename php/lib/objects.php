@@ -100,7 +100,7 @@ class Team
 	 *
 	 *	Returns 'true' if one of the following events occure:
 	 *		- created a new entry in the database
-	 *		- u pdated a existing entry in the database
+	 *		- updated a existing entry in the database
 	 *
 	 *	Returns 'false' in all other cases.
 	 *	For example: 
@@ -144,49 +144,49 @@ class Team
 		return false;
 	}
 	/*!
-	 * \brief Returns the atribute $teamid of this object
+	 * \brief Returns the attribute $teamid of this object
 	 */
 	public function get_id()
 	{
 		return $this->teamid;
 	}
 	/*!
-	 * \brief Returns the atribute $teamleader of this object
+	 * \brief Returns the attribute $teamleader of this object
 	 */
 	public function get_teamleader() //!< \brief Returns the atribute $teamleader of this object
 	{
 		return $this->teamleader;
 	}
 	/*!
-	 * \brief Returns the atribute $points of this object
+	 * \brief Returns the attribute $points of this object
 	 */
 	public function get_points() //!< \brief Returns the atribute $points of this object
 	{
 		return $this->points;
 	}
 	/*!
-	 * \brief Returns the atribute $robot of this object
+	 * \brief Returns the attribute $robot of this object
 	 */
 	public function get_robot() //!< \brief Returns the atribute $robot of this object
 	{
 		return $this->robot;
 	}
 	/*!
-	 * \brief Returns the atribute $name of this object
+	 * \brief Returns the attribute $name of this object
 	 */
 	public function get_name() //!< \brief Returns the atribute $name of this object
 	{
 		return $this->name;
 	}
 	/*!
-	 * \brief Returns the atribute $position of this object
+	 * \brief Returns the attribute $position of this object
 	 */
 	public function get_position() //!< \brief Returns the atribute $position of this object
 	{
 		return $this->position;
 	}
 	/*!
-	 * \brief Returns the atribute $active of this object
+	 * \brief Returns the attribute $active of this object
 	 */
 	public function get_active()
 	{
@@ -538,7 +538,7 @@ class Teams
 
 class Game
 {
-	private $gameid, $block, $time_start, $time_act, $points, $objectives, $penalties, $team, $active, $finished, $highlight, $teamactive;
+	private $gameid, $block, $time_start, $time_act, $points, $team, $active, $finished, $highlight, $teamactive;
 	public function __construct()
 	{
 		$this->gameid = 0;
@@ -546,14 +546,35 @@ class Game
 		$this->time_start = 0;
 		$this->time_act = 0;
 		$this->points = 0;
-		$this->objectives = 0;
-		$this->penalties = 0;
 		$this->team = 0;
 		$this->active = 0;
 		$this->finished = 0;
 		$this->highlight = 0;
 		$this->teamactive = 0;
 	}
+	private function update_id()
+	{
+		$conn = OpenCon();
+		$sql = "SELECT COUNT(*) FROM games";
+		$tmp = $conn->query($sql);
+		$row = $tmp->fetch_assoc();
+		$new_id = $row['COUNT(*)'] + 1;
+		$this->gameid = $new_id;
+		CloseCon($conn);
+	}
+	/*! \brief Loads game data from the database.
+	 *
+	 *	This function sends a sql request to the linked database (specified in the settings.ini file)
+	 *	to get the data of the game with the ID $id. The data is safed in the private attributes.
+	 *
+	 *	Returns 'false' if one of the following events occure:
+	 *		- $id is not an integer
+	 *		- no data for a game with ID: $id ; was found in the database
+	 *	
+	 *	Returns 'true' if there were no errors
+	 *
+	 *	'false'-outputs will be logged (if enabled in the settings.ini file)
+	 */
 	public function load_game_from_db($id)
 	{
 		if(!is_int($id))
@@ -574,8 +595,6 @@ class Game
 				$this->time_start = $row['time_start'];
 				$this->time_act = $row['time_act'];
 				$this->points = $row['points'];
-				$this->objectives = $row['objectives'];
-				$this->penalties = $row['penalties'];
 				$this->team = $row['team'];
 				$this->active = $row['active'];
 				$this->finished = $row['finished'];
@@ -591,15 +610,35 @@ class Game
 		
 		return true;
 	}
+	/*! \brief Saves game data in the database
+	 *
+	 *	This function sends a sql request to the linked database (specified in the settings.ini file)
+	 *	to safe the objects private attributes in the database.
+	 *
+	 *	There are two possible uses for this function:
+	 *		- if a game with the same ID already exists in the database -> The function updates the values in the database.
+	 *		- if no game with the same ID exists -> The function creates a new entry in the database 
+	 *		  and updates the ID (also of the object)
+	 *		  Use with care, is you may have to manually delete wrong inputs in your database
+	 *
+	 *	Returns 'true' if one of the following events occure:
+	 *		- created a new entry in the database
+	 *		- updated a existing entry in the database
+	 *
+	 *	Returns 'false' in all other cases.
+	 *	For example: 
+	 *		- if two games with the same ID exists (look for the checks!)
+	 *		- if a game with ID = 0 exists (it should not be the case, but you never know)
+	 */
 	public function save_game_to_db()
 	{
 		$conn = OpenCon();
 		$sql = "SELECT * FROM games WHERE gameid='".$this->gameid."'";
 		$tmp = $conn->query($sql);
-		if($this->gameid != 0 AND $tmp->num_rows == 0)
+		if($tmp->num_rows == 0)
 		{	
-			$sql = "INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `objectives`, `penalties`, `team`, `active`, `finished`, `highlight`, `teamactive`) 
-					VALUES (" . $this->block . ", " . $this->time_start . ", " . $this->time_act . ", " . $this->points . ", " . $this->objectives . ", " . $this->penalties . 
+			$sql = "INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `team`, `active`, `finished`, `highlight`, `teamactive`) 
+					VALUES (" . $this->block . ", " . $this->time_start . ", " . $this->time_act . ", " . $this->points . ", " . 
 					", " . $this->team . ", " . $this->active . ", " . $this->finished . ", " . $this->highlight . ", " . $this->teamactive . ")";
 			$conn->query($sql);		
 			CloseCon($conn);
@@ -612,8 +651,6 @@ class Game
 									 `time_start`=". $this->time_start .",
 									 `time_act`=". $this->time_act .",
 									 `points`=". $this->points . ",
-									 `objectives`=". $this->objectives . ",
-									 `penalties`=". $this->penalties .",
 									 `team`=". $this->team .",
 									 `active`=". $this->active .",
 									 `finished`=". $this->finished .",
@@ -634,6 +671,54 @@ class Game
 		return false;
 		
 	}
+	/*!
+	 * \brief Returns the attribute $block of this object
+	 */
+	public function get_block()
+	{
+		return $this->block;
+	}
+	/*!
+	 * \brief Returns the attribute $gameid of this object
+	 */
+	public function get_id()
+	{
+		return $this->gameid;
+	}
+	/*!
+	 * \brief Returns both time attributes of this object
+	 *
+	 *	Returns $time_start and $time_act in an array, where $time_start has the index 0 and $time_act has the index 1.
+	 */
+	public function get_time()
+	{
+		return array($this->time_start, $this->time_act);
+	}
+	public function get_points()
+	{
+		return $this->points;
+	}
+	public function get_team()
+	{
+		return $this->team;
+	}
+	public function get_active()
+	{
+		return $this->active;
+	}
+	public function get_finished()
+	{
+		return $this->finished;
+	}
+	public function get_teamactive()
+	{
+		return $this->teamactive;
+	}
+	public function get_highlight()
+	{
+		return $this->highlight;
+	}
+	
 }
 
 ?>
