@@ -2,7 +2,7 @@
 *.sql
 
 # ignore testing
-test.*
+test*.*
 testing.*
 
 # ignore logfiles
@@ -10,3 +10,6 @@ testing.*
 
 # ignore local settings
 settings.ini
+
+# ignore depricated files
+*depricated.*
