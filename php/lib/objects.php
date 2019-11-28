@@ -474,6 +474,18 @@ class Teams
 		}
 		echo "No Team with ID".$tmp."found"; //Durch LOG ersetzen
 	}
+    /*	\brief Search for unused ids
+     *	\return list of unused ids
+     *
+     */
+    public function get_free_ids()
+    {
+        $ids = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        unset($ids[0]);
+        foreach ($this->tms as $team)
+            unset($ids[$team->get_id()]);
+        return $ids;
+    }
 	/* \brief Orders $tms [desc] by points of the Team objects
 	 *
 	 */

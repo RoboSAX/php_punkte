@@ -1,78 +1,66 @@
 <?php
     # include main function for settings and database connection
     require_once '../lib/db_main.php';
+    $styles = array("select.css");
+    require_once '../lib/head.php';
 ?>
 
 <?php
     $conn = OpenCon();
 
-    if(!isset($_POST['counter']) && isset($_POST['change']))
-    {
-        $sql = "UPDATE teams SET teamid='0' WHERE 1";
-        $conn->query($sql);
+    // load all teamsS
+    $teams = new Teams;
+    if (!$teams->load_teams_from_db()) {
+        die("0 results for team query: in edit_start.php");
     }
-    if(isset($_POST['counter']) && isset($_POST['team']))
+
+    var_dump($_POST);
+    if(isset($_POST["change_team_id"]) && isset($_POST["new_team_id"]))
     {
-        if($_POST['counter'])
-        {
-            $sql = "UPDATE teams SET teamid='".($_POST['counter'])."', active='0' WHERE name='".$_POST['team']."'";
-            $conn->query($sql);
-        }
+        $team = $teams->get_team_by_id((int)$_POST["change_team_id"]);
+        // TODO: Update team start number
+        //$team->set_id($_POST["new_team_id"]);
+        $team->save_team_to_db();
     }
-    $i = 0;
 ?>
-<p>Immer das Team anklicken, welches die naechste Startnummer besitzt.<br><br>
-<font color="red">Achtung: Betätigen der Schaltfläche setzt alle aktuellen Startnummern zurück!</font></p>
-<br>
-<?php
-    if(!isset($_POST['counter']) && !isset($_POST['change'])) echo "<form action='edit_start.php' method='post'><button name='change' value='1' type='submit'>Werte aendern</button></form>";
 
-    if(isset($_POST['change']) || isset($_POST['counter']))
-    {
-
-        $teams = array();
-
-        $sql = "SELECT * FROM teams WHERE teamid=0";
-        $result = $conn->query($sql);
-
-        if($result->num_rows > 0)
-        {
-            while($teams[] = $result->fetch_assoc());
-        }
-
-
-        echo "<table>";
-        echo "<form action='edit_start.php' method='post'>";
-
-
-        $count = 1;
-
-        if(isset($_POST['counter']))
-        {
-            $count = $_POST['counter'] + 1;
-            if(($count == ($settings['Options']['AnzTeams'])+1) || !sizeof($teams))
+<form action='edit_start.php' method='post'>
+    <table>
+        <tr>
+            <td style="min-width: 100px;">Team</td>
+            <td>Team-ID</td>
+        </tr>
+        <?php
+            foreach ($teams->tms as $team)
             {
-                $sql = "UPDATE teams SET active='1' WHERE 1";
-                $conn->query($sql);
-                $count = 0;
+                echo "\t\t<tr>";
+                echo "\t\t\t<td align='center'>\n";
+
+                echo "\t\t\t\t<button class='selectBtn' type='submit' name='team_id'";
+                if($team->get_id() == $_POST['team_id'])
+                    echo " style='color:blue'";
+                echo " value='".$team->get_id()."'>".$team->get_name()."</button><br>\n";
+
+                echo "\t\t\t</td>";
+                echo "\t\t\t<td align='center'>";
+
+                if($team->get_id() == $_POST['team_id'])
+                {
+                    echo "\t\t\t\t<select name='new_team_id' text='".$team->get_id()."'>\n";
+                    echo "\t\t\t\t\t<option value='".$team->get_id()."'>".$team->get_id()."</option>\n";
+                    echo "\t\t\t\t\t<option value='0'>0</option>\n";
+                    foreach($teams->get_free_ids() as $id)
+                        echo "\t\t\t\t\t<option value='".$id."'>".$id."</option>\n";
+                    echo "\t\t\t\t</select>\n";
+                    echo "\t\t\t</td>";
+                    echo "\t\t\t<td>";
+                    echo "\t\t\t\t<button type='submit' name='change_team_id' value='".$_POST["team_id"]."'>Speichern</button>\n";
+                }
+                else echo $team->get_id();
+
+                echo "\t\t\t</td>";
+                echo "\t\t</tr>";
             }
-        }
-
-
-
-        if(!$count) header("Location: edit_start.php");
-
-        echo "Aktuelle ID: ".$count;
-
-        while(isset($teams[$i]))
-        {
-            echo "<tr><td><input type='radio' name='team' value='".$teams[$i]['name']."'>".$teams[$i]['name']."</input></td></tr>";
-            $i++;
-        }
-        echo "<tr><td><button type='submit' name='counter' value='".$count."'>Auswahl bestaetigen</button></td></tr></form>";
-        echo "</form>";
-        echo "</table>";
-
-    }
-    CloseCon($conn);
-?>
+        ?>
+    </table>
+</form>
