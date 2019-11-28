@@ -85,16 +85,16 @@ table.main {
     text-align: left;
 }
 
-table button {
-    background-color: white;
+.dispTeamBtn {
+    /*background-color: white;
     border: 0;
-    color: blue;
+    color: blue;*/
     font-family: initial;
     font-size: medium;
 }
 
 table button:hover {
-    color:red;
+    /*color:red;*/
     cursor: pointer;
 }
 

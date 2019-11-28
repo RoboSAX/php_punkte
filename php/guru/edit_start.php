@@ -8,13 +8,12 @@
 <?php
     $conn = OpenCon();
 
-    // load all teamsS
+    // load all teams
     $teams = new Teams;
     if (!$teams->load_teams_from_db()) {
         die("0 results for team query: in edit_start.php");
     }
 
-    var_dump($_POST);
     if(isset($_POST["change_team_id"]) && isset($_POST["new_team_id"]))
     {
         $team = $teams->get_team_by_id((int)$_POST["change_team_id"]);

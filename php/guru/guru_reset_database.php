@@ -208,8 +208,40 @@
         if ($_POST['test'] >= 1) {
             echo "    <div style='text-indent:20px;'>Stufe 1</div>\n";
 
-            # ...
-            echo "        <div style='text-indent:40px;'>...todo...</div>\n";
+            $sql = "UPDATE games SET `block`=1,
+									 `time_start`=945,
+									 `time_act`=950,
+									 `points`=4,
+									 `team`=1,
+									 `active`=0,
+									 `finished`=1,
+									 `highlight`=0,
+									 `teamactive`=1 WHERE `gameid`=1";
+			$conn->query($sql);
+
+            $sql = "UPDATE games SET `block`=1,
+                                     `time_start`=945,
+                                     `time_act`=952,
+                                     `points`=8,
+                                     `team`=2,
+                                     `active`=0,
+                                     `finished`=1,
+                                     `highlight`=1,
+                                     `teamactive`=1 WHERE `gameid`=2";
+			$conn->query($sql);
+
+            $sql = "UPDATE games SET `block`=1,
+                                     `time_start`=950,
+                                     `time_act`=100,
+                                     `points`=1,
+                                     `team`=4,
+                                     `active`=1,
+                                     `finished`=0,
+                                     `highlight`=0,
+                                     `teamactive`=1 WHERE `gameid`=3";
+			$conn->query($sql);
+
+            echo "        <div style='text-indent:40px;'>added 3 games</div>\n";
         }
 
         if ($_POST['test'] >= 2) {

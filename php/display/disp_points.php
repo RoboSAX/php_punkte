@@ -35,13 +35,6 @@
     $guru = isset($_GET['guru']);
 
     if($guru) echo "<form action='".$settings['Server']['base_url']."guru/edit_teams.php' method='post'>\n";
-
-    function mklink($link, $href, $param, $arg)
-    {
-        if($GLOBALS['guru'])
-            $link = "<button type='submit' name='$param' value='$arg'><u>$link</u></button>";
-        return $link;
-    }
 ?>
 <table style='width:100%' class='display'>
     <tr>
@@ -60,6 +53,8 @@
     {
         echo "\t<tr>\n";
         echo "\t\t<td style='width:300px'>\n";
+        if($GLOBALS['guru'])
+            echo "\t\t\t<button class='dispTeamBtn' type='submit' name='team_id' value='".$teams[$i]['teamid']."'>\n";
         echo "\t\t\t<table style='width:300px' class='list'>\n";
         echo "\t\t\t\t<tr>\n\t\t\t\t\t<td rowspan='2' style='width:25px'>";
 
@@ -89,17 +84,15 @@
         }
         echo "</td>\n";
 
-        echo "\t\t\t\t\t<td colspan='2'>".mklink(
-            "<b>".$teams[$i]['name']."</b>", "guru/guru_main.php",
-            "team_id", $teams[$i]['teamid']
-        )."</td>\n";
+        echo "\t\t\t\t\t<td colspan='2'><b>".$teams[$i]['name']."</b></td>\n";
         echo "\t\t\t\t\t<td rowspan='2' style='width:25px'>".$teams[$i]['points']."</td>\n";
         echo "\t\t\t\t</tr>\n";
         echo "\t\t\t\t<tr>\n";
-        echo "\t\t\t\t\t<td style='width:125px'>".$teams[$i]['teamleiter']."</td>\n";
-        echo "\t\t\t\t\t<td style='width:125px'>".$teams[$i]['roboter']."</td>\n";
+        echo "\t\t\t\t\t<td style='width:125px'>".$teams[$i]['teamleader']."</td>\n";
+        echo "\t\t\t\t\t<td style='width:125px'>".$teams[$i]['robot']."</td>\n";
         echo "\t\t\t\t</tr>\n";
         echo "\t\t\t</table>\n";
+        if($GLOBALS['guru']) echo "\t\t\t</button>\n";
         echo "\t\t</td>\n";
 
         $sql = "SELECT * FROM games WHERE team='".$teams[$i]['teamid']."' ORDER BY block ASC";
