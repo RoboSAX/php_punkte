@@ -35,7 +35,7 @@ class Team
 
 		$new_id = 0;
 		$conn = OpenCon();
-		$sql = "SELECT SELECT LAST_INSERT_ID() FROM teams";
+		$sql = "SELECT ROW_NUMBER";
 		$tmp = $conn->query($sql);
 		if ($tmp->num_rows == 1) {
 			$row = $tmp->fetch_assoc();
@@ -353,7 +353,7 @@ class Teams
 		return true;
 
 	}
-	/*	\brief Removes the team object with the ID $id from $tms.
+	/*!	\brief Removes the team object with the ID $id from $tms.
 	 *
 	 *	Returns 'true' if an object was successfully deleted from $tms.
 	 *
@@ -382,7 +382,7 @@ class Teams
 
 		return false;
 	}
-	/*	\brief Loads all teams from the database.
+	/*!	\brief Loads all teams from the database.
 	 *
 	 *	This function uses the load_team_from_db($id) function of a Team object, to load all teams from the database.
 	 *
@@ -428,7 +428,7 @@ class Teams
 
 		return true;
 	}
-	/*	\brief Saves the data inside $tms in the database.
+	/*!	\brief Saves the data inside $tms in the database.
 	 *
 	 *	This function uses the save_team_to_db() function of a Team object in a loop to save the data inside of $tms.
 	 *
@@ -450,7 +450,7 @@ class Teams
 
 		return true;
 	}
-	/*	\brief Returns a Team object with the ID $tmp.
+	/*!	\brief Returns a Team object with the ID $tmp.
 	 *
 	 *	This function searches $tms for a Team object with the teamid $tmp and, if found, returns it.
 	 *
@@ -474,19 +474,7 @@ class Teams
 		}
 		echo "No Team with ID".$tmp."found"; //Durch LOG ersetzen
 	}
-    /*	\brief Search for unused ids
-     *	\return list of unused ids
-     *
-     */
-    public function get_free_ids()
-    {
-        $ids = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        unset($ids[0]);
-        foreach ($this->tms as $team)
-            unset($ids[$team->get_id()]);
-        return $ids;
-    }
-	/* \brief Orders $tms [desc] by points of the Team objects
+	/*! \brief Orders $tms [desc] by points of the Team objects
 	 *
 	 */
 	public function order_teams_by_points()
@@ -515,7 +503,7 @@ class Teams
 		return true;
 
 	}
-	/*	\brief Orders $tms [asc] by teamid of the Team objects.
+	/*!	\brief Orders $tms [asc] by teamid of the Team objects.
 	 *
 	 */
 	public function order_teams_by_id()
@@ -727,7 +715,116 @@ class Game
 	{
 		return $this->highlight;
 	}
-	
+	/*!	\brief Set planed starting time ($time_start) and actual starting time ($time_act)
+	 *
+	 *	Requires and array of 2 integers, first of which is $time_start and the second one will be $time_act.
+	 *	Its possible to use the keys "time_start" and "time_act" instead.
+	 *
+	 *
+	 *	Returns false in one of the following events:
+	 *	- transmitted data is not an array
+	 *	- transmitted array has not exactly 2 elements.
+	 *	- one of the elements of the array is not of type integer.
+	 *
+	 *	Returns true if the transmitted data could be safed successfully.
+	 */
+	public function set_time($tmp)
+	{
+		if(!is_array($tmp))
+		{
+			echo "Wrong Datatype. Use array of 2 integer: [time_start, time_act]";	//LOG
+			return false;
+		}
+		if(!is_int($tmp[0]) or !is_int($tmp[1]) or sizeof($tmp) != 2)
+		{
+			echo "Wrong Datatype. Use array of 2 integer: [time_start, time_act]";	//LOG
+			return false;
+		}
+		
+		if(array_key_exists("time_start",$tmp) and array_key_exists("time_act",$tmp))
+		{			
+			$this->time_start = $tmp["time_start"];
+			$this->time_act = $tmp["time_act"];
+			return true;
+		}
+		else		
+		{
+			$this->time_start = $tmp[0];
+			$this->time_act = $tmp[1];
+			return true;
+		}
+	}
+	public function set_block($tmp)
+	{
+		if(!is_int($tmp))
+		{
+			echo "Wrong datatype. Use Block (INT)";
+			return false;
+		}
+		
+		$this->block = $tmp;
+		return true;
+	}
+	public function set_points($tmp)
+	{
+		if(!is_int($tmp))
+		{
+			echo "Wrong datatype. Use Points (INT)";
+			return false;
+		}
+		
+		$this->points = $tmp;
+		return true;
+	}
+	public function set_team()
+	{
+		if(!is_int($tmp))
+		{
+			echo "Wrong datatype. Use TeamID (INT)";
+			return false;
+		}
+		
+		$this->teamid = $tmp;
+		return true;
+	}
+	public function set_active($tmp)
+	{
+		if(!is_bool($tmp))
+		{
+			echo "Wrong datatype. Use Active (BOOL)";
+			return false;
+		}
+		
+		$this->active = $tmp;
+		return true;
+		
+	}
+	public function set_finished($tmp)
+	{
+		if(!is_bool($tmp))
+		{
+			echo "Wrong datatype. Use Finished (BOOL)";
+			return false;
+		}
+		
+		$this->finished = $tmp;
+		return true;
+	}
+	public function set_teamactive($tmp)
+	{
+		//Maybe depricated?
+	}
+	public function set_highlight($tmp)
+	{
+		if(!is_bool($tmp))
+		{
+			echo "Wrong datatype. Use Highlight (BOOL)";
+			return false;
+		}
+		
+		$this->highlight = $tmp;
+		return true;
+	}
 }
 
 ?>
