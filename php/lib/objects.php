@@ -32,14 +32,13 @@ class Team
 	}
 	private function update_id()
 	{
-
 		$new_id = 0;
 		$conn = OpenCon();
-		$sql = "SELECT ROW_NUMBER";
+		$sql = "SELECT MAX(teamid) FROM teams;";
 		$tmp = $conn->query($sql);
 		if ($tmp->num_rows == 1) {
 			$row = $tmp->fetch_assoc();
-			$new_id = $row['LAST_INSERT_ID()'];
+			$new_id = $row['MAX(teamid)'] + 1;
 		}
 		CloseCon($conn);
 		$this->teamid = $new_id;
@@ -535,7 +534,7 @@ class Teams
 
 class Game
 {
-	private $gameid, $block, $time_start, $time_act, $points, $team, $active, $finished, $highlight, $teamactive;
+	private $gameid, $block, $time_start, $time_act, $points, $teamid, $active, $finished, $highlight;
 	public function __construct()
 	{
 		$this->gameid = 0;
@@ -543,21 +542,23 @@ class Game
 		$this->time_start = 0;
 		$this->time_act = 0;
 		$this->points = 0;
-		$this->team = 0;
+		$this->teamid = 0;
 		$this->active = 0;
 		$this->finished = 0;
 		$this->highlight = 0;
-		$this->teamactive = 0;
 	}
 	private function update_id()
 	{
+		$new_id = 0;
 		$conn = OpenCon();
-		$sql = "SELECT COUNT(*) FROM games";
+		$sql = "SELECT MAX(gameid) FROM games;";
 		$tmp = $conn->query($sql);
-		$row = $tmp->fetch_assoc();
-		$new_id = $row['COUNT(*)'] + 1;
-		$this->gameid = $new_id;
+		if ($tmp->num_rows == 1) {
+			$row = $tmp->fetch_assoc();
+			$new_id = $row['MAX(gameid)'] + 1;
+		}
 		CloseCon($conn);
+		$this->gameid = $new_id;
 	}
 	/*! \brief Loads game data from the database.
 	 *
@@ -592,11 +593,10 @@ class Game
 				$this->time_start = $row['time_start'];
 				$this->time_act = $row['time_act'];
 				$this->points = $row['points'];
-				$this->team = $row['team'];
+				$this->teamid = $row['teamid'];
 				$this->active = $row['active'];
 				$this->finished = $row['finished'];
 				$this->highlight = $row['highlight'];
-				$this->teamactive = $row['teamactive'];
 			}
 		}
 		else
@@ -634,25 +634,24 @@ class Game
 		$tmp = $conn->query($sql);
 		if($tmp->num_rows == 0)
 		{	
-			$sql = "INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `team`, `active`, `finished`, `highlight`, `teamactive`) 
+			$sql = "INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `teamid`, `active`, `finished`, `highlight`) 
 					VALUES (" . $this->block . ", " . $this->time_start . ", " . $this->time_act . ", " . $this->points . ", " . 
-					", " . $this->team . ", " . $this->active . ", " . $this->finished . ", " . $this->highlight . ", " . $this->teamactive . ")";
+					", " . $this->teamid . ", " . $this->active . ", " . $this->finished . ", " . $this->highlight . ")";
 			$conn->query($sql);		
 			CloseCon($conn);
 			$this->update_id();
 			return true;
 		}
-		elseif($this->teamid != 0 AND $tmp->num_rows == 1)
+		elseif($this->gameid != 0 AND $tmp->num_rows == 1)
 		{
 			$sql = "UPDATE games SET `block`=". $this->block .",
 									 `time_start`=". $this->time_start .",
 									 `time_act`=". $this->time_act .",
 									 `points`=". $this->points . ",
-									 `team`=". $this->team .",
+									 `teamid`=". $this->teamid .",
 									 `active`=". $this->active .",
 									 `finished`=". $this->finished .",
-									 `highlight`=". $this->hightlight .",
-									 `teamactive`=". $this->teamactive . " WHERE `gameid`=". $this->gameid;
+									 `highlight`=". $this->hightlight ." WHERE `gameid`=". $this->gameid;
 			echo $sql;
 			$conn->query($sql);
 			CloseCon($conn);
@@ -691,26 +690,37 @@ class Game
 	{
 		return array($this->time_start, $this->time_act);
 	}
+	/*!
+	 * \brief Returns the attribute $points of this object
+	 */
 	public function get_points()
 	{
 		return $this->points;
 	}
+	/*!
+	 * \brief Returns the attribute $team of this object
+	 */
 	public function get_team()
 	{
-		return $this->team;
+		return $this->teamid;
 	}
+	/*!
+	 * \brief Returns the attribute $active of this object
+	 */
 	public function get_active()
 	{
 		return $this->active;
 	}
+	/*!
+	 * \brief Returns the attribute $finished of this object
+	 */
 	public function get_finished()
 	{
 		return $this->finished;
 	}
-	public function get_teamactive()
-	{
-		return $this->teamactive;
-	}
+	/*!
+	 * \brief Returns the attribute $highlight of this object
+	 */
 	public function get_highlight()
 	{
 		return $this->highlight;
@@ -754,6 +764,12 @@ class Game
 			return true;
 		}
 	}
+	/*! \brief Set block number 
+	 *
+	 *	Returns false if $tmp is not of type integer.
+	 *
+	 *	Returns true when block was set successfully.
+	 */
 	public function set_block($tmp)
 	{
 		if(!is_int($tmp))
@@ -765,6 +781,12 @@ class Game
 		$this->block = $tmp;
 		return true;
 	}
+	/*! \brief Set points
+	 *
+	 *	Returns false if $tmp is not of type integer.
+	 *
+	 *	Returns true when points were set successfully.
+	 */
 	public function set_points($tmp)
 	{
 		if(!is_int($tmp))
@@ -776,6 +798,12 @@ class Game
 		$this->points = $tmp;
 		return true;
 	}
+	/*! \brief Set the ID of the team for this game 
+	 *
+	 *	Returns false if $tmp is not of type integer.
+	 *
+	 *	Returns true when team was set successfully.
+	 */
 	public function set_team()
 	{
 		if(!is_int($tmp))
@@ -787,6 +815,12 @@ class Game
 		$this->teamid = $tmp;
 		return true;
 	}
+	/*! \brief Set active status 
+	 *
+	 *	Returns false if $tmp is not of type boolean.
+	 *
+	 *	Returns true when active was set successfully.
+	 */
 	public function set_active($tmp)
 	{
 		if(!is_bool($tmp))
@@ -799,6 +833,12 @@ class Game
 		return true;
 		
 	}
+	/*! \brief Set finished status 
+	 *
+	 *	Returns false if $tmp is not of type boolean.
+	 *
+	 *	Returns true when finished was set successfully.
+	 */
 	public function set_finished($tmp)
 	{
 		if(!is_bool($tmp))
@@ -810,10 +850,12 @@ class Game
 		$this->finished = $tmp;
 		return true;
 	}
-	public function set_teamactive($tmp)
-	{
-		//Maybe depricated?
-	}
+	/*! \brief Set highlight status 
+	 *
+	 *	Returns false if $tmp is not of type boolean.
+	 *
+	 *	Returns true when highlight was set successfully.
+	 */
 	public function set_highlight($tmp)
 	{
 		if(!is_bool($tmp))
@@ -824,6 +866,87 @@ class Game
 		
 		$this->highlight = $tmp;
 		return true;
+	}
+}
+
+class Block
+{
+	private $games = [];
+	private $AnzGames = 0;
+	private $time_start;
+	private $options;
+	private $blocknumber;
+	
+	private function check_start_time()
+	{
+		$conn = OpenCon();
+		$sql = 'SELECT time_start';
+		
+		//TODO
+		
+		
+	}
+	private function time_add($time1, $time2)
+	{
+		$h = (int)($time1/100) + (int)($time2/100);
+		$m = (int)($time1%100) + (int)($time2%100);
+
+		if($m > 59)
+		{
+			$h++;
+			$m -= 60;
+		}
+
+		return (100 * $h) + $m;
+	}
+	public function __construct($block = 'NXT')
+	{
+		if(is_string($block))
+		{
+			if(!in_array($block, ['ACT','NXT']))
+			{
+				echo 'Wrong input. Using NXT instead.';
+				$block = 'NXT';
+			}
+			
+			$conn = OpenCon();
+			$sql = 'SELECT MAX(block) FROM games';
+			$result = $conn->query($sql);
+			if($result->num_rows < 1)
+			{
+				$this->blocknumber = 1;
+			}
+			else
+			{
+				$res = $result->fetch_assoc();
+				$this->blocknumber = $res['MAX(block)'];
+			}
+
+			if($block == 'ACT' and $this->blocknumber > 1) $this->blocknumber--;
+		
+		}
+		if(is_int($block) and $block > 0 and $block <= 6) $this->blocknumber = $block;
+		
+		$sql = 'SELECT * FROM games INNER JOIN teams WHERE games.teamid = teams.teamid AND teams.active = 1 AND games.block='.$this->blocknumber.' ORDER BY teams.points DESC, teams.position ASC';
+		$result = query($sql);
+		while($res = $result->fetch_assoc())
+		{
+			$tmp = new Game();
+			$tmp->load_game_from_db($res['gameid']);
+			$this->AnzGames++;
+			array_push($this->games, $tmp);
+		}
+
+		$this->options = $settings['Blockoptions']['Block'.$this->blocknumber];
+		$this->time_start = $settings['Blocktime']['Block'.$this->blocknumber];
+	}
+	public function init()
+	{
+		$option = explode('/', $this->options);
+		if(in_array('fb',$option)
+		{
+			
+		}
 	}
 }
 

@@ -93,23 +93,22 @@
                 `team`       int(11)    NOT NULL,
                 `active`     tinyint(1) NOT NULL,
                 `finished`   tinyint(1) NOT NULL,
-                `highlight`  tinyint(1) NOT NULL,
-                `teamactive` tinyint(1) NOT NULL
+                `highlight`  tinyint(1) NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
         $conn->query($sql);
 
         $sql = "INSERT INTO `games` (`gameid`, `block`, `time_start`, `time_act`, `points`, ";
         $sql.= "`objectives`, `penalties`, `team`, `active`, `finished`, ";
-        $sql.= "`highlight`, `teamactive`) VALUES \n";
+        $sql.= "`highlight`) VALUES \n";
         $curTime = 0;
         for($j = 1; $j <= $AnzTeams; $j++)
         {
             if($j != 1) $sql .= ", \n";
             $sql.= "(".$j.", 1, ";
-            if((($j % $settings['Options']['TeamsPerMatch']) == ($settings['Options']['TeamsPerMatch'] - 1)) && $j > 1)
-            {
-                $curTime = addTimes($curTime,'5');
-            }
+			// if((($j % $settings['Options']['TeamsPerMatch']) == ($settings['Options']['TeamsPerMatch'] - 1)) && $j > 1)
+			// {
+			if($j > 1) $curTime = addTimes($curTime,'5');
+			// }
 
 
 
@@ -215,8 +214,7 @@
 									 `team`=1,
 									 `active`=0,
 									 `finished`=1,
-									 `highlight`=0,
-									 `teamactive`=1 WHERE `gameid`=1";
+									 `highlight`=0 WHERE `gameid`=1";
 			$conn->query($sql);
 
             $sql = "UPDATE games SET `block`=1,
@@ -226,8 +224,7 @@
                                      `team`=2,
                                      `active`=0,
                                      `finished`=1,
-                                     `highlight`=1,
-                                     `teamactive`=1 WHERE `gameid`=2";
+                                     `highlight`=1 WHERE `gameid`=2";
 			$conn->query($sql);
 
             $sql = "UPDATE games SET `block`=1,
@@ -237,8 +234,7 @@
                                      `team`=4,
                                      `active`=1,
                                      `finished`=0,
-                                     `highlight`=0,
-                                     `teamactive`=1 WHERE `gameid`=3";
+                                     `highlight`=0 WHERE `gameid`=3";
 			$conn->query($sql);
 
             echo "        <div style='text-indent:40px;'>added 3 games</div>\n";
