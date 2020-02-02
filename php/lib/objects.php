@@ -577,11 +577,11 @@ class Game
 	{
 		if(!is_int($id))
 		{
-			echo "Wrong datatype. Use GameID (INT)"; //Durch LOG ersetzen, sonst müllt das die Seite zu
+			echo 'Wrong datatype. Use GameID (INT)'; //Durch LOG ersetzen, sonst müllt das die Seite zu
 			return false;
 		}
 		$conn  = OpenCon();
-		$sql = "SELECT * FROM games WHERE gameid='".$id."'";
+		$sql = 'SELECT * FROM games WHERE gameid='.$id;
 		$tmp = $conn->query($sql);
 		
 		if($tmp->num_rows > 0)
@@ -601,7 +601,7 @@ class Game
 		}
 		else
 		{
-			echo "No Data found"; //Durch LOG ersetzen
+			echo 'No Data found'; //Durch LOG ersetzen
 			return false;
 		}
 		
@@ -630,13 +630,13 @@ class Game
 	public function save_game_to_db()
 	{
 		$conn = OpenCon();
-		$sql = "SELECT * FROM games WHERE gameid='".$this->gameid."'";
+		$sql = 'SELECT * FROM games WHERE gameid='.$this->gameid;
 		$tmp = $conn->query($sql);
 		if($tmp->num_rows == 0)
 		{	
-			$sql = "INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `teamid`, `active`, `finished`, `highlight`) 
-					VALUES (" . $this->block . ", " . $this->time_start . ", " . $this->time_act . ", " . $this->points . ", " . 
-					", " . $this->teamid . ", " . $this->active . ", " . $this->finished . ", " . $this->highlight . ")";
+			$sql = 'INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `teamid`, `active`, `finished`, `highlight`) 
+					VALUES (' . $this->block . ', ' . $this->time_start . ', ' . $this->time_act . ', ' . $this->points . ', ' . 
+					', ' . $this->teamid . ', ' . $this->active . ', ' . $this->finished . ', ' . $this->highlight . ')';
 			$conn->query($sql);		
 			CloseCon($conn);
 			$this->update_id();
@@ -688,7 +688,7 @@ class Game
 	 */
 	public function get_time()
 	{
-		return array($this->time_start, $this->time_act);
+		return array('time_start' => $this->time_start, 'time_act' => $this->time_act);
 	}
 	/*!
 	 * \brief Returns the attribute $points of this object
@@ -877,17 +877,15 @@ class Block
 	private $options;
 	private $blocknumber;
 	
-	private function check_start_time()
-	{
-		$conn = OpenCon();
-		$sql = 'SELECT time_start';
-		
-		//TODO
-		
-		
-	}
 	private function time_add($time1, $time2)
 	{
+		if($time2 > $time1)
+		{
+			$tmp = $time1;
+			$time1 = $time2;
+			$time2 = $tmp;
+		}
+		
 		$h = (int)($time1/100) + (int)($time2/100);
 		$m = (int)($time1%100) + (int)($time2%100);
 
@@ -898,6 +896,63 @@ class Block
 		}
 
 		return (100 * $h) + $m;
+	}
+	private function check_start_time()
+	{
+		if($this->blocknumber < 2)
+		{
+			//TODO LOG
+			return false;
+		}
+		
+		$conn = OpenCon();
+		$sql = 'SELECT time_act FROM games WHERE block=' . $this->blocknumber - 1 . ' AND time_act > ' . time_add($this->time_start, 5) . ' ORDER BY time_act DESC LIMIT 1';
+		$result = query($sql);
+		
+		if($result->num_rows < 1)
+		{
+			//TODO LOG
+			return false;
+		}
+		
+		$res = $result->fetch_assoc();
+		$this->time_start = time_add($res['time_act'], 5);
+		
+		for($i = 0, $j = 0; $i < $this->AnzGames; $i++)
+		{
+			$time = $this->games[$i]->get_time();
+			
+			if($i%$settings['Options']['TeamsPerMatch'] == 0)
+			{
+				$time = [time_add($j*5, $this->blocktime), 0];
+				$j++;
+			}
+			
+			$this->games[$i]->set_time($time);
+			
+		}
+		
+		CloseCon($conn);
+		return true;
+	}
+	private check_time()
+	{
+		for($i = 1, $found = false; $i < $this->AnzGames; $i++)
+		{
+			$time1 = $this->games[$i]->get_time();
+			$time2 = $this->games[$i - 1]->get_time();
+			if($time2['time_act'] > $time1['time_start']) 
+			{
+				$time1['time_start'] = time_add($time2['time_act'], 5);
+				$this->games[$i]->set_time($time1);
+				$found = true;
+			}
+			if($found)
+			{
+				$time1['time_start'] = time_add($time2['time_start'], 5);
+				$this->games[$i]->set_time($time1);
+			}
+		}
 	}
 	public function __construct($block = 'NXT')
 	{
@@ -927,26 +982,75 @@ class Block
 		}
 		if(is_int($block) and $block > 0 and $block <= 6) $this->blocknumber = $block;
 		
+		$this->options = $settings['Blockoptions']['Block'.$this->blocknumber];
+		$this->time_start = $settings['Blocktime']['Block'.$this->blocknumber];
+		/*
+		if(strpos($this->options, 'fb') === true)
+		{
+			$sql = 'SELECT teamid FROM teams WHERE active = 1 ORDER BY points DESC position ASC';
+			$result = query($sql);
+			
+			if($result->num_rows < 1)
+			{
+				//TODO LOG
+				break;
+			}
+			else
+			{	
+				for($j = 0; $j < $result->num_rows; $j++, $res = $result->fetch_assoc())
+				{
+					$tmp = new Game();
+					
+					$tmp->set_team($res['teamid']);
+					$tmp->set_time([time_add($j*5, $this->blocktime), 0]);
+					$tmp->set_block($this->blocknumber);
+					$tmp->safe_game_to_db();
+					
+					$this->games[$j] = $tmp;
+					$this->AnzGames++;
+				}
+			}
+		}		
+		else */
+		
 		$sql = 'SELECT * FROM games INNER JOIN teams WHERE games.teamid = teams.teamid AND teams.active = 1 AND games.block='.$this->blocknumber.' ORDER BY teams.points DESC, teams.position ASC';
 		$result = query($sql);
-		while($res = $result->fetch_assoc())
+		for($i = 0, $j = 0; $res = $result->fetch_assoc(); $i++)
 		{
 			$tmp = new Game();
 			$tmp->load_game_from_db($res['gameid']);
-			$this->AnzGames++;
-			array_push($this->games, $tmp);
-		}
-
-		$this->options = $settings['Blockoptions']['Block'.$this->blocknumber];
-		$this->time_start = $settings['Blocktime']['Block'.$this->blocknumber];
-	}
-	public function init()
-	{
-		$option = explode('/', $this->options);
-		if(in_array('fb',$option)
-		{
 			
+			if($i%$settings['Options']['TeamsPerMatch'] == 0 and $res['time_start'] == 0)
+			{
+				$tmp->set_time([time_add($j*5, $this->blocktime), 0]);
+				$j++;
+			}
+			
+			$this->games[$i] = $tmp;
+			$this->AnzGames++;
 		}
+		
+		CloseCon($conn);
+		
+		check_start_time();
+		check_time();
+	}
+	public add_Game($tmp)
+	{
+		if(!is_a($tmp, 'Game')
+		{
+			//TODO LOG
+			return false;
+		}
+		
+		$newGame = new Game();
+		$newGame->set_team($tmp->get_team());
+		$newGame->set_block($tmp->get_block() + 1);
+		return $newGame->save_game_to_db();
+	}
+	public get_AnzGeams()
+	{
+		return  $this->AnzGames;
 	}
 }
 

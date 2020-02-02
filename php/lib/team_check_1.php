@@ -18,8 +18,8 @@ echo "Done<br><br>";
 echo "Trying to initiate a Team Object...<br>";
 
 $test = new Team();
-echo "Testing constructor..<br>"
-echo "IP: "
+echo "Testing constructor..<br>";
+echo "IP: ";
 if($test->get_ip() == 0) echo "<font colour='green'>True</font><br>";
 else echo "<font colour='red'>False</font><br>";
 
