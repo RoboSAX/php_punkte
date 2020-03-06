@@ -568,7 +568,7 @@ class Game
 	 *	Returns 'false' if one of the following events occure:
 	 *		- $id is not an integer
 	 *		- no data for a game with ID: $id ; was found in the database
-	 *	
+	 *
 	 *	Returns 'true' if there were no errors
 	 *
 	 *	'false'-outputs will be logged (if enabled in the settings.ini file)
@@ -583,7 +583,7 @@ class Game
 		$conn  = OpenCon();
 		$sql = 'SELECT * FROM games WHERE gameid='.$id;
 		$tmp = $conn->query($sql);
-		
+
 		if($tmp->num_rows > 0)
 		{
 			while($row = $tmp->fetch_assoc())
@@ -604,7 +604,7 @@ class Game
 			echo 'No Data found'; //Durch LOG ersetzen
 			return false;
 		}
-		
+
 		return true;
 	}
 	/*! \brief Saves game data in the database
@@ -614,7 +614,7 @@ class Game
 	 *
 	 *	There are two possible uses for this function:
 	 *		- if a game with the same ID already exists in the database -> The function updates the values in the database.
-	 *		- if no game with the same ID exists -> The function creates a new entry in the database 
+	 *		- if no game with the same ID exists -> The function creates a new entry in the database
 	 *		  and updates the ID (also of the object)
 	 *		  Use with care, is you may have to manually delete wrong inputs in your database
 	 *
@@ -623,7 +623,7 @@ class Game
 	 *		- updated a existing entry in the database
 	 *
 	 *	Returns 'false' in all other cases.
-	 *	For example: 
+	 *	For example:
 	 *		- if two games with the same ID exists (look for the checks!)
 	 *		- if a game with ID = 0 exists (it should not be the case, but you never know)
 	 */
@@ -633,11 +633,11 @@ class Game
 		$sql = 'SELECT * FROM games WHERE gameid='.$this->gameid;
 		$tmp = $conn->query($sql);
 		if($tmp->num_rows == 0)
-		{	
-			$sql = 'INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `teamid`, `active`, `finished`, `highlight`) 
-					VALUES (' . $this->block . ', ' . $this->time_start . ', ' . $this->time_act . ', ' . $this->points . ', ' . 
+		{
+			$sql = 'INSERT INTO games (`block`, `time_start`, `time_act`, `points`, `teamid`, `active`, `finished`, `highlight`)
+					VALUES (' . $this->block . ', ' . $this->time_start . ', ' . $this->time_act . ', ' . $this->points . ', ' .
 					', ' . $this->teamid . ', ' . $this->active . ', ' . $this->finished . ', ' . $this->highlight . ')';
-			$conn->query($sql);		
+			$conn->query($sql);
 			CloseCon($conn);
 			$this->update_id();
 			return true;
@@ -663,9 +663,9 @@ class Game
 			//Noch irgendein LOG
 			return false;
 		}
-		
+
 		return false;
-		
+
 	}
 	/*!
 	 * \brief Returns the attribute $block of this object
@@ -750,21 +750,21 @@ class Game
 			echo "Wrong Datatype. Use array of 2 integer: [time_start, time_act]";	//LOG
 			return false;
 		}
-		
+
 		if(array_key_exists("time_start",$tmp) and array_key_exists("time_act",$tmp))
-		{			
+		{
 			$this->time_start = $tmp["time_start"];
 			$this->time_act = $tmp["time_act"];
 			return true;
 		}
-		else		
+		else
 		{
 			$this->time_start = $tmp[0];
 			$this->time_act = $tmp[1];
 			return true;
 		}
 	}
-	/*! \brief Set block number 
+	/*! \brief Set block number
 	 *
 	 *	Returns false if $tmp is not of type integer.
 	 *
@@ -777,7 +777,7 @@ class Game
 			echo "Wrong datatype. Use Block (INT)";
 			return false;
 		}
-		
+
 		$this->block = $tmp;
 		return true;
 	}
@@ -794,11 +794,11 @@ class Game
 			echo "Wrong datatype. Use Points (INT)";
 			return false;
 		}
-		
+
 		$this->points = $tmp;
 		return true;
 	}
-	/*! \brief Set the ID of the team for this game 
+	/*! \brief Set the ID of the team for this game
 	 *
 	 *	Returns false if $tmp is not of type integer.
 	 *
@@ -811,11 +811,11 @@ class Game
 			echo "Wrong datatype. Use TeamID (INT)";
 			return false;
 		}
-		
+
 		$this->teamid = $tmp;
 		return true;
 	}
-	/*! \brief Set active status 
+	/*! \brief Set active status
 	 *
 	 *	Returns false if $tmp is not of type boolean.
 	 *
@@ -828,12 +828,12 @@ class Game
 			echo "Wrong datatype. Use Active (BOOL)";
 			return false;
 		}
-		
+
 		$this->active = $tmp;
 		return true;
-		
+
 	}
-	/*! \brief Set finished status 
+	/*! \brief Set finished status
 	 *
 	 *	Returns false if $tmp is not of type boolean.
 	 *
@@ -846,11 +846,11 @@ class Game
 			echo "Wrong datatype. Use Finished (BOOL)";
 			return false;
 		}
-		
+
 		$this->finished = $tmp;
 		return true;
 	}
-	/*! \brief Set highlight status 
+	/*! \brief Set highlight status
 	 *
 	 *	Returns false if $tmp is not of type boolean.
 	 *
@@ -863,7 +863,7 @@ class Game
 			echo "Wrong datatype. Use Highlight (BOOL)";
 			return false;
 		}
-		
+
 		$this->highlight = $tmp;
 		return true;
 	}
@@ -876,7 +876,7 @@ class Block
 	private $time_start;
 	private $options;
 	private $blocknumber;
-	
+
 	private function time_add($time1, $time2)
 	{
 		if($time2 > $time1)
@@ -885,7 +885,7 @@ class Block
 			$time1 = $time2;
 			$time2 = $tmp;
 		}
-		
+
 		$h = (int)($time1/100) + (int)($time2/100);
 		$m = (int)($time1%100) + (int)($time2%100);
 
@@ -904,44 +904,44 @@ class Block
 			//TODO LOG
 			return false;
 		}
-		
+
 		$conn = OpenCon();
 		$sql = 'SELECT time_act FROM games WHERE block=' . $this->blocknumber - 1 . ' AND time_act > ' . time_add($this->time_start, 5) . ' ORDER BY time_act DESC LIMIT 1';
 		$result = query($sql);
-		
+
 		if($result->num_rows < 1)
 		{
 			//TODO LOG
 			return false;
 		}
-		
+
 		$res = $result->fetch_assoc();
 		$this->time_start = time_add($res['time_act'], 5);
-		
+
 		for($i = 0, $j = 0; $i < $this->AnzGames; $i++)
 		{
 			$time = $this->games[$i]->get_time();
-			
+
 			if($i%$settings['Options']['TeamsPerMatch'] == 0)
 			{
 				$time = [time_add($j*5, $this->blocktime), 0];
 				$j++;
 			}
-			
+
 			$this->games[$i]->set_time($time);
-			
+
 		}
-		
+
 		CloseCon($conn);
 		return true;
 	}
-	private check_time()
+	private function check_time()
 	{
 		for($i = 1, $found = false; $i < $this->AnzGames; $i++)
 		{
 			$time1 = $this->games[$i]->get_time();
 			$time2 = $this->games[$i - 1]->get_time();
-			if($time2['time_act'] > $time1['time_start']) 
+			if($time2['time_act'] > $time1['time_start'])
 			{
 				$time1['time_start'] = time_add($time2['time_act'], 5);
 				$this->games[$i]->set_time($time1);
@@ -963,7 +963,7 @@ class Block
 				echo 'Wrong input. Using NXT instead.';
 				$block = 'NXT';
 			}
-			
+
 			$conn = OpenCon();
 			$sql = 'SELECT MAX(block) FROM games';
 			$result = $conn->query($sql);
@@ -978,10 +978,10 @@ class Block
 			}
 
 			if($block == 'ACT' and $this->blocknumber > 1) $this->blocknumber--;
-		
+
 		}
 		if(is_int($block) and $block > 0 and $block <= 6) $this->blocknumber = $block;
-		
+
 		$this->options = $settings['Blockoptions']['Block'.$this->blocknumber];
 		$this->time_start = $settings['Blocktime']['Block'.$this->blocknumber];
 		/*
@@ -989,66 +989,66 @@ class Block
 		{
 			$sql = 'SELECT teamid FROM teams WHERE active = 1 ORDER BY points DESC position ASC';
 			$result = query($sql);
-			
+
 			if($result->num_rows < 1)
 			{
 				//TODO LOG
 				break;
 			}
 			else
-			{	
+			{
 				for($j = 0; $j < $result->num_rows; $j++, $res = $result->fetch_assoc())
 				{
 					$tmp = new Game();
-					
+
 					$tmp->set_team($res['teamid']);
 					$tmp->set_time([time_add($j*5, $this->blocktime), 0]);
 					$tmp->set_block($this->blocknumber);
 					$tmp->safe_game_to_db();
-					
+
 					$this->games[$j] = $tmp;
 					$this->AnzGames++;
 				}
 			}
-		}		
+		}
 		else */
-		
+
 		$sql = 'SELECT * FROM games INNER JOIN teams WHERE games.teamid = teams.teamid AND teams.active = 1 AND games.block='.$this->blocknumber.' ORDER BY teams.points DESC, teams.position ASC';
 		$result = query($sql);
 		for($i = 0, $j = 0; $res = $result->fetch_assoc(); $i++)
 		{
 			$tmp = new Game();
 			$tmp->load_game_from_db($res['gameid']);
-			
+
 			if($i%$settings['Options']['TeamsPerMatch'] == 0 and $res['time_start'] == 0)
 			{
 				$tmp->set_time([time_add($j*5, $this->blocktime), 0]);
 				$j++;
 			}
-			
+
 			$this->games[$i] = $tmp;
 			$this->AnzGames++;
 		}
-		
+
 		CloseCon($conn);
-		
+
 		check_start_time();
 		check_time();
 	}
-	public add_Game($tmp)
+	public function add_Game($tmp)
 	{
-		if(!is_a($tmp, 'Game')
+		if(!is_a($tmp, 'Game'))
 		{
 			//TODO LOG
 			return false;
 		}
-		
+
 		$newGame = new Game();
 		$newGame->set_team($tmp->get_team());
 		$newGame->set_block($tmp->get_block() + 1);
 		return $newGame->save_game_to_db();
 	}
-	public get_AnzGeams()
+	public function get_AnzGeams()
 	{
 		return  $this->AnzGames;
 	}
