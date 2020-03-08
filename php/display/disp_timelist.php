@@ -1,87 +1,47 @@
 <?php
     # include main function for settings and database connection
     require_once '../lib/db_main.php';
-?>
-<?php
-$conn = OpenCon();
-
-$sql = "SELECT time FROM games WHERE time>'0' AND finished='0' AND active='0' AND teamactive='1' ORDER BY time ASC";
-$result = $conn->query($sql);
-
-$times = array();
-$size = 0;
-
-if($result->num_rows > 0)
-{
-    $row = $result->fetch_assoc();
-    $times[0] = $row['time'];
-    while($row = $result->fetch_assoc())
-    {
-        if(isset($times[$size-1]))
-        {
-            if($times[$size-1] != $times[$size])
-            {
-                array_push($times,$row['time']);
-                $size++;
-            }
-        }
-    }
-}
-else
-{
-    write_log("0 results for the query: ".$sql." in disp_timelist.php");
-}
+	
+	$conn = OpenCon();
+	$sql = 'SELECT * FROM games OUTER JOIN teams WHERE game.teamid = teams.teamid AND teams.active = 1 AND games.finished = 0 AND games.active = 0 ORDER BY teams.points DESC, teams.position ASC';
+	$result = query($sql);
 ?>
 
-<h2>Kommende Spiele</h2>
+<h2> Kommende Spiele: </h2>
+<hr>
 <table>
 <?php
-    $i = 0;
-    while($i < $size)
-    {
-        $tmp = $i;
-        $anzeige = "";
-        $name = "";
+	$flag_line = true;
+	for($i = 1; $res = $result->fetch_assoc(); $i++)
+	{
+		if($flag_line)
+		{
+			echo '<tr><td>';
+			$flag_line = false;
+		}
+		
+		echo $res['teams.name'];
+		
+		if($settings['Options']['TeamsPerMatch'] > 1 and $i%$settings['Options']['TeamsPerMatch'] != 0)
+		{
+			
+			if(strpos($settings['Blockoptions']['Block' . $res['block']], 'vs') === true)
+			{
+				echo ' vs ';
+			}
+			else
+			{			
+				
+				else echo ', ';			
+			}
+		}
+		
+		if($i%$settings['Options']['TeamsPerMatch'] == 0)
+		{
+			echo '</td><td>' . $res['games.time_start'] / 100 . ':' . $res['games.time_start']%100 . ' Uhr</td></tr>';
+			$flag_line = true;
+		}
+	}
+?>
 
-        $sql = "SELECT * FROM games WHERE time='".$times[$i]."' AND teamactive=1";
-        $result = $conn->query($sql);
 
-        $games = array();
-        $gr = 0;
-
-        if($result->num_rows > 0)
-        {
-            while($games[] = $result->fetch_assoc()) $gr++;
-        }
-
-        for($j = 0; $j < $settings['Options']['TeamsPerMatch'] || $j < $gr; $j++)
-        {
-            if(isset($games[$j]))
-            {
-                $sql = "SELECT name FROM teams WHERE teamid='".$games[$j]['team']."' AND active='1'";
-                $result = $conn->query($sql);
-
-                if($result->num_rows > 0)
-                {
-                    while($row = $result->fetch_assoc())
-                    {
-                        $name = $row['name'];
-                    }
-                }
-                else
-                {
-                    write_log("0 results for the query: ".$sql." in disp_timelist.php");
-                }
-
-                if($name)
-                {
-                    if($j != 0 && ($gr-1)) $anzeige .= " vs. ";
-                    if($anzeige != $name." vs. ") $anzeige .= $name;
-                }
-                $i++;
-            }
-        }
-        if($name) echo "\t<tr><td>".int_to_time($times[$tmp])." : ".$anzeige."</td></tr>\n";
-    }
-    ?>
-</table>

@@ -871,7 +871,7 @@ class Game
 
 class Block
 {
-	private $games = [];
+	public $games = [];
 	private $AnzGames = 0;
 	private $time_start;
 	private $options;
@@ -958,7 +958,7 @@ class Block
 	{
 		if(is_string($block))
 		{
-			if(!in_array($block, ['ACT','NXT']))
+			if(!in_array($block, ['CUR','NXT']))
 			{
 				echo 'Wrong input. Using NXT instead.';
 				$block = 'NXT';
@@ -977,7 +977,7 @@ class Block
 				$this->blocknumber = $res['MAX(block)'];
 			}
 
-			if($block == 'ACT' and $this->blocknumber > 1) $this->blocknumber--;
+			if($block == 'CUR' and $this->blocknumber > 1) $this->blocknumber--;
 
 		}
 		if(is_int($block) and $block > 0 and $block <= 6) $this->blocknumber = $block;
@@ -1013,20 +1013,22 @@ class Block
 		}
 		else */
 
-		$sql = 'SELECT * FROM games INNER JOIN teams WHERE games.teamid = teams.teamid AND teams.active = 1 AND games.block='.$this->blocknumber.' ORDER BY teams.points DESC, teams.position ASC';
+		$sql = 'SELECT gameid FROM games INNER JOIN teams WHERE games.teamid = teams.teamid AND teams.active = 1 AND games.block='.$this->blocknumber.' ORDER BY teams.points DESC, teams.position ASC';
 		$result = query($sql);
-		for($i = 0, $j = 0; $res = $result->fetch_assoc(); $i++)
+		for($i = 1, $j = 0; $res = $result->fetch_assoc(); $i++)
 		{
 			$tmp = new Game();
 			$tmp->load_game_from_db($res['gameid']);
+			$times = $tmp->get_time();
 
-			if($i%$settings['Options']['TeamsPerMatch'] == 0 and $res['time_start'] == 0)
+			if($times['time_start'] == 0)
 			{
 				$tmp->set_time([time_add($j*5, $this->blocktime), 0]);
-				$j++;
+				$tmp->save_game_to_db();
 			}
-
-			$this->games[$i] = $tmp;
+			if($i%$settings['Options']['TeamsPerMatch'] == 0) $j++;
+				
+			$this->games[$i-1] = $tmp;
 			$this->AnzGames++;
 		}
 
@@ -1035,6 +1037,9 @@ class Block
 		check_start_time();
 		check_time();
 	}
+	/*
+	TODO move, cause functionallity isnt set for block objects
+	
 	public function add_Game($tmp)
 	{
 		if(!is_a($tmp, 'Game'))
@@ -1046,9 +1051,11 @@ class Block
 		$newGame = new Game();
 		$newGame->set_team($tmp->get_team());
 		$newGame->set_block($tmp->get_block() + 1);
+		
 		return $newGame->save_game_to_db();
 	}
-	public function get_AnzGeams()
+	*/
+	public function get_AnzGames()
 	{
 		return  $this->AnzGames;
 	}
