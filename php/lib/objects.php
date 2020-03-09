@@ -51,6 +51,7 @@ class Team
 	 *	Returns 'false' if one of the following events occure:
 	 *		- $id is not an integer
 	 *		- no data for a team with ID: $id ; was found in the database
+	 *		- more than one entry with ID: $id ; was found in the database
 	 *
 	 *	Returns 'true' if there were no errors
 	 *
@@ -67,9 +68,9 @@ class Team
 		$sql = "SELECT * FROM teams WHERE teamid='".$id."'";
 		$tmp = $conn->query($sql);
 
-		$result = false;
 		if ($tmp->num_rows < 1) {
 			echo "No Data found"; //Durch LOG ersetzen
+			return false;
 		} elseif ($tmp->num_rows == 1) {
 			while($row = $tmp->fetch_assoc())
 			{
@@ -81,13 +82,13 @@ class Team
 				$this->position = $row['position'];
 				$this->active = $row['active'];
 			}
-			$result = true;
 		} else {
 			echo "More than one entry found"; //Durch LOG ersetzen
+			return false;
 		}
 
 		CloseCon($conn);
-		return $result;
+		return true;
 	}
 	/*! \brief Saves team data in the database
 	 *

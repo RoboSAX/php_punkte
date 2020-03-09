@@ -1,6 +1,27 @@
 <?php
     # include main function for settings and database connection
     require_once '../lib/db_main.php';
+	
+	function addTime($time1, $time2)
+	{
+		if($time2 > $time1)
+		{
+			$tmp = $time1;
+			$time1 = $time2;
+			$time2 = $tmp;
+		}
+
+		$h = (int)($time1/100) + (int)($time2/100);
+		$m = (int)($time1%100) + (int)($time2%100);
+
+		if($m > 59)
+		{
+			$h++;
+			$m -= 60;
+		}
+
+		return (100 * $h) + $m;
+	}
 ?>
 
 <form action='guru_reset_database.php' method='post'>
@@ -75,7 +96,7 @@
         $conn->query($sql);
 
         $sql = "ALTER TABLE `changed`
-          MODIFY `changedid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;";
+          MODIFY `changedid` int(11) NOT NULL AUTO_INCREMENT;";
         $conn->query($sql);
 
 
@@ -90,7 +111,7 @@
                 `points`     int(11)    NOT NULL,
                 `objectives` int(11)    NOT NULL,
                 `penalties`  int(11)    NOT NULL,
-                `team`       int(11)    NOT NULL,
+                `teamid`       int(11)    NOT NULL,
                 `active`     tinyint(1) NOT NULL,
                 `finished`   tinyint(1) NOT NULL,
                 `highlight`  tinyint(1) NOT NULL
@@ -98,22 +119,13 @@
         $conn->query($sql);
 
         $sql = "INSERT INTO `games` (`gameid`, `block`, `time_start`, `time_act`, `points`, ";
-        $sql.= "`objectives`, `penalties`, `team`, `active`, `finished`, ";
+        $sql.= "`objectives`, `penalties`, `teamid`, `active`, `finished`, ";
         $sql.= "`highlight`) VALUES \n";
-        $curTime = 0;
+        $curTime = $settings['Blocktimes']['Block1'];
         for($j = 1; $j <= $AnzTeams; $j++)
         {
             if($j != 1) $sql .= ", \n";
-            $sql.= "(".$j.", 1, ";
-			// if((($j % $settings['Options']['TeamsPerMatch']) == ($settings['Options']['TeamsPerMatch'] - 1)) && $j > 1)
-			// {
-			if($j > 1) $curTime = addTimes($curTime,'5');
-			// }
-
-
-
-            $sql.= addTimes($TimeStart,$curTime).", 0,";
-            $sql.= "0, 0, 0, 0, 0, 0, 0, 1)";
+            $sql.= "(".$j.", 1, 0, 0, 0, 0, 0, ".$j.", 0, 0, 0)";
         }
 
         $sql.= ";";
@@ -124,7 +136,7 @@
         $conn->query($sql);
 
         $sql = "ALTER TABLE `games`
-          MODIFY `gameid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;";
+          MODIFY `gameid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;";
         $conn->query($sql);
 
 
@@ -158,7 +170,7 @@
         $conn->query($sql);
 
         $sql = "ALTER TABLE `pointmanagement`
-          MODIFY `pointid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;";
+          MODIFY `pointid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;";
         $conn->query($sql);
 
 
@@ -191,7 +203,8 @@
           ADD PRIMARY KEY (`teamid`);";
         $conn->query($sql);
 
-
+		$sql = "ALTER TABLE `teams` CHANGE `teamid` `teamid` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;";
+		$conn->query($sql);
 
         echo "<br>\n";
         if(isset($_POST['clear'])) {
