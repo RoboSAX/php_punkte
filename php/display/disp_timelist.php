@@ -38,7 +38,11 @@
 		
 		if($i%$settings['Options']['TeamsPerMatch'] == 0 or $res['block'] == 1)
 		{
-			echo '</td><td>' . $res['games.time_start'] / 100 . ':' . $res['games.time_start']%100 . ' Uhr</td></tr>';
+			$out = '</td><td>' . intval($res['time_start'] / 100) . ':';
+			if($res['time_start'] % 100 < 10) $out .= '0';
+			$out .= $res['time_start'] % 100 . ' Uhr</td></tr>';
+			
+			echo $out;
 			$flag_line = true;
 		}
 	}
